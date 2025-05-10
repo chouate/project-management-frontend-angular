@@ -1,0 +1,318 @@
+<p-dialog
+    header="Header"
+    [modal]="true"
+    [(visible)]="displayModal"
+    [style]="{ width: '50rem' }"
+    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+    [maximizable]="true"
+    (onHide)="onDialogClose()">
+
+    <ng-container *ngIf="modalData">
+        <app-modal
+            #modalRef
+            [tabToEditSwitch]="modalEditable"
+            [editable]="modalEditable"
+            [data]="modalData"
+            [config]="modalConfig"
+            [originalIndex]="modalData['originalIndex']"
+            (save)="updateData($event)">
+        </app-modal>
+    </ng-container>
+</p-dialog>
+<p-confirmDialog
+    header="Confirm Deletion"
+    icon="pi pi-exclamation-triangle"
+    acceptLabel="Confirm"
+    rejectLabel="Cancel">
+</p-confirmDialog>
+
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <h5>{{ tableName }}</h5>
+            <p-table class="vertical-table" #dt1 [value]="data" dataKey="id" [rows]="pageRows" [loading]="loading"
+                     [rowHover]="true"
+                     styleClass="p-datatable-gridlines" [paginator]="true"
+                     [globalFilterFields]="globalFilterFields"
+                     responsiveLayout="scroll">
+                <ng-template pTemplate="caption">
+                    <div class="flex justify-content-between mb-2 w-full">
+                        <!-- Group for Clear and Add button side by side with space in between -->
+                        <div class="flex gap-2">
+                            <button pButton label="Clear" class="p-button-outlined" icon="pi pi-filter-slash"
+                                    (click)="clear(dt1)"></button>
+                            <button pButton label="New" class="p-button-outlined" icon="pi pi-plus"
+                                    (click)="add()"></button>
+                            <button *ngIf="multipleSelectionSwitch" pButton label="Remove" class="p-button-outlined" icon="pi pi-trash"
+                                    (click)="confirmRemove()" [disabled]="selectedDataRow.length<1"></button>
+                            <button *ngIf="multipleSelectionSwitch" pButton label="Save Changes" class="p-button-outlined" icon="pi pi-save"
+                                    (click)="confirmSaveChanges()" [disabled]="selectedDataRow.length<1 || !changesExists"></button>
+                        </div>
+
+                        <!-- Group for Activate/Edit Mode switch and Search input in the same row -->
+                        <div class="flex align-items-center gap-2">
+                            <!-- Switch for Edit Mode (just before the search input) -->
+                            <div class="flex align-items-center">
+                                <label for="multipleSelectionSwitch" class="mr-2">Multiple selection Mode</label>
+                                <p-inputSwitch [(ngModel)]="multipleSelectionSwitch" id="multipleSelectionSwitch"></p-inputSwitch>
+                            </div>
+                            <div class="flex align-items-center">
+                                <label for="tabToEditSwitch" class="mr-2">Edit Mode</label>
+                                <p-inputSwitch [(ngModel)]="tabToEditSwitch" id="tabToEditSwitch"></p-inputSwitch>
+                            </div>
+
+                            <!-- Search input, aligned to the right -->
+                            <span class="p-input-icon-left mb-2" style="flex-basis: 100%; margin-left: 10px;">
+                <i class="pi pi-search"></i>
+                <input pInputText type="text" #filter (input)="onGlobalFilter(dt1, $event)"
+                       placeholder="Search Keyword" class="w-full"/>
+            </span>
+                        </div>
+                    </div>
+                </ng-template>
+
+
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th *ngIf="tabToEditSwitch && multipleSelectionSwitch">
+                            <p-checkbox
+                                [(ngModel)]="isAllSelected"
+                                (onChange)="selectAll()"
+                                [binary]="true">
+                            </p-checkbox>
+                        </th>
+                        <ng-container *ngFor="let col of cols">
+                            <th *ngIf="col.principal === true" [style.min-width]="col.minWidth || '12rem'">
+                            <div class="flex justify-content-between align-items-center">
+                                {{ col.header }}
+                                <div [ngSwitch]="col.filterType">
+                                    <!-- Text Filter -->
+                                    <p-columnFilter *ngSwitchCase="'text'" type="text" field="{{col.field}}"
+                                                    display="menu"
+                                                    placeholder="Search by {{col.header}}"></p-columnFilter>
+
+                                    <!-- Dropdown Filter -->
+                                    <p-columnFilter *ngSwitchCase="'dropdown'" field="{{col.field}}" display="menu">
+                                        <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                            <p-dropdown [ngModel]="value" [options]="col.options"
+                                                        (onChange)="filter($event.value)" [optionLabel]="col.optionLabel"
+                                                        [optionValue]="col.optionValue || col.optionLabel"
+                                                        placeholder="Select {{col.header}}"></p-dropdown>
+                                        </ng-template>
+                                    </p-columnFilter>
+
+                                    <!-- Numeric Filter -->
+                                    <p-columnFilter *ngSwitchCase="'number'" type="numeric" field="{{col.field}}"
+                                                    display="menu"></p-columnFilter>
+                                    <p-columnFilter *ngSwitchCase="'amount'" type="numeric" field="{{col.field}}"
+                                                    display="menu"></p-columnFilter>
+
+                                    <!-- Date Filter -->
+                                    <p-columnFilter *ngSwitchCase="'timeline'" type="date" field="{{col.field}}"
+                                                    display="menu" placeholder="mm/dd/yyyy"></p-columnFilter>
+
+
+                                </div>
+                            </div>
+                        </th>
+                        </ng-container>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+                    <tr [ngClass]="{ 'unsaved-row': rowData.unsaved }">
+                        <!-- Checkbox added only in the first column (Editable Mode) -->
+                        <td *ngIf="tabToEditSwitch && multipleSelectionSwitch">
+                            <p-checkbox [(ngModel)]="rowData.selected" (onChange)="onRowSelect(rowData,rowIndex)" binary="true"></p-checkbox>
+                        </td>
+                        <ng-container *ngFor="let col of cols">
+                        <td *ngIf="col.principal === true" [pEditableColumn]="rowData" pEditableColumnField="{{col.field}}">
+                            <ng-container *ngIf="tabToEditSwitch && col.editable !== false">
+                                <p-cellEditor>
+
+                                    <ng-template pTemplate="input">
+                                        <input
+                                            *ngIf="col.filterType === 'text' || col.filterType === 'timeline'"
+                                            pInputText
+                                            type="{{col.filterType === 'timeline' ? 'date' : 'text'}}"
+                                            [(ngModel)]="rowData[col.field]" (blur)="markUnsaved(rowData,rowIndex)"/>
+
+                                        <input
+                                            *ngIf="col.filterType === 'number' || col.filterType === 'amount'"
+                                            pInputText
+                                            type="number"
+                                            [id]="col.filterType + '_' + col.field + '_' + rowIndex"
+                                            [(ngModel)]="rowData[col.field]"
+                                            (ngModelChange)="validateField($event, col, rowIndex)"
+                                            (keydown.enter)="handleEnter($event, rowData[col.field], col, rowIndex)"
+                                            [ngClass]="{'p-invalid': validationErrors[rowIndex]?.[col.field]}"
+                                            (blur)="markUnsaved(rowData,rowIndex)"
+                                        />
+
+                                        <span *ngIf="validationErrors[rowIndex]?.[col.field]" class="text-danger" style="color:red">
+                                          {{ validationErrors[rowIndex][col.field] }}
+                                        </span>
+
+
+                                        <p-dropdown
+                                            *ngIf="col.filterType === 'dropdown'"
+                                            [options]="col.options"
+                                            [(ngModel)]="rowData[col.field]"
+                                            [optionLabel]="col.optionLabel"
+                                            [optionValue]="col.optionValue || col.optionLabel"
+                                            appendTo="body"
+                                            (onChange)="markUnsaved(rowData, rowIndex)">
+                                        </p-dropdown>
+                                        <p-multiSelect
+                                            *ngIf="col.filterType === 'multi-select'"
+                                            [options]="col.options" [(ngModel)]="rowData[col.field]"
+                                                       optionLabel="name" placeholder="Select Cities"
+                                                       [maxSelectedLabels]="3"  [optionLabel]="col.optionLabel"
+                                                       [optionValue]="col.optionValue || col.optionLabel" styleClass="w-full md:w-80"
+                                                       (ngModelChange)="markUnsaved(rowData, rowIndex)">
+
+                                        </p-multiSelect>
+
+                                    </ng-template>
+                                    <ng-template pTemplate="output">
+                                        <span [ngSwitch]="col.filterType">
+                                            <!-- Default text output -->
+                                            <ng-container *ngSwitchCase="'text'">
+                                                <span>
+                                                    {{ isObject(rowData[col.field]) ? rowData[col.field][col.optionLabel] : rowData[col.field] }}
+                                                </span>
+                                            </ng-container>
+                                                    <ng-container *ngSwitchCase="'number'">
+                                                <span>
+                                                    {{ isObject(rowData[col.field]) ? rowData[col.field][col.optionLabel] : rowData[col.field] }}
+                                                </span>
+                                            </ng-container>
+
+                                            <!-- Dropdown and object-related output -->
+                                            <ng-container *ngSwitchCase="'dropdown'">
+                                                <span [style.color]="rowData[col.field]?.color"
+                                                      [class]="'customer-badge status-' + (isObject(rowData[col.field]) ? rowData[col.field][col.optionValue] : rowData[col.field])">
+                                                    {{ isObject(rowData[col.field]) ? rowData[col.field][col.optionLabel] : rowData[col.field] }}
+                                                </span>
+                                            </ng-container>
+                                             <ng-container *ngSwitchCase="'multi-select'">
+                                                <span>
+                                                    [ {{ getMultiSelectLabels(rowData[col.field], col.optionLabel) }} ]
+                                                </span>
+                                              </ng-container>
+                                            <!-- Date output -->
+                                            <ng-container *ngSwitchCase="'timeline'">
+                                                <span>{{ rowData[col.field] | date: 'MM/dd/yyyy HH:mm:ss' }}</span>
+                                            </ng-container>
+
+                                            <!-- Currency output -->
+                                            <ng-container *ngSwitchCase="'amount'">
+                                                <span>{{ rowData[col.field] | currency: 'USD' }}</span>
+                                            </ng-container>
+
+                                            <!-- Modal or other special cases -->
+                                            <ng-container *ngSwitchCase="'modal'">
+                                              <span class="action-icons">
+                                                <i (click)="showDialog(rowIndex)" class="pi pi-eye"></i>
+                                                <i (click)="duplicate(rowData)" class="pi pi-copy"></i>
+                                                <i (click)="rollback(rowIndex)" class="pi pi-undo"></i>
+                                              </span>
+                                            </ng-container>
+
+                                            <!-- Modal or other special cases -->
+                                            <ng-container *ngSwitchCase="'systemStatus'">
+                                                <span>
+                                                           <i class="pi"
+                                                              [ngClass]="{'true-icon pi-check-circle text-green-500':  rowData[col.field], 'false-icon pi-times-circle text-pink-500': ! rowData[col.field]}"></i>
+
+                                                </span> <!-- Adjust as necessary for modal or other types -->
+                                            </ng-container>
+
+                                            <!-- Default case if needed -->
+                                            <ng-container *ngSwitchDefault>
+                                                <span>{{ rowData[col.field] }}</span>
+                                            </ng-container>
+                                            <span class="action-icons error-icon" *ngIf="validationErrors?.[rowIndex]?.[col.field]" style="float:right">
+                                                                                <i class="pi pi-exclamation-circle" style="color: red;" [title]="validationErrors?.[rowIndex]?.[col.field]"></i>
+                                                                            </span>
+                                        </span>
+                                    </ng-template>
+
+                                </p-cellEditor>
+                            </ng-container>
+                            <!-- Read-only mode (always shows for non-editable or when editing is disabled) -->
+                            <ng-container *ngIf="col.principal && (!tabToEditSwitch || col.editable === false)">
+                                <ng-container [ngSwitch]="col.filterType">
+                                    <ng-container *ngSwitchCase="'modal'">
+                                      <span class="action-icons">
+                                        <i (click)="showDialog(rowIndex)" class="pi pi-eye"></i>
+                                          <button (click)="duplicate(rowIndex)" [disabled]="validationErrors[rowIndex]?.[col.field]!==null" class="icon-button">
+                                          <i class="pi pi-copy"></i>
+                                        </button>
+                                         <button (click)="rollback(rowIndex)" [disabled]="!rowData.unsaved" class="icon-button">
+                                          <i class="pi pi-undo"></i>
+                                        </button>
+                                      </span>
+                                    </ng-container>
+
+                                    <ng-container *ngSwitchCase="'systemStatus'">
+                                        <i class="pi"
+                                           (click)="showDialogSystemStatus(rowIndex, col.field)"
+                                           [ngClass]="{
+                                             'pi-check-circle text-green-500': rowData[col.field],
+                                             'pi-times-circle text-pink-500': !rowData[col.field]
+                                           }"
+                                           style="cursor: pointer;">
+                                        </i>
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="'dropdown'">
+                                      <span
+                                          [style.color]="isObject(getNestedValue(rowData, col.field)) ? getNestedValue(rowData, col.field)?.color : null"
+                                          [class]="'customer-badge status-' + (isObject(getNestedValue(rowData, col.field)) ? getNestedValue(rowData, col.field)[col.optionValue] : getNestedValue(rowData, col.field))">
+                                        {{ isObject(getNestedValue(rowData, col.field)) ? getNestedValue(rowData, col.field)[col.optionLabel] : getNestedValue(rowData, col.field) }}
+                                      </span>
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="'multi-select'">
+                                        <span>
+                                            [ {{ getMultiSelectLabels(rowData[col.field], col.optionLabel) }} ]
+                                        </span>
+                                    </ng-container>
+
+                                    <ng-container *ngSwitchCase="'timeline'">
+                                        {{ rowData[col.field] | date: 'MM/dd/yyyy HH:mm:ss' }}
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="'amount'">
+                                        {{ rowData[col.field] | currency: 'USD' }}
+                                    </ng-container>
+                                    <ng-container *ngSwitchDefault>
+                                        {{ rowData[col.field] }}
+                                        <span class="action-icons error-icon" *ngIf="rowData?.hasError" style="float:right">
+                                            <i class="pi pi-exclamation-circle" style="color: red;" title="Invalid Row"></i>
+                                        </span>
+                                    </ng-container>
+                                    <span class="action-icons error-icon" *ngIf="validationErrors?.[rowIndex]?.[col.field]" style="float:right">
+                                            <i class="pi pi-exclamation-circle" style="color: red;" [title]="validationErrors?.[rowIndex]?.[col.field]"></i>
+                                    </span>
+                                </ng-container>
+
+                            </ng-container>
+                        </td>
+                        </ng-container>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="8">No customers found.</td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="loadingbody">
+                    <tr>
+                        <td colspan="8">Loading customers data. Please wait.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+

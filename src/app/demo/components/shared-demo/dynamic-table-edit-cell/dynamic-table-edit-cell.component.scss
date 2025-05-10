@@ -1,0 +1,49 @@
+.vertical-table {
+  display: flex;
+  flex-direction: column;
+}
+
+.table-row {
+  display: flex;
+  margin-bottom: 8px; /* Adjust spacing between rows */
+}
+
+.table-cell {
+  padding: 8px; /* Adjust padding as needed */
+}
+
+.column-header {
+  font-weight: bold;
+}
+
+.column-data {
+  flex: 1; /* Allow data cell to expand */
+}
+.unsaved-row {
+    background-color: #fff3cd; /* light yellow highlight */
+    border-left: 4px solid #ffc107; /* optional yellow border */
+}
+.action-icons {
+    display: inline-flex;
+    gap: 8px; /* adjust spacing as needed */
+    align-items: center;
+    cursor: pointer;
+}
+.icon-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+.icon-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+.p-dropdown-panel {
+    z-index: 1005 !important; /* Higher than your table/dialog */
+}
+.error-icon {
+    color: red;
+}
+
+
