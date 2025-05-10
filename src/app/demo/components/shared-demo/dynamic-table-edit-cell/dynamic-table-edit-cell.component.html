@@ -63,10 +63,10 @@
 
                             <!-- Search input, aligned to the right -->
                             <span class="p-input-icon-left mb-2" style="flex-basis: 100%; margin-left: 10px;">
-                <i class="pi pi-search"></i>
-                <input pInputText type="text" #filter (input)="onGlobalFilter(dt1, $event)"
-                       placeholder="Search Keyword" class="w-full"/>
-            </span>
+                                <i class="pi pi-search"></i>
+                                <input pInputText type="text" #filter (input)="onGlobalFilter(dt1, $event)"
+                                       placeholder="Search Keyword" class="w-full"/>
+                            </span>
                         </div>
                     </div>
                 </ng-template>
@@ -222,9 +222,9 @@
                                             <!-- Modal or other special cases -->
                                             <ng-container *ngSwitchCase="'systemStatus'">
                                                 <span>
-                                                           <i class="pi"
-                                                              [ngClass]="{'true-icon pi-check-circle text-green-500':  rowData[col.field], 'false-icon pi-times-circle text-pink-500': ! rowData[col.field]}"></i>
-
+                                                   <i class="pi"
+                                                      [ngClass]="{'true-icon pi-check-circle text-green-500':  rowData[col.field], 'false-icon pi-times-circle text-pink-500': ! rowData[col.field]}">
+                                                   </i>
                                                 </span> <!-- Adjust as necessary for modal or other types -->
                                             </ng-container>
 
@@ -246,7 +246,7 @@
                                     <ng-container *ngSwitchCase="'modal'">
                                       <span class="action-icons">
                                         <i (click)="showDialog(rowIndex)" class="pi pi-eye"></i>
-                                          <button (click)="duplicate(rowIndex)" [disabled]="validationErrors[rowIndex]?.[col.field]!==null" class="icon-button">
+                                          <button (click)="duplicate(rowData)" [disabled]="validationErrors[rowIndex]?.[col.field]!==null" class="icon-button">
                                           <i class="pi pi-copy"></i>
                                         </button>
                                          <button (click)="rollback(rowIndex)" [disabled]="!rowData.unsaved" class="icon-button">

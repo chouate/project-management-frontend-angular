@@ -1,11 +1,13 @@
 import {ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {CustomerService} from 'src/app/demo/service/customer.service';
-import {ProductService} from 'src/app/demo/service/product.service';
+import {CustomerService} from '../../../service/customer.service';
+import {ProductService} from '../../../service/product.service';
 import {Table} from 'primeng/table';
 import {ConfirmationService} from 'primeng/api';
-import {GenericTable} from 'src/app/demo/service/generic.table.service';
-import {Plan} from 'src/app/demo/api/plan';
-import {ValidatorType} from "../../enums/enums";
+import {Plan} from "../../../api/plan";
+//import {GenericTable} from 'src/app/demo/service/generic.table.service';
+//import {Plan} from 'src/app/demo/api/plan';
+
+//import {ValidatorType} from "../../enums/enums";
 
 interface expandedRows {
     [key: string]: boolean;
@@ -20,7 +22,7 @@ interface expandedRows {
 @Component({
     selector:'dynamic-table-demo',
     templateUrl: './dynamic-table-edit-cell.component.html',
-    styleUrl: './dynamic-table-edit-cell.component.scss',
+    styleUrls: ['./dynamic-table-edit-cell.component.scss'],
 })
 export class DynamicTableEditCellComponent implements OnInit {
     /**
@@ -387,205 +389,14 @@ export class DynamicTableEditCellComponent implements OnInit {
     }
 
     constructor(private customerService: CustomerService, private productService: ProductService,
-                private genericCustomer:GenericTable,private cd: ChangeDetectorRef,
+                //private genericCustomer:GenericTable,
+                private cd: ChangeDetectorRef,
                 private confirmationService: ConfirmationService) {
 
     }
 
     ngOnInit() {
-        // if (!this.data){
-        //     this.customerService.getCustomersLarge().then(customers => {
-        //         //this.data = customers;
-        //         this.setData(customers);
-        //         this.loading = false;
-        //     });
-        // }
-        // this.plans=[
-        //     {
-        //         "name": "Paid Trial",
-        //         "reference": "PaidTrial",
-        //         "duration": 7
-        //     },
-        //     {
-        //         "name": "1 Month + 1 Connection (Without Adults)",
-        //         "reference": "1M1CONN",
-        //         "duration": 30
-        //     },
-        //     {
-        //         "name": "1 Month + 2 Connections (Without Adults)",
-        //         "reference": "1M2CONN",
-        //         "duration": 30
-        //     },
-        //     {
-        //         "name": "1 Month + 3 Connections (Without Adults)",
-        //         "reference": "1M3CONN",
-        //         "duration": 30
-        //     },
-        //     {
-        //         "name": "1 Month + 4 Connections (Without Adults)",
-        //         "reference": "1M4CONN",
-        //         "duration": 30
-        //     },
-        //     {
-        //         "name": "1 Month + 5 Connections (Without Adults)",
-        //         "reference": "1M5CONN",
-        //         "duration": 30
-        //     },
-        //     {
-        //         "name": "3 Months + 1 Connection (Without Adults)",
-        //         "reference": "3M1CONN",
-        //         "duration": 90
-        //     },
-        //     {
-        //         "name": "3 Months + 2 Connections (Without Adults)",
-        //         "reference": "3M2CONN",
-        //         "duration": 90
-        //     },
-        //     {
-        //         "name": "3 Months + 3 Connections (Without Adults)",
-        //         "reference": "3M3CONN",
-        //         "duration": 90
-        //     },
-        //     {
-        //         "name": "3 Months + 4 Connections (Without Adults)",
-        //         "reference": "3M4CONN",
-        //         "duration": 90
-        //     },
-        //     {
-        //         "name": "3 Months + 5 Connections (Without Adults)",
-        //         "reference": "3M5CONN",
-        //         "duration": 90
-        //     },
-        //     {
-        //         "name": "6 Months + 1 Connection (Without Adults)",
-        //         "reference": "6M1CONN",
-        //         "duration": 180
-        //     },
-        //     {
-        //         "name": "6 Months + 2 Connections (Without Adults)",
-        //         "reference": "6M2CONN",
-        //         "duration": 180
-        //     },
-        //     {
-        //         "name": "6 Months + 3 Connections (Without Adults)",
-        //         "reference": "6M3CONN",
-        //         "duration": 180
-        //     },
-        //     {
-        //         "name": "6 Months + 4 Connections (Without Adults)",
-        //         "reference": "6M4CONN",
-        //         "duration": 180
-        //     },
-        //     {
-        //         "name": "6 Months + 5 Connections (Without Adults)",
-        //         "reference": "6M5CONN",
-        //         "duration": 180
-        //     },
-        //     {
-        //         "name": "12 Months + 1 Connection (Without Adults)",
-        //         "reference": "12M1CONN",
-        //         "duration": 365
-        //     },
-        //     {
-        //         "name": "12 Months + 2 Connections (Without Adults)",
-        //         "reference": "12M2CONN",
-        //         "duration": 365
-        //     },
-        //     {
-        //         "name": "12 Months + 3 Connections (Without Adults)",
-        //         "reference": "12M3CONN",
-        //         "duration": 365
-        //     },
-        //     {
-        //         "name": "12 Months + 4 Connections (Without Adults)",
-        //         "reference": "12M4CONN",
-        //         "duration": 365
-        //     },
-        //     {
-        //         "name": "12 Months + 5 Connections (Without Adults)",
-        //         "reference": "12M5CONN",
-        //         "duration": 365
-        //     }
-        // ]
-        // this.statuses = [
-        //     { label: 'Unqualified', value: 'unqualified' },
-        //     { label: 'Qualified', value: 'qualified' },
-        //     { label: 'New', value: 'new' },
-        //     { label: 'Negotiation', value: 'negotiation' },
-        //     { label: 'Renew', value: 'renew' },
-        //     { label: 'Proposal', value: 'proposal' },
-        //     { label: 'Reseller', value: 'reseller' }
-        // ];
-        // // this.planOptions = this.plans.map(plan => ({
-        // //     header: plan.name,
-        // //     field: plan.reference
-        // // }));
-        // this.cols=[
-        //     {
-        //         "header": "Name",
-        //         "field": "name",
-        //         "filterType": "text",
-        //         "globalFilter":true,
-        //         "principal":true,
-        //     },
-        //     {
-        //         "header": "Email",
-        //         "field": "email",
-        //         "filterType": "text",
-        //         "globalFilter":true,
-        //         "principal":true,
-        //     },
-        //     {
-        //         "header": "Plan",
-        //         "field": "plan",
-        //         "filterType": "dropdown",
-        //         "options": this.plans,
-        //         "optionLabel":"name",
-        //         "globalFilter":true,
-        //         "principal":true,
-        //
-        //     },
-        //     {
-        //         "header": "Timeline",
-        //         "field": "timeline",
-        //         "filterType": "timeline",
-        //         "globalFilter":true,
-        //         "principal":true,
-        //
-        //     },
-        //     {
-        //         "header": "Balance",
-        //         "field": "amount",
-        //         "filterType": "amount",
-        //         "currency":"USD",
-        //         "globalFilter":true,
-        //         "principal":true,
-        //
-        //     },
-        //     {
-        //         "header": "Status",
-        //         "field": "status",
-        //         "filterType": "dropdown",
-        //         "options": this.statuses,
-        //         "optionLabel":"label",
-        //         "optionValue":"value",
-        //         "globalFilter":true,
-        //         "principal":true,
-        //     },
-        //     {
-        //         "header": "Details",
-        //         "field": "details",
-        //         "filterType": "modal",
-        //         "editable":false,
-        //     },
-        //     {
-        //         "header": "Verified",
-        //         "field": "verified",
-        //         "filterType": "systemStatus",
-        //         "options": [{"label": "Verified", "value": "Active"}, {"label": "Not Verified", "value": "Inactive"}],
-        //         "editable":false,
-        //     }
-        // ];
+
         if (this.data){
             //this.setData(this.data);
             this.loading = false;
@@ -729,8 +540,5 @@ export class DynamicTableEditCellComponent implements OnInit {
         this.cd.detectChanges();
         //alert("the data legth : "+this.data.length);
     }
-
-
-
 
 }

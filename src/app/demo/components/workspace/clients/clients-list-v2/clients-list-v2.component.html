@@ -1,0 +1,215 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
+                        <button pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger" (click)="deleteSelectedClients()" [disabled]="!selectedClients || !selectedClients.length"></button>
+                    </div>
+                </ng-template>
+
+                <ng-template pTemplate="right">
+                    <p-fileUpload mode="basic" accept="image/*" [maxFileSize]="1000000" label="Import" chooseLabel="Import" class="mr-2 inline-block"></p-fileUpload>
+                    <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help" (click)="dt.exportCSV()"></button>
+                </ng-template>
+            </p-toolbar>
+
+            <p-table #dt [value]="clients" [columns]="cols" responsiveLayout="scroll" [rows]="10" [globalFilterFields]="['name','country.name','representative.name','status']" [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [(selection)]="selectedClients" selectionMode="multiple" [rowHover]="true" dataKey="id">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <h5 class="m-0">Manage Clients</h5>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search..."  class="w-full sm:w-auto"/>
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 3rem">
+                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                        </th>
+                        <th pSortableColumn="code">Code <p-sortIcon field="name"></p-sortIcon></th>
+                        <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
+                        <th pSortableColumn="activity domain">Activity Domain <p-sortIcon field="price"></p-sortIcon></th>
+                        <th pSortableColumn="contact name">Contact Name <p-sortIcon field="category"></p-sortIcon></th>
+                        <th pSortableColumn="contact email">Contact Email <p-sortIcon field="rating"></p-sortIcon></th>
+                        <th pSortableColumn="contact email">Contact Phone Number <p-sortIcon field="rating"></p-sortIcon></th>
+                        <th pSortableColumn="start date">Start Date <p-sortIcon field="rating"></p-sortIcon></th>
+                        <th pSortableColumn="end date">End Date Estimate<p-sortIcon field="rating"></p-sortIcon></th>
+                        <th pSortableColumn="project manager id">Project Manager ID <p-sortIcon field="rating"></p-sortIcon></th>
+                        <th pSortableColumn="project manager ">Project Manager <p-sortIcon field="rating"></p-sortIcon></th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-client>
+                    <tr>
+                        <td>
+                            <p-tableCheckbox [value]="client"></p-tableCheckbox>
+                        </td>
+                        <td style="width:14%; min-width:10rem;">
+                            <span class="p-column-title">Code</span>
+                            {{client.code}}
+                        </td>
+                        <td style="width:14%; min-width:10rem;">
+                            <span class="p-column-title">Name</span>
+                            {{client.name}}
+                        </td>
+                        <td style="width:14%; min-width:8rem;">
+                            <span class="p-column-title">Activity Domain</span>
+                            {{client.activityDomain}}
+                        </td>
+                        <td style="width:14%; min-width:10rem;">
+                            <span class="p-column-title">Contact Name</span>
+                            {{client.contactName}}
+                        </td>
+                        <td style="width:14%; min-width:10rem;">
+                            <span class="p-column-title">Contact Email</span>
+                            {{client.contactEmail}}
+                        </td>
+                        <td style="width:14%; min-width:10rem;">
+                            <span class="p-column-title">Contact Phone Number</span>
+                            {{client.contactPhoneNumber}}
+                        </td>
+                        <td style="width:14%; min-width:10rem;">
+                            <span class="p-column-title">Start Date</span>
+                            {{client.startDate }}
+                        </td>
+                        <td style="width:14%; min-width:10rem;">
+                            <span class="p-column-title">End Date Estimate</span>
+                            {{client.endDateEstimate }}
+                        </td>
+                        <td style="width:14%; min-width:10rem;">
+                            <span class="p-column-title">Project Manager Id</span>
+                            {{client.projectManagerId}}
+                        </td>
+<!--                        <td style="width:16%; min-width:20rem;">-->
+<!--                            <span class="p-column-title">Project Manager</span>-->
+<!--                            {{client.projectManager?.firstName + ' ' + client.projectManager?.lastName}}-->
+<!--                        </td>-->
+                        <td style="width:16%; min-width:20rem;">
+                            <img [alt]="client.projectManager?.lastName"
+                                 [src]="client.projectManager?.image ? 'assets/demo/images/user/' + client.projectManager?.image : 'assets/demo/images/user/userDefault.png' "
+                                 width="32" style="vertical-align: middle"/>
+                            <span class="image-text ml-2">{{client.projectManager?.firstName + ' ' + client.projectManager?.lastName}}</span>
+                        </td>
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editClient(client)"></button>
+                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteClient(client)"></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="8">No customers found.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <p-dialog [(visible)]="clientDialog" [style]="{width: '600px'}" header="Client Details" [modal]="true" class="p-fluid">
+            <ng-template pTemplate="content">
+<!--                <img [src]="'assets/demo/images/product/' + client?.image" [alt]="client.image" width="150" class="mt-0 mx-auto mb-5 block shadow-2" *ngIf="client.image">-->
+                <div class="field">
+                    <label for="code">Code</label>
+                    <input type="text" pInputText id="code" [(ngModel)]="client.code" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !client.code || codeError}"/>
+                    <small style="color: red" class="ng-dirty ng-invalid" *ngIf="submitted && !client.code">Code is required.</small>
+                    <small style="color: red" class="ng-dirty ng-invalid" *ngIf="codeError">{{codeError}}</small>
+                </div>
+                <div class="field">
+                    <label for="name">Name</label>
+                    <input type="text" pInputText id="name" [(ngModel)]="client.name" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !client.name}"/>
+                    <small style="color: red" class="ng-dirty ng-invalid" *ngIf="submitted && !client.name">Name is required.</small>
+                    <!--        server error for require name           -->
+                    <small style="color: red" class="ng-dirty ng-invalid" *ngIf="fieldErrors?.['name']">{{fieldErrors['name'] }}</small>
+                </div>
+                <div class="field">
+                    <label for="activity">Activity Domain</label>
+                    <textarea id="activity" pInputTextarea [(ngModel)]="client.activityDomain" required rows="3" cols="20"></textarea>
+                </div>
+                <div class="field">
+                    <label for="contactName">Contact Name</label>
+                    <input type="text" pInputText id="contactName" [(ngModel)]="client.contactName"/>
+                </div>
+                <div class="field">
+                    <label for="contactEmail">Contact Email</label>
+                    <input type="text" pInputText id="contactEmail" [(ngModel)]="client.contactEmail" [ngClass]="{'ng-invalid ng-dirty' : fieldErrors?.['contactEmail']}"/>
+                    <!--        server error for invalid Email            -->
+                    <small style="color: red" class="ng-dirty ng-invalid" *ngIf="fieldErrors?.['contactEmail']">{{fieldErrors['contactEmail'] }}</small>
+                </div>
+                <div class="field">
+                    <label for="contactPhone">Contact Phone Number</label>
+                    <input type="text" (keypress)="isNumberKey($event)" pInputText id="contactPhone" [(ngModel)]="client.contactPhoneNumber" [ngClass]="{ 'ng-invalid ng-dirty' : fieldErrors?.['contactPhoneNumber'] }"/>
+                    <!--        server error for invalid phone Numeber            -->
+                    <small style="color: red" class="ng-dirty ng-invalid" *ngIf="fieldErrors?.['contactPhoneNumber']">{{fieldErrors['contactPhoneNumber'] }}</small>
+                </div>
+<!--                <div class="field">-->
+<!--                    <label for="contactPhone">Contact Phone Number</label>-->
+<!--                    <p-inputNumber id="contactPhone" inputId="contactPhone" [(ngModel)]="client.contactPhoneNumber" [ngClass]="{ 'ng-invalid ng-dirty' : fieldErrors?.['contactPhoneNumber'] }" ></p-inputNumber>-->
+<!--                    &lt;!&ndash;        server error for invalid phone Numeber            &ndash;&gt;-->
+<!--                    <small style="color: red" class="ng-dirty ng-invalid" *ngIf="fieldErrors?.['contactPhoneNumber']">{{fieldErrors['contactPhoneNumber'] }}</small>-->
+<!--                </div>-->
+                <div class="formgrid grid">
+                    <div class="field col">
+                        <label for="startDate">Start Date</label>
+                        <p-calendar id="startDate" dateFormat="dd/mm/yy" dataType="string" [showIcon]="true" inputId="icon" [(ngModel)]="client.startDate"></p-calendar>
+                    </div>
+                    <div class="field col">
+                        <label for="endDateEstimate">End Date Estimate</label>
+                        <p-calendar id="endDateEstimate" dateFormat="dd/mm/yy" dataType="string" [showIcon]="true" inputId="icon" [(ngModel)]="client.endDateEstimate"></p-calendar>
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="projectManagerId">Project Manager Affected</label>
+                    <p-dropdown [(ngModel)]="client.projectManagerId"
+                                id="projectManagerId"
+                                inputId="projectManagerId"
+                                [options]="projectManagers"
+                                optionValue="value"
+                                optionLabel="label"
+                                placeholder="Select the project manager"
+                                styleClass="w-full"
+                                >
+                        <ng-template pTemplate="item" let-pm >
+                            {{ pm.label}}
+                        </ng-template>
+                        <ng-template pTemplate="selectedItem" let-pm>
+                            <span *ngIf="pm" >{{pm.label}}</span>
+                        </ng-template>
+                    </p-dropdown>
+                </div>
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+                <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveClient()"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog [(visible)]="deleteClientDialog" header="Confirm" [modal]="true" [style]="{width:'450px'}">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                <span *ngIf="client">Are you sure you want to delete <b>{{client.name}} [code: {{client.code}}]</b>?</span>
+            </div>
+            <ng-template pTemplate="footer">
+                <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="deleteClientDialog = false"></button>
+                <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes" (click)="confirmDelete()"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog [(visible)]="deleteClientsDialog" header="Confirm" [modal]="true" [style]="{width:'450px'}">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                <span>Are you sure you want to delete selected clients?</span>
+            </div>
+            <ng-template pTemplate="footer">
+                <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="deleteClientsDialog = false"></button>
+                <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes" (click)="confirmDeleteSelected()"></button>
+            </ng-template>
+        </p-dialog>
+    </div>
+</div>

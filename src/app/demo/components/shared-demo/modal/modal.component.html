@@ -1,0 +1,143 @@
+<div class="flex justify-content-end align-items-center mb-2">
+    <label for="tabToEditSwitch" class="mr-2">Edit Mode</label>
+    <p-inputSwitch [(ngModel)]="tabToEditSwitch" id="tabToEditSwitch"></p-inputSwitch>
+</div>
+
+<p-table [value]="rowData" responsiveLayout="scroll">
+
+    <ng-template pTemplate="header">
+        <tr>
+            <th>Field</th>
+            <th>Value</th>
+        </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-item let-i="rowIndex">
+        <tr>
+            <td>{{ item.header }}</td>
+            <td *ngIf="tabToEditSwitch && editable && item.editable!==false" [pEditableColumn]="item" pEditableColumnField="value">
+                <p-cellEditor>
+                    <ng-template pTemplate="input">
+                        <input *ngIf="!['dropdown', 'timeline', 'number', 'amount','multi-select'].includes(item.filterType)"
+                               pInputText [(ngModel)]="item.value"/>
+
+                        <p-dropdown *ngIf="item.filterType === 'dropdown'"
+                                    [options]="item.options"
+                                    [(ngModel)]="item.value"
+                                    [optionLabel]="item.optionLabel">
+                        </p-dropdown>
+                        <p-multiSelect
+                            *ngIf="item.filterType === 'multi-select'"
+                            [options]="item.options" [(ngModel)]="item.value"
+                            optionLabel="name" placeholder="Select Cities"
+                            [maxSelectedLabels]="3"  [optionLabel]="item.optionLabel"
+                            [optionValue]="item.optionValue || item.optionLabel" styleClass="w-full md:w-80"
+                            >
+                        </p-multiSelect>
+
+                        <input *ngIf="item.filterType === 'number' || item.filterType === 'amount'"
+                               type="number"
+                               pInputText [(ngModel)]="item.value"/>
+
+                        <input *ngIf="item.filterType === 'timeline'"
+                               type="date"
+                               pInputText [(ngModel)]="item.value"/>
+                    </ng-template>
+
+                    <ng-template pTemplate="output">
+                        {{ item.value }}
+                    </ng-template>
+                    <!-- Output -->
+                    <ng-template pTemplate="output">
+            <span [ngSwitch]="item.filterType">
+              <!-- Default text output -->
+              <ng-container *ngSwitchCase="'text'">
+                <span>{{ isObject(item.value) ? item.value[item.optionLabel] : item.value }}</span>
+              </ng-container>
+
+                <!-- Dropdown -->
+              <ng-container *ngSwitchCase="'dropdown'">
+                <span
+                    [style.color]="item.value?.color"
+                    [class]="'customer-badge status-' + (isObject(item.value) ? item.value[item.optionValue] : item.value)">
+                  {{ isObject(item.value) ? item.value[item.optionLabel] : item.value }}
+                </span>
+              </ng-container>
+
+                <!-- Date -->
+              <ng-container *ngSwitchCase="'timeline'">
+                <span>{{ item.value | date: 'MM/dd/yyyy HH:mm:ss' }}</span>
+              </ng-container>
+
+                <!-- Currency -->
+              <ng-container *ngSwitchCase="'amount'">
+                <span>{{ item.value | currency: 'USD' }}</span>
+              </ng-container>
+
+                <!-- System status icon -->
+              <ng-container *ngSwitchCase="'systemStatus'">
+                <span>
+                  <i
+                      class="pi"
+                      [ngClass]="{
+                      'pi-check-circle text-green-500': item.value,
+                      'pi-times-circle text-pink-500': !item.value
+                    }"
+                  ></i>
+                </span>
+              </ng-container>
+
+                <!-- Default -->
+              <ng-container *ngSwitchDefault>
+                <span>{{ item.value }}</span>
+              </ng-container>
+            </span>
+                    </ng-template>
+                </p-cellEditor>
+            </td>
+
+            <td *ngIf="!tabToEditSwitch || !editable || item.editable===false">
+                <span [ngSwitch]="item.filterType">
+                    <!-- System Status -->
+                    <ng-container *ngSwitchCase="'systemStatus'">
+                        <span>
+                            <i
+                                class="pi"
+                                [ngClass]="{
+                                'pi-check-circle text-green-500': item.value,
+                                'pi-times-circle text-pink-500': !item.value
+                                }"
+                            ></i>
+                        </span>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'dropdown'">
+                <span
+                    [style.color]="item.value?.color"
+                    [class]="'customer-badge status-' + (isObject(item.value) ? item.value[item.optionValue] : item.value)">
+                  {{ isObject(item.value) ? item.value[item.optionLabel] : item.value }}
+                </span>
+              </ng-container>
+                    <ng-container *ngSwitchCase="'multi-select'">
+            <span>
+                [ {{ getMultiSelectLabels(item.value, item.optionLabel) }} ]
+            </span>
+          </ng-container>
+                    <!-- Timeline -->
+                    <ng-container *ngSwitchCase="'timeline'">
+                        <span>{{ item.value | date: 'MM/dd/yyyy HH:mm:ss' }}</span>
+                    </ng-container>
+
+                    <!-- Amount -->
+                    <ng-container *ngSwitchCase="'amount'">
+                        <span>{{ item.value | currency: 'USD' }}</span>
+                    </ng-container>
+
+                    <!-- Default -->
+                    <ng-container *ngSwitchDefault>
+                        <span>{{ item.value }}</span>
+                    </ng-container>
+                </span>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
