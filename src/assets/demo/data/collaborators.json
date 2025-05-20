@@ -1,0 +1,268 @@
+{
+	"data": [
+		{
+			"id": "1000",
+			"firstName": "Amine",
+			"lastName": "Ayoubi",
+			"email": "Ayoubi@gmail.com",
+			"phoneNumber": "0646374745",
+            "image": "bamboo-watch.jpg",
+            "role": "DIRECTOR",
+            "technologies": [
+                {
+                    "name": "C++"
+                },
+                {
+                    "name": "PLSQL"
+                },
+                {
+                    "name": "C++"
+                },
+                {
+                    "name": "PLSQL"
+                },
+                {
+                    "name": "JAVA"
+                },
+                {
+                    "name": "Angular"
+                },
+                {
+                    "name": "C++"
+                },
+                {
+                    "name": "PLSQL"
+                }
+            ]
+
+		},
+        {
+            "id": "1001",
+            "firstName": "Nada",
+            "lastName": "Aakioui",
+            "email": "aakioui@gmail.com",
+            "phoneNumber": "0323244465",
+            "image": "black-watch.jpg",
+            "role": "PROJECT_MANAGER",
+            "technologies": [
+                {
+                    "name": "JAVA"
+                },
+                {
+                    "name": "Angular"
+                },
+                {
+                    "name": "C++"
+                },
+                {
+                    "name": "PLSQL"
+                },
+                {
+                    "name": "Angular"
+                },
+                {
+                    "name": "C++"
+                },
+                {
+                    "name": "PLSQL"
+                }
+            ]
+
+        },
+        {
+            "id": "1002",
+            "firstName": "El Mehdi",
+            "lastName": "Echeouati",
+            "email": "echeouati@gmail.com",
+            "phoneNumber": "073265131",
+            "image": "blue-band.jpg",
+            "role": "DEVELOPER",
+            "technologies": [
+                {
+                    "name": "PLSQL"
+                }
+            ]
+
+        },
+        {
+            "id": "1003",
+            "firstName": "Amina",
+            "lastName": "Stati",
+            "email": "amina.stati@gmail.com",
+            "phoneNumber": "068473865",
+            "image": "blue-t-shirt.jpg",
+            "role": "PROJECT_MANAGER",
+            "technologies": [
+                {
+                    "name": "JAVA"
+                },
+                {
+                    "name": "Angular"
+                },
+                {
+                    "name": "C++"
+                }
+            ]
+
+        },
+        {
+            "id": "1004",
+            "firstName": "Asmae",
+            "lastName": "Asmae",
+            "email": "asmae.asmae@gmail.com",
+            "phoneNumber": "0898000065",
+            "image": "bamboo-watch.jpg",
+            "role": "PROJECT_MANAGER",
+            "technologies": [
+                {
+                    "name": "JAVA"
+                },
+                {
+                    "name": "PLSQL"
+                }
+            ]
+
+        },
+        {
+            "id": "1005",
+            "firstName": "Youness",
+            "lastName": "Ezzaari",
+            "email": "ezzaari@gmail.com",
+            "phoneNumber": "65",
+            "image": "bracelet.jpg",
+            "role": "PROJECT_MANAGER",
+            "technologies": [
+                {
+                    "name": "JAVA"
+                },
+                {
+                    "name": "Angular"
+                }
+            ]
+
+        },
+        {
+            "id": "1006",
+            "firstName": "Taha",
+            "lastName": "Bentoumi",
+            "email": "bentoumi@hps-wordwide.com",
+            "phoneNumber": "079829465",
+            "image": "bamboo-watch.jpg",
+            "role": "DEVELOPER",
+            "technologies": [
+                {
+                    "name": "JAVA"
+                },
+                {
+                    "name": "Angular"
+                },
+                {
+                    "name": "C++"
+                },
+                {
+                    "name": "PLSQL"
+                }
+            ]
+
+        },
+        {
+            "id": "1007",
+            "firstName": "youssef",
+            "lastName": "El Mhamdi",
+            "email": "elmhamedi@hps-wordwide.com",
+            "phoneNumber": "0624549665",
+            "image": "Electronics",
+            "role": "DEVELOPER",
+            "technologies": [
+                {
+                    "name": "JAVA"
+                },
+                {
+                    "name": "Angular"
+                },
+                {
+                    "name": "C++"
+                },
+                {
+                    "name": "PLSQL"
+                }
+            ]
+
+        },
+        {
+            "id": "1008",
+            "firstName": "youssef",
+            "lastName": "El Mhamdi",
+            "email": "elmhamedi@hps-wordwide.com",
+            "phoneNumber": "0624549665",
+            "image": "bamboo-watch.jpg",
+            "role": "DEVELOPER",
+            "technologies": [
+                {
+                    "name": "PLSQL"
+                }
+            ]
+
+        },
+        {
+            "id": "1009",
+            "firstName": "youssef",
+            "lastName": "El Mhamdi",
+            "email": "elmhamedi@hps-wordwide.com",
+            "phoneNumber": "0624549665",
+            "image": "gold-phone-case.jpg",
+            "role": "DEVELOPER",
+            "technologies": [
+                {
+                    "name": "JAVA"
+                },
+                {
+                    "name": "Angular"
+                },
+                {
+                    "name": "C++"
+                },
+                {
+                    "name": "PLSQL"
+                },
+                {
+                    "name": "JAVA"
+                },
+                {
+                    "name": "Angular"
+                },
+                {
+                    "name": "C++"
+                },
+                {
+                    "name": "PLSQL"
+                }
+            ]
+
+        },
+        {
+            "id": "10010",
+            "firstName": "youssef",
+            "lastName": "El Mhamdi",
+            "email": "elmhamedi@hps-wordwide.com",
+            "phoneNumber": "0624549665",
+            "image": "green-earbuds.jpg",
+            "role": "DEVELOPER",
+            "technologies": [
+                {
+                    "name": "JAVA"
+                },
+                {
+                    "name": "Angular"
+                },
+                {
+                    "name": "C++"
+                },
+                {
+                    "name": "PLSQL"
+                }
+            ]
+
+        }
+    ]
+}

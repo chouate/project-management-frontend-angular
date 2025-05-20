@@ -90,10 +90,11 @@
 <!--                            {{client.projectManager?.firstName + ' ' + client.projectManager?.lastName}}-->
 <!--                        </td>-->
                         <td style="width:16%; min-width:20rem;">
-                            <img [alt]="client.projectManager?.lastName"
-                                 [src]="client.projectManager?.image ? 'assets/demo/images/user/' + client.projectManager?.image : 'assets/demo/images/user/userDefault.png' "
+                            <img *ngIf="client.projectManagerId"  [alt]="client.projectManager?.lastName"
+                                 [src]="'assets/demo/images/user/' + client.projectManager?.image "
+                                 (error)="onImageError($event)"
                                  width="32" style="vertical-align: middle"/>
-                            <span class="image-text ml-2">{{client.projectManager?.firstName + ' ' + client.projectManager?.lastName}}</span>
+                            <span *ngIf="client.projectManagerId" class="image-text ml-2">{{client.projectManager?.firstName + ' ' + client.projectManager?.lastName}}</span>
                         </td>
                         <td>
                             <div class="flex">
@@ -172,6 +173,7 @@
                                 optionValue="value"
                                 optionLabel="label"
                                 placeholder="Select the project manager"
+                                appendTo="body"
                                 styleClass="w-full"
                                 >
                         <ng-template pTemplate="item" let-pm >
@@ -182,6 +184,7 @@
                         </ng-template>
                     </p-dropdown>
                 </div>
+                <br>
             </ng-template>
 
             <ng-template pTemplate="footer">

@@ -1,0 +1,118 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <h5>Collaborators</h5>
+            <p-dataView #dv [value]="filteredCollaborators" [paginator]="true" [rows]="9" filterBy="name" [sortField]="sortField" [sortOrder]="sortOrder" layout="grid">
+                <ng-template pTemplate="header">
+                    <div class="flex flex-column md:flex-row md:justify-content-between gap-2">
+                        <!-- Dropdown to filter by role -->
+                        <p-dropdown [options]="roleOptions" [(ngModel)]="selectedRole" placeholder="Sort By Role" (onChange)="onFilterChange()"></p-dropdown>
+
+                        <!-- Filter by name (firstName + lastName) or by email -->
+                        <p-dropdown [options]="filterByOptions" [(ngModel)]="selectedFilterOption" placeholder="Filter By Name or Email" (onChange)="onFilterChange()"></p-dropdown>
+                        <span class="p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input type="search" pInputText placeholder="Search by Name or Email" (input)="onSearchChange( $event)">
+                        </span>
+                        <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
+                    </div>
+                </ng-template>
+
+                <ng-template let-collaborator pTemplate="listItem">
+                    <div class="col-12">
+                        <div class="flex flex-column md:flex-row align-items-center p-3 w-full">
+                            <img [src]="'assets/demo/images/user/' + collaborator?.image"  (error)="onImageError($event)" [alt]="collaborator?.lastName" class="my-4 md:my-0 w-9 md:w-10rem shadow-2 mr-5"/>
+                            <div class="flex-1 flex flex-column align-items-center text-center md:text-left">
+                                <div class="font-bold text-2xl">{{collaborator?.firstName}} {{collaborator?.lastName}}</div>
+                                <div class="mb-2">{{collaborator?.email}}</div>
+                                <div class="mb-2">
+                                    <i class="pi pi-phone mr-2"></i>
+                                    {{collaborator?.phoneNumber}}
+                                </div>
+                                <!-- Affichage des technologies -->
+                                <div *ngIf="collaborator?.technologies && collaborator?.technologies.length > 0" class="technologies-list ">
+                                    <div *ngFor="let tech of collaborator?.technologies" class="technology-badge">
+                                        {{tech.name}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex flex-row md:flex-column justify-content-between w-full md:w-auto align-items-center md:align-items-end mt-5 md:mt-0">
+                                <span [class]="'product-badge role-' + collaborator.role.toLowerCase()" >{{collaborator?.role}}</span>
+                                <br><br>
+                                <!-- Bouton pour gérer les compétences -->
+                                <div class="flex justify-content-center mt-3">
+                                    <p-button label="Manage Competences" icon="pi pi-cog" (click)="openManageCompetencesDialog(collaborator)"></p-button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+
+                <ng-template let-collaborator pTemplate="gridItem">
+                    <div class="col-12 md:col-4">
+                        <div style="padding: 10px;" class="card m-2  border-2 surface-border">
+                            <div class="card-header flex justify-content-between align-items-center mb-2">
+                                <div class="name">
+                                    <i class="pi pi-tag mr-2"></i>
+                                    <span class="font-semibold">{{collaborator?.firstName}} {{collaborator?.lastName}}</span>
+                                </div>
+                                <span [class]="'product-badge role-' + collaborator.role.toLowerCase()">
+                                    {{collaborator?.role}}
+                                </span>
+                            </div>
+                            <div class="flex flex-column align-items-center text-center mb-3">
+                                <img [src]="'assets/demo/images/user/' + collaborator?.image"  (error)="onImageError($event)" [alt]="collaborator?.lastName" class="w-6 shadow-2 my-3 mx-0"/>
+                                <div class="text-base font-bold">{{collaborator?.email}}</div>
+                                <div class="mb-3">
+                                    <i class="pi pi-phone mr-2"></i>
+                                    {{collaborator?.phoneNumber}}
+                                </div>
+                            </div>
+                            <!-- Affichage des technologies -->
+                            <div *ngIf="collaborator?.technologies && collaborator?.technologies.length > 0" class="technologies-list ">
+                                <div *ngFor="let tech of collaborator?.technologies" class="technology-badge">
+                                    {{tech.name}}
+                                </div>
+                            </div>
+                            <!-- Bouton pour gérer les compétences -->
+                            <div class="flex justify-content-center mt-3">
+                                <p-button label="Manage Competences" icon="pi pi-cog" (click)="openManageCompetencesDialog(collaborator)"></p-button>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+            </p-dataView>
+        </div>
+    </div>
+</div>
+
+<p-dialog  header="Manage Competences" [(visible)]="displayCompetencesDialog" [style]="{width: '50vw', height: '550px'}" [closable]="true">
+    <!-- Personnalisation de l'en-tête avec icône et texte -->
+    <ng-template pTemplate="header">
+        <div style="font-size: large; font-family: bold; font-weight: bold" class="flex align-items-center">
+            <i class="pi pi-cog mr-2"></i> <!-- Icône de paramètres -->
+            <span>Manage Competences</span>
+        </div>
+    </ng-template>
+    <div *ngIf="collaboratorToManage" class="card-header flex justify-content-between align-items-center mb-2">
+        <div class="name" >
+            <i class="pi pi-tag mr-2"></i>
+            <span class="font-semibold">{{collaboratorToManage?.firstName}} {{collaboratorToManage?.lastName}}</span>
+        </div>
+        <span [class]="'product-badge role-' + collaboratorToManage?.role">
+            {{collaboratorToManage?.role}}
+        </span>
+    </div>
+    <hr>
+    <br>
+    <div class="p-fluid field">
+        <label> Technologies</label>
+        <p-multiSelect [options]="allTechnologies" [(ngModel)]="selectedTechnologies" optionLabel="label" display="chip" placeholder="Select Technologies">
+        </p-multiSelect>
+    </div>
+    <p-footer>
+        <button type="button" pButton label="Cancel" icon="pi pi-times" (click)="closeDialog()"></button>
+        <button type="button" pButton label="Save" icon="pi pi-save" (click)="saveCompetences()"></button>
+    </p-footer>
+</p-dialog>
+

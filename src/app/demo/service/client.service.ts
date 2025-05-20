@@ -9,6 +9,8 @@ import {Observable} from "rxjs";
 })
 export class ClientService {
 
+    private readonly apiUrl = 'http://localhost:8082';
+
     constructor(private http: HttpClient) { }
     // getClients() {
     //     return this.http.get<any>('http://localhost:8082/clients/getAll')
@@ -18,48 +20,27 @@ export class ClientService {
     // }
 
     getClients(): Observable<Client[]> {
-        return this.http.get<Client[]>('http://localhost:8082/clients/getAll');
+        return this.http.get<Client[]>('http://localhost:8082/api/clients/getAll');
+    }
+
+    getClientsByDirector(directorId: number): Observable<Client[]> {
+        return this.http.get<Client[]>(
+            `${this.apiUrl}/api/directors/${directorId}/clients`
+        );
     }
 
     createClient(client: Client): Observable<Client> {
-        return this.http.post<Client>('http://localhost:8082/clients', client);
+        return this.http.post<Client>('http://localhost:8082/api/clients', client);
     }
 
     updateClient(client: Client): Observable<Client> {
-        return this.http.patch<Client>(`http://localhost:8082/clients/${client.id}`, client);
+        return this.http.patch<Client>(`http://localhost:8082/api/clients/${client.id}`, client);
     }
 
     deleteClient(id: number): Observable<any>{
-        return this.http.delete(`http://localhost:8082/clients/${id}`);
+        return this.http.delete(`http://localhost:8082/api/clients/${id}`);
     }
 
 
-    getProductsSmall() {
-        return this.http.get<any>('assets/demo/data/products-small.json')
-            .toPromise()
-            .then(res => res.data as Product[])
-            .then(data => data);
-    }
 
-
-    getProducts() {
-        return this.http.get<any>('assets/demo/data/products.json')
-            .toPromise()
-            .then(res => res.data as Product[])
-            .then(data => data);
-    }
-
-    getProductsMixed() {
-        return this.http.get<any>('assets/demo/data/products-mixed.json')
-            .toPromise()
-            .then(res => res.data as Product[])
-            .then(data => data);
-    }
-
-    getProductsWithOrdersSmall() {
-        return this.http.get<any>('assets/demo/data/products-orders-small.json')
-            .toPromise()
-            .then(res => res.data as Product[])
-            .then(data => data);
-    }
 }

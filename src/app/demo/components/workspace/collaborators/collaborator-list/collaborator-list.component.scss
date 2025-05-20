@@ -1,0 +1,58 @@
+.role-director {
+    background-color: #b3e4b6; /* Vert pour Admin */
+    color: rgba(52, 146, 6, 0.93);
+}
+
+.role-developer {
+    background-color: #d5b2ea; /* Bleu pour User */
+    color: rgba(101, 2, 228, 0.69);
+}
+
+.role-project_manager {
+    background-color: #e2cc93; /* Jaune pour Manager */
+    color: rgba(175, 63, 7, 0.93);
+}
+
+.role-other {
+    background-color: #F44336; /* Rouge pour Other */
+    color: white;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between; /* Séparer les éléments sur toute la largeur */
+    align-items: center; /* Aligner verticalement les éléments */
+}
+
+.name {
+    flex-grow: 1; /* Permet au nom de prendre l'espace disponible à gauche */
+}
+
+.product-badge {
+    margin-left: auto; /* Positionner le rôle à droite */
+}
+
+.card {
+    min-height: 400px; /* Hauteur minimale pour chaque carte */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Garantir l'espacement égal entre les éléments */
+}
+
+
+.technologies-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px; /* Espacement entre les badges */
+    margin-top: 10px;
+    justify-content: center;
+}
+
+.technology-badge {
+    background-color: #2196F3; /* Bleu pour les badges */
+    color: white;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+}

@@ -16,6 +16,7 @@ export interface Client {
     contactPhoneNumber?: string;
     startDate?: Date;
     endDateEstimate?: Date ;
+    directorId?: number;
     projectManagerId?: number;
     projectManager?: ProjectManager;
 }

@@ -13,6 +13,84 @@
     </button>
 
     <div #topbarmenu class="layout-topbar-menu" [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}">
+
+        <!-- ==== Dropdown Utilisateur ==== -->
+<!--        <ul class="layout-topbar-menu-list">-->
+<!--            <li class="layout-topbar-menu-item dropdown">-->
+<!--                <a class="p-link dropdown-toggle"-->
+<!--                   href="#"-->
+<!--                   id="userDropdown"-->
+<!--                   role="button"-->
+<!--                   data-bs-toggle="dropdown"-->
+<!--                   aria-expanded="false">-->
+<!--                    <i class="pi pi-user"></i>-->
+<!--                    <span *ngIf="profile; else loginTpl">{{ profile.username }}</span>-->
+<!--                    <ng-template #loginTpl>-->
+<!--                        Login-->
+<!--                    </ng-template>-->
+<!--                </a>-->
+<!--                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">-->
+<!--                    <li>-->
+<!--                        <a class="dropdown-item"-->
+<!--                           (click)="profile ? handleLogout() : handleLogin()">-->
+<!--                            {{ profile ? 'Logout' : 'Login' }}-->
+<!--                        </a>-->
+<!--                    </li>-->
+<!--                    <li><hr class="dropdown-divider"></li>-->
+<!--                    <li>-->
+<!--                        <a class="dropdown-item" routerLink="/profile">-->
+<!--                            Profile Settings-->
+<!--                        </a>-->
+<!--                    </li>-->
+<!--                </ul>-->
+<!--            </li>-->
+<!--        </ul>-->
+
+<!--        <a class="p-link layout-topbar-button"-->
+<!--           href="#"-->
+<!--           id="userDropdown"-->
+<!--           role="button"-->
+<!--           data-bs-toggle="dropdown"-->
+<!--           aria-expanded="false">-->
+<!--            <i class="pi pi-user"></i>-->
+<!--            <span *ngIf="profile; else loginTpl">{{ profile.username }}</span>-->
+<!--            <ng-template #loginTpl>-->
+<!--                Login-->
+<!--            </ng-template>-->
+<!--        </a>-->
+
+<!--        <a (click)="profile ? handleLogout() : handleLogin()" class="p-link layout-topbar-button">-->
+<!--            <i class="pi pi-fw pi-sign-out"></i>-->
+<!--&lt;!&ndash;            <span>Quit</span>&ndash;&gt;-->
+<!--            {{ profile ? 'Logout' : 'Login' }}-->
+<!--        </a>-->
+
+
+        <span class="p-link layout-topbar-button" *ngIf="profile"> {{ profile.username }} </span>
+
+        <!-- Quand l’utilisateur n’est pas connecté -->
+        <ng-template #loginTpl>
+            <button class="p-link layout-topbar-button"
+                    (click)="handleLogin()"
+                    title="Login"
+                    aria-label="Login">
+                <i class="pi pi-sign-in"></i>
+                <span>Login</span>
+            </button>
+        </ng-template>
+
+        <!-- Quand l’utilisateur est connecté -->
+        <ng-container *ngIf="profile; else loginTpl">
+            <button class="p-link layout-topbar-button"
+                    (click)="handleLogout()"
+                    title="Logout"
+                    aria-label="Logout">
+                <i class="pi pi-sign-out"></i>
+                <span>Logout</span>
+            </button>
+        </ng-container>
+
+
         <button class="p-link layout-topbar-button">
             <i class="pi pi-calendar"></i>
             <span>Calendar</span>
@@ -27,3 +105,29 @@
         </button>
     </div>
 </div>
+
+<style>
+    /* 1. Mettre les menus en ligne et centrer verticalement */
+    .layout-topbar-menu-list {
+        display: flex;
+        align-items: center;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    /* 2. Espace à droite pour chaque item */
+    .layout-topbar-menu-item {
+        margin-right: 1rem;
+        position: relative; /* pour le dropdown absolu */
+    }
+
+    /* 3. Ajuster la position native de la dropdown */
+    .layout-topbar-menu-item .dropdown-menu {
+        top: 100%;
+        left: auto;
+        right: 0;
+        margin-top: 0.5rem;
+    }
+
+</style>

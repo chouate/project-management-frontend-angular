@@ -4,8 +4,11 @@ import {Table} from "primeng/table";
 import {Client} from "../../../../api/client";
 import {ClientService} from "../../../../service/client.service";
 import {color} from "chart.js/helpers";
-import {forkJoin, Observable, of, reduce} from "rxjs";
+import {filter, forkJoin, Observable, of, reduce, switchMap} from "rxjs";
 import {HttpErrorResponse} from "@angular/common/http";
+import {DirectorService} from "../../../../service/director.service";
+import {AuthService} from "../../../../service/auth.service";
+import {User} from "../../../../api/user";
 
 @Component({
   selector: 'app-clients-list-v2',
@@ -14,6 +17,8 @@ import {HttpErrorResponse} from "@angular/common/http";
   providers: [MessageService]
 })
 export class ClientsListV2Component implements OnInit{
+    currentUser!: User;
+
     clientDialog: boolean = false;
 
     deleteClientDialog: boolean = false;
@@ -42,21 +47,43 @@ export class ClientsListV2Component implements OnInit{
 
     constructor(
               private clientService: ClientService,
-              private messageService: MessageService
-    ) { }
+              private messageService: MessageService,
+              private directorService: DirectorService,
+              private authService: AuthService,
+    ) {
+        this.authService.currentUser$
+            .pipe(filter(u => !!u))
+            .subscribe(u => this.currentUser = u!)
+    }
 
     ngOnInit() {
 
         // this.clientService.getClients().then(data => this.clients = data);
 
-        this.clientService.getClients().subscribe({
-          next: clients => {
-              this.clients = clients;
-              console.log('Clients reçus:', this.clients);
-          },
-          error: err => console.error('Erreur chargement clients', err)
-        });
+        // this.clientService.getClients().subscribe({
+        //   next: clients => {
+        //       this.clients = clients;
+        //       console.log('Clients reçus:', this.clients);
+        //   },
+        //   error: err => console.error('Erreur chargement clients', err)
+        // });
 
+        // 1) load the liste of clients for connected director
+        this.authService.currentUser$
+            .pipe(
+                filter(u => !!u),                                        // on attend un UserDTO non-null
+                switchMap(user =>                                       // puis on passe à l’appel HTTP
+                    this.clientService.getClientsByDirector(user.id)      // avec une nouvelle méthode
+                )
+            )
+            .subscribe({
+                next: clients => {
+                    this.clients = clients;
+                    console.log('Clients du director reçus :', this.clients);
+                },
+                error: err =>
+                    console.error('Erreur chargement clients par director', err)
+            });
         this.cols = [
             { field: 'id', header: 'Id' },
             { field: 'name', header: 'Name' },
@@ -73,21 +100,45 @@ export class ClientsListV2Component implements OnInit{
 
         ];
 
-        const mockPMs = [
-          {id: 1, firstName: 'Adnane', lastName: 'Tanan', email: '<EMAIL>'},
-          {id: 2, firstName: 'Taha', lastName: 'Daoui', email: '<EMAIL>'},
-          {id: 3, firstName: 'Mehdi', lastName: 'El Majdoub', email: '<EMAIL>'},
-          {id: 4, firstName: 'Nada', lastName: 'Ettouhami', email: '<EMAIL>'},
-          {id: 5, firstName: 'Yassine', lastName: 'Benani', email: '<EMAIL>'},
-          {id: 6, firstName: 'Ahmed', lastName: 'Benmahmoud', email: '<EMAIL>'},
-          {id: 7, firstName: 'Youness', lastName: 'Ezeouine', email: '<EMAIL>'},
-          {id: 8, firstName: 'Jamila', lastName: 'Touhami', email: '<EMAIL>'},
-        ]
-        this.listProjectManagers= of(mockPMs);
+        // const mockPMs = [
+        //   {id: 1, firstName: 'Adnane', lastName: 'Tanan', email: '<EMAIL>'},
+        //   {id: 2, firstName: 'Taha', lastName: 'Daoui', email: '<EMAIL>'},
+        //   {id: 3, firstName: 'Mehdi', lastName: 'El Majdoub', email: '<EMAIL>'},
+        //   {id: 4, firstName: 'Nada', lastName: 'Ettouhami', email: '<EMAIL>'},
+        //   {id: 5, firstName: 'Yassine', lastName: 'Benani', email: '<EMAIL>'},
+        //   {id: 6, firstName: 'Ahmed', lastName: 'Benmahmoud', email: '<EMAIL>'},
+        //   {id: 7, firstName: 'Youness', lastName: 'Ezeouine', email: '<EMAIL>'},
+        //   {id: 8, firstName: 'Jamila', lastName: 'Touhami', email: '<EMAIL>'},
+        // ]
+        // this.listProjectManagers= of(mockPMs);
 
-        this.listProjectManagers.subscribe(listPM =>{
-            this.projectManagers = listPM.map(pm => ({label: pm.firstName + ' ' + pm.lastName, value: pm.id}));
+        // this.directorService.getPMsByDirector(1).subscribe({
+        //     next: (pms) => {
+        //         this.projectManagers = pms.map(pm => ({
+        //             label: `${pm.firstName} ${pm.lastName}`,
+        //             value: pm.id
+        //         }));
+        //         console.log('PMs chargés pour director', 1, this.projectManagers);
+        //     },
+        //     error: (err) =>
+        //         console.error(`Erreur chargement PMs pour director ${1}`, err)
+        // });
+
+        this.authService.currentUser$.pipe(
+            filter(u => !!u),
+            switchMap(user  =>
+                this.directorService.getPMsByDirector(user.id)
+            )
+        ).subscribe(pms => {
+            this.projectManagers = pms.map(pm => ({
+                label: `${pm.firstName} ${pm.lastName}`,
+                value: pm.id
+            }));
         });
+
+        // this.listProjectManagers.subscribe(listPM =>{
+        //     this.projectManagers = listPM.map(pm => ({label: pm.firstName + ' ' + pm.lastName, value: pm.id}));
+        // });
 
     }
 
@@ -97,6 +148,8 @@ export class ClientsListV2Component implements OnInit{
         this.clientDialog = true;
         this.codeError = null; // ← Réinitialiser l’erreur au démarrage
         this.fieldErrors = null
+
+        this.client.directorId = this.currentUser.id;
     }
 
     deleteSelectedClients() {
@@ -264,6 +317,10 @@ export class ClientsListV2Component implements OnInit{
             return false;
         }
         return true;
+    }
+
+    onImageError(event: any) {
+        event.target.src = 'assets/demo/images/user/userDefault.png';
     }
 
 

@@ -17,6 +17,7 @@ import { AppLayoutComponent } from "./layout/app.layout.component";
                     { path: 'pages', loadChildren: () => import('./demo/components/pages/pages.module').then(m => m.PagesModule) },
                     { path: 'shared-demo', loadChildren: ()=> import('./demo/components/shared-demo/shared-demo.module').then(m => m.SharedDemoModule)},
                     { path: 'clients',   loadChildren: () => import('./demo/components/workspace/clients/clients.module').then(m => m.ClientsModule) },
+                    { path: 'collaborators', loadChildren: () => import('./demo/components/workspace/collaborators/collaborators.module').then(m => m.CollaboratorsModule) },
 
                 ]
             },
