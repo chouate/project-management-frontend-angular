@@ -1,10 +1,6 @@
-// interface InventoryStatus {
-//     label: string;
-//     value: string;
-// }
 interface Technologie{
     name:string;
-    ///description:string;
+    //description:string;
 }
 export interface User {
     id?: number;
@@ -15,6 +11,6 @@ export interface User {
     phoneNumber?: string;
     image?: string;
     role?: string;
-    //inventoryStatus?: InventoryStatus;
     technologies?: Technologie[];
+    technologyList?:Technologie[];
 }

@@ -1,7 +1,8 @@
 <div class="grid">
     <div class="col-12">
         <div class="card">
-            <h5>Collaborators</h5>
+            <p-toast></p-toast>
+            <h5>Collaborators [{{collaborators.length}}]</h5>
             <p-dataView #dv [value]="filteredCollaborators" [paginator]="true" [rows]="9" filterBy="name" [sortField]="sortField" [sortOrder]="sortOrder" layout="grid">
                 <ng-template pTemplate="header">
                     <div class="flex flex-column md:flex-row md:justify-content-between gap-2">
@@ -25,7 +26,7 @@
                             <div class="flex-1 flex flex-column align-items-center text-center md:text-left">
                                 <div class="font-bold text-2xl">{{collaborator?.firstName}} {{collaborator?.lastName}}</div>
                                 <div class="mb-2">{{collaborator?.email}}</div>
-                                <div class="mb-2">
+                                <div *ngIf="collaborator?.phoneNumber" class="mb-2">
                                     <i class="pi pi-phone mr-2"></i>
                                     {{collaborator?.phoneNumber}}
                                 </div>
@@ -41,7 +42,7 @@
                                 <br><br>
                                 <!-- Bouton pour gérer les compétences -->
                                 <div class="flex justify-content-center mt-3">
-                                    <p-button label="Manage Competences" icon="pi pi-cog" (click)="openManageCompetencesDialog(collaborator)"></p-button>
+                                    <p-button *ngIf="currentUserRole !== 'DEVELOPER' " label="Manage Skills" icon="pi pi-cog" (click)="openManageCompetencesDialog(collaborator)"></p-button>
                                 </div>
                             </div>
                         </div>
@@ -63,8 +64,8 @@
                             <div class="flex flex-column align-items-center text-center mb-3">
                                 <img [src]="'assets/demo/images/user/' + collaborator?.image"  (error)="onImageError($event)" [alt]="collaborator?.lastName" class="w-6 shadow-2 my-3 mx-0"/>
                                 <div class="text-base font-bold">{{collaborator?.email}}</div>
-                                <div class="mb-3">
-                                    <i class="pi pi-phone mr-2"></i>
+                                <div  class="mb-3">
+                                    <i *ngIf="collaborator?.phoneNumber" class="pi pi-phone mr-2"></i>
                                     {{collaborator?.phoneNumber}}
                                 </div>
                             </div>
@@ -74,9 +75,9 @@
                                     {{tech.name}}
                                 </div>
                             </div>
-                            <!-- Bouton pour gérer les compétences -->
+                            <!-- Bouton pour gérer les compétences *ngIf="currentUserRole !== 'DEVELOPER' " -->
                             <div class="flex justify-content-center mt-3">
-                                <p-button label="Manage Competences" icon="pi pi-cog" (click)="openManageCompetencesDialog(collaborator)"></p-button>
+                                <p-button *ngIf="currentUserRole !== 'DEVELOPER' " label="Manage Skills" icon="pi pi-cog" (click)="openManageCompetencesDialog(collaborator)"></p-button>
                             </div>
                         </div>
                     </div>
@@ -91,7 +92,7 @@
     <ng-template pTemplate="header">
         <div style="font-size: large; font-family: bold; font-weight: bold" class="flex align-items-center">
             <i class="pi pi-cog mr-2"></i> <!-- Icône de paramètres -->
-            <span>Manage Competences</span>
+            <span>Manage Skills</span>
         </div>
     </ng-template>
     <div *ngIf="collaboratorToManage" class="card-header flex justify-content-between align-items-center mb-2">
@@ -99,7 +100,7 @@
             <i class="pi pi-tag mr-2"></i>
             <span class="font-semibold">{{collaboratorToManage?.firstName}} {{collaboratorToManage?.lastName}}</span>
         </div>
-        <span [class]="'product-badge role-' + collaboratorToManage?.role">
+        <span *ngIf="collaboratorToManage?.role" [class]="'product-badge role-' + collaboratorToManage?.role.toLowerCase()">
             {{collaboratorToManage?.role}}
         </span>
     </div>
@@ -107,7 +108,8 @@
     <br>
     <div class="p-fluid field">
         <label> Technologies</label>
-        <p-multiSelect [options]="allTechnologies" [(ngModel)]="selectedTechnologies" optionLabel="label" display="chip" placeholder="Select Technologies">
+<!--        [disabled]="currentUserRole === 'DEVELOPER'"-->
+        <p-multiSelect  [options]="allTechnologies" [(ngModel)]="selectedTechnologies" optionLabel="label" display="chip" placeholder="Select Technologies">
         </p-multiSelect>
     </div>
     <p-footer>

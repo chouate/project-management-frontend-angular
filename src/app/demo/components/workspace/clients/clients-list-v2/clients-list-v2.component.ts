@@ -58,7 +58,6 @@ export class ClientsListV2Component implements OnInit{
 
     ngOnInit() {
 
-        // this.clientService.getClients().then(data => this.clients = data);
 
         // this.clientService.getClients().subscribe({
         //   next: clients => {
@@ -68,7 +67,7 @@ export class ClientsListV2Component implements OnInit{
         //   error: err => console.error('Erreur chargement clients', err)
         // });
 
-        // 1) load the liste of clients for connected director
+        // 1) load the liste of clients for the connected director
         this.authService.currentUser$
             .pipe(
                 filter(u => !!u),                                        // on attend un UserDTO non-null

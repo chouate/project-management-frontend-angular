@@ -19,4 +19,8 @@ export class AuthService  {
             tap(user => this.currentUser$.next(user))
         );
     }
+
+    getUserRole(): string {
+        return this.currentUser$.getValue()?.role || '';
+    }
 }

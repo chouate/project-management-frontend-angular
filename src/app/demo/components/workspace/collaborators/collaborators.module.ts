@@ -15,6 +15,7 @@ import {FormsModule} from "@angular/forms";
 import {MultiSelectModule} from "primeng/multiselect";
 import {ListboxModule} from "primeng/listbox";
 import {DialogModule} from "primeng/dialog";
+import {ToastModule} from "primeng/toast";
 
 
 @NgModule({
@@ -35,7 +36,8 @@ import {DialogModule} from "primeng/dialog";
         FormsModule,
         MultiSelectModule,
         ListboxModule,
-        DialogModule
+        DialogModule,
+        ToastModule
     ]
 })
 export class CollaboratorsModule { }
