@@ -1,0 +1,258 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <h5>Filter Menu</h5>
+            <p-table
+                #dt1
+                [value]="projects"
+                [scrollable]="true"
+                scrollHeight="500px"
+
+                scrollDirection="both"
+                dataKey="id"
+                [rows]="10"
+                [loading]="loading"
+                [rowHover]="true"
+                styleClass="p-datatable-gridlines"
+                [paginator]="true"
+                [globalFilterFields]="['name','country.name','representative.name','status']"
+                responsiveLayout="scroll"
+            >
+                <ng-template pTemplate="caption">
+                    <div class="flex justify-content-between flex-column sm:flex-row">
+                        <!-- Group for Clear and Add button side by side with space in between -->
+                        <div class="flex gap-2">
+                            <button pButton label="Clear" class="p-button-outlined" icon="pi pi-filter-slash"
+                                    (click)="clear(dt1)"></button>
+                            <button pButton label="New" class="p-button-outlined" icon="pi pi-plus"
+                                    (click)="add()"></button>
+                            <button *ngIf="multipleSelectionSwitch" pButton label="Remove" class="p-button-outlined" icon="pi pi-trash"
+                                    (click)="confirmRemove()" [disabled]="true"></button>
+                        </div>
+                        <span class="p-input-icon-left mb-2">
+							<i class="pi pi-search"></i>
+							<input pInputText type="text" #filter (input)="onGlobalFilter(dt1, $event)" placeholder="Search Keyword" class="w-full"/>
+						</span>
+                    </div>
+                </ng-template>
+
+<!--                <ng-template pTemplate="frozenheader">-->
+<!--                    <tr>-->
+<!--                        <th style="min-width: 12rem">-->
+<!--                            <div class="flex justify-content-between align-items-center">-->
+<!--                                Project Name-->
+<!--                                <p-columnFilter type="text" field="name" display="menu" placeholder="Search by Project name"></p-columnFilter>-->
+<!--                            </div>-->
+<!--                        </th>-->
+<!--                    </tr>-->
+<!--                </ng-template>-->
+
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="min-width: 20rem; " pFrozenColumn >
+                            <div class="flex justify-content-between align-items-center">
+                                Project Name
+                                <p-columnFilter type="text" field="name" display="menu" placeholder="Search by Project name"></p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="min-width: 5rem">
+                            <div class="flex justify-content-between align-items-center">
+                                %
+                                <p-columnFilter type="numeric" field="progress" display="menu" ></p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="min-width: 12rem">
+                            <div class="flex justify-content-between align-items-center">
+                                Tasks
+                                <!--                                <p-columnFilter field="progress" matchMode="between" display="menu" [showMatchModes]="false" [showOperator]="false" [showAddButton]="false">-->
+                                <!--                                    <ng-template pTemplate="filter" let-filter="filterCallback">-->
+                                <!--                                        <p-slider [ngModel]="progressValues" [range]="true" (onSlideEnd)="filter($event.values)" styleClass="m-3" [style]="{'min-width': '12rem'}" ></p-slider>-->
+                                <!--                                        <div class="flex align-items-center justify-content-between px-2">-->
+                                <!--                                            <span>{{progressValues[0]}}</span>-->
+                                <!--                                            <span>{{progressValues[1]}}</span>-->
+                                <!--                                        </div>-->
+                                <!--                                    </ng-template>-->
+                                <!--                                </p-columnFilter>-->
+                            </div>
+                        </th>
+                        <th style="min-width: 12rem">
+                            <div class="flex justify-content-between align-items-center">
+                                Project Status
+                                <p-columnFilter field="status" matchMode="equals" display="menu">
+                                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                        <p-dropdown [ngModel]="value" [options]="projectStatuses" (onChange)="filter($event.value)" placeholder="Any" [style]="{'min-width': '12rem'}" >
+                                            <ng-template let-option pTemplate="item">
+                                                <span [class]="'customer-badge status-' + option.value">{{option.label}}</span>
+                                            </ng-template>
+                                        </p-dropdown>
+                                    </ng-template>
+                                </p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="min-width: 12rem">
+                            <div class="flex justify-content-between align-items-center">
+                                Client
+                                <p-columnFilter type="text" field="client.name" display="menu" placeholder="Search by client name"></p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="min-width: 30rem">
+                            <div class="flex justify-content-between align-items-center">
+                                Description
+                                <p-columnFilter type="text" field="name" display="menu" placeholder="Search by Project name"></p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="min-width: 10rem">
+                            <div class="flex justify-content-between align-items-center">
+                                Phase
+                                <p-columnFilter field="phase.name" matchMode="equals" display="menu">
+                                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                        <p-dropdown [ngModel]="value" [options]="phases" (onChange)="filter($event.value)" placeholder="Any" [style]="{'min-width': '12rem'}" >
+                                            <ng-template let-option pTemplate="item">
+                                                <span [class]="'customer-badge phase-' + option.value.toLowerCase()">{{option.label}}</span>
+                                            </ng-template>
+                                        </p-dropdown>
+                                    </ng-template>
+                                </p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="min-width: 10rem">
+                            <div class="flex justify-content-between align-items-center">
+                                Phase Status
+                                <p-columnFilter field="phase.phaseStatus" matchMode="equals" display="menu">
+                                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                        <p-dropdown [ngModel]="value" [options]="phaseStatuses" (onChange)="filter($event.value)" placeholder="Any" [style]="{'min-width': '12rem'}" >
+                                            <ng-template let-option pTemplate="item">
+                                                <span [class]="'customer-badge ph   phaseStatus-' + option.value">{{option.label}}</span>
+                                            </ng-template>
+                                        </p-dropdown>
+                                    </ng-template>
+                                </p-columnFilter>
+                            </div>
+                        </th>
+
+                        <th style="min-width: 10rem">
+                            <div class="flex justify-content-between align-items-center">
+                                Start Date
+                                <p-columnFilter type="date" field="startDate" display="menu" placeholder="mm/dd/yyyy"></p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="min-width: 10rem">
+                            <div class="flex justify-content-between align-items-center">
+                                End Date
+                                <p-columnFilter type="date" field="endDate" display="menu" placeholder="mm/dd/yyyy"></p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="min-width: 10rem">
+                            <div class="flex justify-content-between align-items-center">
+                                Delivery Date
+                                <p-columnFilter type="date" field="deliveryDate" display="menu" placeholder="mm/dd/yyyy"></p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="min-width: 10rem">
+                            <div class="flex justify-content-between align-items-center">
+                                Actual Work Days
+                                <p-columnFilter type="numeric" field="actualWorkDays" display="menu" ></p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="min-width: 10rem">
+                            <div class="flex justify-content-between align-items-center">
+                                Estimated Work Days
+                                <p-columnFilter type="numeric" field="estimatedWorkDays" display="menu" ></p-columnFilter>
+                            </div>
+                        </th>
+                    </tr>
+                </ng-template>
+
+<!--                <ng-template pTemplate="frozenheader">-->
+<!--                    <tr>-->
+<!--                        <th style="min-width: 12rem">-->
+<!--                            <div class="flex justify-content-between align-items-center">-->
+<!--                                Project Name-->
+<!--                                <p-columnFilter type="text" field="name" display="menu" placeholder="Search by Project name"></p-columnFilter>-->
+<!--                            </div>-->
+<!--                        </th>-->
+<!--                    </tr>-->
+<!--                </ng-template>-->
+
+                <ng-template pTemplate="body" let-project>
+                    <tr>
+                        <td class="font-bold " pFrozenColumn>
+                            <div class="flex align-items-center justify-content-between gap-2">
+                                <span>{{project.name}}</span>
+                                <button pButton
+                                        type="button"
+                                        label="Access Project"
+                                        class="p-button-text p-button-sm project-access-btn"
+                                        (click)="accessProject(project)">
+                                </button>
+                            </div>
+                        </td>
+                        <td>
+                            {{project.progress}} %
+                        </td>
+                        <td style="overflow: hidden;">
+                            <div class="flex align-items-center justify-content-between" style="min-width: 0rem;">
+                                <span title="Closed Tasks" style="cursor: pointer;" class="text-green-600 font-semibold">{{ getClosedTasksCount(project) }}</span>
+                                <div style="position: relative; padding: 2px; flex: 1; z-index: 0;" class="progress-container">
+                                    <p-progressBar [value]="getTaskProgress(project)" [showValue]="true" [style]="{'height': '0.8rem', 'font-size': '0.7rem', 'font-weight': 'bold'}"></p-progressBar>
+                                </div>
+                                <span title="Open Tasks" style="cursor: pointer;" class="text-red-600 font-semibold">{{ getOpenTasksCount(project) }}</span>
+                            </div>
+                        </td>
+
+                        <td *ngIf="project.status">
+                            <span [class]="'customer-badge status-' + project?.status.toLowerCase()">{{project.status}}</span>
+                        </td>
+                        <td>
+                            <span class="font-bold">{{ project.client?.name }}</span><br>
+                            <small class="text-sm text-muted">{{ project.client?.code }}</small>
+                        </td>
+                        <td>
+                            {{project.description}}
+                        </td>
+                        <td [class]="'phase-' +project.phase?.name.toLowerCase().replace(' ', '_')" *ngIf="project.phase?.name">
+                            <span >
+                                {{ project.phase?.name.replace('_',' ') }}
+                            </span>
+                        </td>
+                        <td *ngIf="project.phase?.phaseStatus">
+                          <span [class]="'customer-badge phaseStatus-' + project.phase?.phaseStatus?.toLowerCase()">
+                            {{ project.phase?.phaseStatus }}
+                          </span>
+                        </td>
+
+                        <td>
+                            {{project.startDate | date: 'MM/dd/yyyy'}}
+                        </td>
+                        <td>
+                            {{project.endDate | date: 'MM/dd/yyyy'}}
+                        </td>
+                        <td>
+                            {{project.deliveryDate | date: 'MM/dd/yyyy'}}
+                        </td>
+                        <td>
+                            {{project.actualWorkDays }} days
+                        </td>
+                        <td>
+                            {{project.estimatedWorkDays }} days
+                        </td>
+
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="8">No Projects found.</td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="loadingbody">
+                    <tr>
+                        <td colspan="8">Loading projects data. Please wait.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+    </div>
+
+
+</div>

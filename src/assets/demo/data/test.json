@@ -1,0 +1,775 @@
+{
+    "data" : [
+        {
+            "id": 1,
+            "name": "Migration HPS V2",
+            "description": "Migration du cœur de système vers la version 2.",
+            "status": "TO_COME",
+            "progress": 75,
+            "startDate": "2024-01-25",
+            "endDate": "2024-06-25",
+            "createAt": "2024-01-01",
+            "deliveryDate": "2024-06-15",
+            "estimatedWorkDays": 120,
+            "actualWorkDays": 95,
+            "lastModified": "2024-05-20",
+
+            "client": {
+                "id": 10,
+                "name": "Attijariwafa Bank",
+                "code": "AWB01",
+                "contactEmail": "contact@attijari.ma",
+                "contactName": "Mme Khadija El Fassi",
+                "contactPhoneNumber": "+212612345678",
+                "activityDomain": "Banque",
+                "startDate": "2023-12-01",
+                "endDateEstimate": "2024-12-01"
+            },
+
+            "phase": {
+                "id": 3,
+                "name": "Development",
+                "phaseStatus": "IN_PROGRESS"
+            },
+
+            "tasks": [
+                {
+                    "id": 101,
+                    "description": "Mise en place du backend",
+                    "startDate": "2024-01-10",
+                    "endDate": "2024-02-15",
+                    "dueDate": "2024-02-20",
+                    "assignmentRate": 80,
+                    "estimatedWorkDays": 25,
+                    "actualWorkDays": 20,
+                    "status": "IN PROGRESS",
+                    "priority": "High",
+                    "progress": 85
+                },
+                {
+                    "id": 101,
+                    "description": "Mise en place du backend",
+                    "startDate": "2024-01-10",
+                    "endDate": "2024-02-15",
+                    "dueDate": "2024-02-20",
+                    "assignmentRate": 80,
+                    "estimatedWorkDays": 25,
+                    "actualWorkDays": 20,
+                    "status": "TO_COME",
+                    "priority": "High",
+                    "progress": 85
+                },
+                {
+                    "id": 101,
+                    "description": "Mise en place du backend",
+                    "startDate": "2024-01-10",
+                    "endDate": "2024-02-15",
+                    "dueDate": "2024-02-20",
+                    "assignmentRate": 80,
+                    "estimatedWorkDays": 25,
+                    "actualWorkDays": 20,
+                    "status": "IN PROGRESS",
+                    "priority": "High",
+                    "progress": 85
+                },
+                {
+                    "id": 102,
+                    "description": "Intégration du frontend",
+                    "startDate": "2024-02-16",
+                    "endDate": "2024-03-10",
+                    "dueDate": "2024-03-15",
+                    "assignmentRate": 100,
+                    "estimatedWorkDays": 20,
+                    "actualWorkDays": 22,
+                    "status": "COMPLETED",
+                    "priority": "Medium",
+                    "progress": 100
+                }
+            ]
+        },
+        {
+            "id": 1,
+            "name": "Migration HPS V2",
+            "description": "Migration du cœur de système vers la version 2.",
+            "status": "IN_PROGRESS",
+            "progress": 75,
+            "startDate": "2024-01-25",
+            "endDate": "2024-06-25",
+            "createAt": "2024-01-01",
+            "deliveryDate": "2024-06-15",
+            "estimatedWorkDays": 120,
+            "actualWorkDays": 95,
+            "lastModified": "2024-05-20",
+
+            "client": {
+                "id": 10,
+                "name": "Attijariwafa Bank",
+                "code": "AWB01",
+                "contactEmail": "contact@attijari.ma",
+                "contactName": "Mme Khadija El Fassi",
+                "contactPhoneNumber": "+212612345678",
+                "activityDomain": "Banque",
+                "startDate": "2023-12-01",
+                "endDateEstimate": "2024-12-01"
+            },
+
+            "phase": {
+                "id": 3,
+                "name": "study",
+                "phaseStatus": "TO_COME"
+            },
+
+            "tasks": [
+                {
+                    "id": 101,
+                    "description": "Mise en place du backend",
+                    "startDate": "2024-01-10",
+                    "endDate": "2024-02-15",
+                    "dueDate": "2024-02-20",
+                    "assignmentRate": 80,
+                    "estimatedWorkDays": 25,
+                    "actualWorkDays": 20,
+                    "status": "IN PROGRESS",
+                    "priority": "High",
+                    "progress": 85
+                },
+                {
+                    "id": 101,
+                    "description": "Mise en place du backend",
+                    "startDate": "2024-01-10",
+                    "endDate": "2024-02-15",
+                    "dueDate": "2024-02-20",
+                    "assignmentRate": 80,
+                    "estimatedWorkDays": 25,
+                    "actualWorkDays": 20,
+                    "status": "TO_COME",
+                    "priority": "High",
+                    "progress": 85
+                },
+                {
+                    "id": 102,
+                    "description": "Intégration du frontend",
+                    "startDate": "2024-02-16",
+                    "endDate": "2024-03-10",
+                    "dueDate": "2024-03-15",
+                    "assignmentRate": 100,
+                    "estimatedWorkDays": 20,
+                    "actualWorkDays": 22,
+                    "status": "COMPLETED",
+                    "priority": "Medium",
+                    "progress": 100
+                }
+            ]
+        },
+        {
+            "id": 1,
+            "name": "Migration HPS V2",
+            "description": "Migration du cœur de système vers la version 2.",
+            "status": "PENDING",
+            "progress": 75,
+            "startDate": "2024-01-25",
+            "endDate": "2024-06-25",
+            "createAt": "2024-01-01",
+            "deliveryDate": "2024-06-15",
+            "estimatedWorkDays": 120,
+            "actualWorkDays": 95,
+            "lastModified": "2024-05-20",
+
+            "client": {
+                "id": 10,
+                "name": "Attijariwafa Bank",
+                "code": "AWB01",
+                "contactEmail": "contact@attijari.ma",
+                "contactName": "Mme Khadija El Fassi",
+                "contactPhoneNumber": "+212612345678",
+                "activityDomain": "Banque",
+                "startDate": "2023-12-01",
+                "endDateEstimate": "2024-12-01"
+            },
+
+            "phase": {
+                "id": 3,
+                "name": "workload_estimation",
+                "phaseStatus": "PENDING_VALIDATION"
+            },
+
+            "tasks": [
+                {
+                    "id": 101,
+                    "description": "Mise en place du backend",
+                    "startDate": "2024-01-10",
+                    "endDate": "2024-02-15",
+                    "dueDate": "2024-02-20",
+                    "assignmentRate": 80,
+                    "estimatedWorkDays": 25,
+                    "actualWorkDays": 20,
+                    "status": "IN PROGRESS",
+                    "priority": "High",
+                    "progress": 85
+                },
+                {
+                    "id": 102,
+                    "description": "Intégration du frontend",
+                    "startDate": "2024-02-16",
+                    "endDate": "2024-03-10",
+                    "dueDate": "2024-03-15",
+                    "assignmentRate": 100,
+                    "estimatedWorkDays": 20,
+                    "actualWorkDays": 22,
+                    "status": "IN PROGRESS",
+                    "priority": "Medium",
+                    "progress": 100
+                }
+            ]
+        },
+        {
+            "id": 1,
+            "name": "Migration HPS V2",
+            "description": "Migration du cœur de système vers la version 2.",
+            "status": "COMPLETED",
+            "progress": 75,
+            "startDate": "2024-01-25",
+            "endDate": "2024-06-25",
+            "createAt": "2024-01-01",
+            "deliveryDate": "2024-06-15",
+            "estimatedWorkDays": 120,
+            "actualWorkDays": 95,
+            "lastModified": "2024-05-20",
+
+            "client": {
+                "id": 10,
+                "name": "Attijariwafa Bank",
+                "code": "AWB01",
+                "contactEmail": "contact@attijari.ma",
+                "contactName": "Mme Khadija El Fassi",
+                "contactPhoneNumber": "+212612345678",
+                "activityDomain": "Banque",
+                "startDate": "2023-12-01",
+                "endDateEstimate": "2024-12-01"
+            },
+
+            "phase": {
+                "id": 3,
+                "name": "unit_testing",
+                "phaseStatus": "COMPLETED"
+            },
+
+            "tasks": [
+                {
+                    "id": 101,
+                    "description": "Mise en place du backend",
+                    "startDate": "2024-01-10",
+                    "endDate": "2024-02-15",
+                    "dueDate": "2024-02-20",
+                    "assignmentRate": 80,
+                    "estimatedWorkDays": 25,
+                    "actualWorkDays": 20,
+                    "status": "TO_COME",
+                    "priority": "High",
+                    "progress": 85
+                },
+                {
+                    "id": 102,
+                    "description": "Intégration du frontend",
+                    "startDate": "2024-02-16",
+                    "endDate": "2024-03-10",
+                    "dueDate": "2024-03-15",
+                    "assignmentRate": 100,
+                    "estimatedWorkDays": 20,
+                    "actualWorkDays": 22,
+                    "status": "TO_COME",
+                    "priority": "Medium",
+                    "progress": 100
+                }
+            ]
+        },
+        {
+            "id": 1,
+            "name": "Migration HPS V2",
+            "description": "Migration du cœur de système vers la version 2.",
+            "status": "CLOSED",
+            "progress": 75,
+            "startDate": "2024-01-25",
+            "endDate": "2024-06-25",
+            "createAt": "2024-01-01",
+            "deliveryDate": "2024-06-15",
+            "estimatedWorkDays": 120,
+            "actualWorkDays": 95,
+            "lastModified": "2024-05-20",
+
+            "client": {
+                "id": 10,
+                "name": "Attijariwafa Bank",
+                "code": "AWB01",
+                "contactEmail": "contact@attijari.ma",
+                "contactName": "Mme Khadija El Fassi",
+                "contactPhoneNumber": "+212612345678",
+                "activityDomain": "Banque",
+                "startDate": "2023-12-01",
+                "endDateEstimate": "2024-12-01"
+            },
+
+            "phase": {
+                "id": 3,
+                "name": "testing_with_client",
+                "phaseStatus": "IN_PROGRESS"
+            },
+
+            "tasks": [
+                {
+                    "id": 101,
+                    "description": "Mise en place du backend",
+                    "startDate": "2024-01-10",
+                    "endDate": "2024-02-15",
+                    "dueDate": "2024-02-20",
+                    "assignmentRate": 80,
+                    "estimatedWorkDays": 25,
+                    "actualWorkDays": 20,
+                    "status": "COMPLETED",
+                    "priority": "High",
+                    "progress": 85
+                },
+                {
+                    "id": 102,
+                    "description": "Intégration du frontend",
+                    "startDate": "2024-02-16",
+                    "endDate": "2024-03-10",
+                    "dueDate": "2024-03-15",
+                    "assignmentRate": 100,
+                    "estimatedWorkDays": 20,
+                    "actualWorkDays": 22,
+                    "status": "TO_COME",
+                    "priority": "Medium",
+                    "progress": 100
+                }
+            ]
+        },
+        {
+            "id": 1,
+            "name": "Migration HPS V2",
+            "description": "Migration du cœur de système vers la version 2.",
+            "status": "TO_COME",
+            "progress": 75,
+            "startDate": "2024-01-25",
+            "endDate": "2024-06-25",
+            "createAt": "2024-01-01",
+            "deliveryDate": "2024-06-15",
+            "estimatedWorkDays": 120,
+            "actualWorkDays": 95,
+            "lastModified": "2024-05-20",
+
+            "client": {
+                "id": 10,
+                "name": "Attijariwafa Bank",
+                "code": "AWB01",
+                "contactEmail": "contact@attijari.ma",
+                "contactName": "Mme Khadija El Fassi",
+                "contactPhoneNumber": "+212612345678",
+                "activityDomain": "Banque",
+                "startDate": "2023-12-01",
+                "endDateEstimate": "2024-12-01"
+            },
+
+            "phase": {
+                "id": 3,
+                "name": "production_deployment",
+                "phaseStatus": "TO_COME"
+            },
+
+            "tasks": [
+                {
+                    "id": 101,
+                    "description": "Mise en place du backend",
+                    "startDate": "2024-01-10",
+                    "endDate": "2024-02-15",
+                    "dueDate": "2024-02-20",
+                    "assignmentRate": 80,
+                    "estimatedWorkDays": 25,
+                    "actualWorkDays": 20,
+                    "status": "IN PROGRESS",
+                    "priority": "High",
+                    "progress": 85
+                },
+                {
+                    "id": 102,
+                    "description": "Intégration du frontend",
+                    "startDate": "2024-02-16",
+                    "endDate": "2024-03-10",
+                    "dueDate": "2024-03-15",
+                    "assignmentRate": 100,
+                    "estimatedWorkDays": 20,
+                    "actualWorkDays": 22,
+                    "status": "TO_COME",
+                    "priority": "Medium",
+                    "progress": 100
+                }
+            ]
+        },
+        {
+            "id": 1,
+            "name": "Migration HPS V2",
+            "description": "Migration du cœur de système vers la version 2.",
+            "status": "TO_COME",
+            "progress": 75,
+            "startDate": "2024-01-25",
+            "endDate": "2024-06-25",
+            "createAt": "2024-01-01",
+            "deliveryDate": "2024-06-15",
+            "estimatedWorkDays": 120,
+            "actualWorkDays": 95,
+            "lastModified": "2024-05-20",
+
+            "client": {
+                "id": 10,
+                "name": "Attijariwafa Bank",
+                "code": "AWB01",
+                "contactEmail": "contact@attijari.ma",
+                "contactName": "Mme Khadija El Fassi",
+                "contactPhoneNumber": "+212612345678",
+                "activityDomain": "Banque",
+                "startDate": "2023-12-01",
+                "endDateEstimate": "2024-12-01"
+            },
+
+            "phase": {
+                "id": 3,
+                "name": "Development",
+                "phaseStatus": "IN_PROGRESS"
+            },
+
+            "tasks": [
+                {
+                    "id": 101,
+                    "description": "Mise en place du backend",
+                    "startDate": "2024-01-10",
+                    "endDate": "2024-02-15",
+                    "dueDate": "2024-02-20",
+                    "assignmentRate": 80,
+                    "estimatedWorkDays": 25,
+                    "actualWorkDays": 20,
+                    "status": "COMPLETED",
+                    "priority": "High",
+                    "progress": 85
+                },
+                {
+                    "id": 102,
+                    "description": "Intégration du frontend",
+                    "startDate": "2024-02-16",
+                    "endDate": "2024-03-10",
+                    "dueDate": "2024-03-15",
+                    "assignmentRate": 100,
+                    "estimatedWorkDays": 20,
+                    "actualWorkDays": 22,
+                    "status": "COMPLETED",
+                    "priority": "Medium",
+                    "progress": 100
+                }
+            ]
+        },
+        {
+            "id": 1,
+            "name": "GAB transaction",
+            "description": "Migration du cœur de système vers la version 2.",
+            "status": "IN_PROGRESS",
+            "progress": 75,
+            "startDate": "2024-01-25",
+            "endDate": "2024-06-25",
+            "createAt": "2024-01-01",
+            "deliveryDate": "2024-06-15",
+            "estimatedWorkDays": 120,
+            "actualWorkDays": 95,
+            "lastModified": "2024-05-20",
+
+            "client": {
+                "id": 10,
+                "name": "Attijariwafa Bank",
+                "code": "AWB01",
+                "contactEmail": "contact@attijari.ma",
+                "contactName": "Mme Khadija El Fassi",
+                "contactPhoneNumber": "+212612345678",
+                "activityDomain": "Banque",
+                "startDate": "2023-12-01",
+                "endDateEstimate": "2024-12-01"
+            },
+
+            "phase": {
+                "id": 3,
+                "name": "study",
+                "phaseStatus": "TO_COME"
+            },
+
+            "tasks": [
+                {
+                    "id": 101,
+                    "description": "Mise en place du backend",
+                    "startDate": "2024-01-10",
+                    "endDate": "2024-02-15",
+                    "dueDate": "2024-02-20",
+                    "assignmentRate": 80,
+                    "estimatedWorkDays": 25,
+                    "actualWorkDays": 20,
+                    "status": "IN PROGRESS",
+                    "priority": "High",
+                    "progress": 85
+                },
+                {
+                    "id": 102,
+                    "description": "Intégration du frontend",
+                    "startDate": "2024-02-16",
+                    "endDate": "2024-03-10",
+                    "dueDate": "2024-03-15",
+                    "assignmentRate": 100,
+                    "estimatedWorkDays": 20,
+                    "actualWorkDays": 22,
+                    "status": "IN PROGRESS",
+                    "priority": "Medium",
+                    "progress": 100
+                }
+            ]
+        },
+        {
+            "id": 1,
+            "name": "Migration HPS V2",
+            "description": "Migration du cœur de système vers la version 2.",
+            "status": "PENDING",
+            "progress": 75,
+            "startDate": "2024-01-25",
+            "endDate": "2024-06-25",
+            "createAt": "2024-01-01",
+            "deliveryDate": "2024-06-15",
+            "estimatedWorkDays": 120,
+            "actualWorkDays": 95,
+            "lastModified": "2024-05-20",
+
+            "client": {
+                "id": 10,
+                "name": "Attijariwafa Bank",
+                "code": "AWB01",
+                "contactEmail": "contact@attijari.ma",
+                "contactName": "Mme Khadija El Fassi",
+                "contactPhoneNumber": "+212612345678",
+                "activityDomain": "Banque",
+                "startDate": "2023-12-01",
+                "endDateEstimate": "2024-12-01"
+            },
+
+            "phase": {
+                "id": 3,
+                "name": "workload_estimation",
+                "phaseStatus": "PENDING_VALIDATION"
+            },
+
+            "tasks": [
+                {
+                    "id": 101,
+                    "description": "Mise en place du backend",
+                    "startDate": "2024-01-10",
+                    "endDate": "2024-02-15",
+                    "dueDate": "2024-02-20",
+                    "assignmentRate": 80,
+                    "estimatedWorkDays": 25,
+                    "actualWorkDays": 20,
+                    "status": "IN PROGRESS",
+                    "priority": "High",
+                    "progress": 85
+                },
+                {
+                    "id": 102,
+                    "description": "Intégration du frontend",
+                    "startDate": "2024-02-16",
+                    "endDate": "2024-03-10",
+                    "dueDate": "2024-03-15",
+                    "assignmentRate": 100,
+                    "estimatedWorkDays": 20,
+                    "actualWorkDays": 22,
+                    "status": "IN PROGRESS",
+                    "priority": "Medium",
+                    "progress": 100
+                }
+            ]
+        },
+        {
+            "id": 1,
+            "name": "Migration HPS V2",
+            "description": "Migration du cœur de système vers la version 2.",
+            "status": "COMPLETED",
+            "progress": 75,
+            "startDate": "2024-01-25",
+            "endDate": "2024-06-25",
+            "createAt": "2024-01-01",
+            "deliveryDate": "2024-06-15",
+            "estimatedWorkDays": 120,
+            "actualWorkDays": 95,
+            "lastModified": "2024-05-20",
+
+            "client": {
+                "id": 10,
+                "name": "Attijariwafa Bank",
+                "code": "AWB01",
+                "contactEmail": "contact@attijari.ma",
+                "contactName": "Mme Khadija El Fassi",
+                "contactPhoneNumber": "+212612345678",
+                "activityDomain": "Banque",
+                "startDate": "2023-12-01",
+                "endDateEstimate": "2024-12-01"
+            },
+
+            "phase": {
+                "id": 3,
+                "name": "unit_testing",
+                "phaseStatus": "COMPLETED"
+            },
+
+            "tasks": [
+                {
+                    "id": 101,
+                    "description": "Mise en place du backend",
+                    "startDate": "2024-01-10",
+                    "endDate": "2024-02-15",
+                    "dueDate": "2024-02-20",
+                    "assignmentRate": 80,
+                    "estimatedWorkDays": 25,
+                    "actualWorkDays": 20,
+                    "status": "TO_COME",
+                    "priority": "High",
+                    "progress": 85
+                },
+                {
+                    "id": 102,
+                    "description": "Intégration du frontend",
+                    "startDate": "2024-02-16",
+                    "endDate": "2024-03-10",
+                    "dueDate": "2024-03-15",
+                    "assignmentRate": 100,
+                    "estimatedWorkDays": 20,
+                    "actualWorkDays": 22,
+                    "status": "IN PROGRESS",
+                    "priority": "Medium",
+                    "progress": 100
+                }
+            ]
+        },
+        {
+            "id": 1,
+            "name": "Migration HPS V2",
+            "description": "Migration du cœur de système vers la version 2.",
+            "status": "CLOSED",
+            "progress": 75,
+            "startDate": "2024-01-25",
+            "endDate": "2024-06-25",
+            "createAt": "2024-01-01",
+            "deliveryDate": "2024-06-15",
+            "estimatedWorkDays": 120,
+            "actualWorkDays": 95,
+            "lastModified": "2024-05-20",
+
+            "client": {
+                "id": 10,
+                "name": "Attijariwafa Bank",
+                "code": "AWB01",
+                "contactEmail": "contact@attijari.ma",
+                "contactName": "Mme Khadija El Fassi",
+                "contactPhoneNumber": "+212612345678",
+                "activityDomain": "Banque",
+                "startDate": "2023-12-01",
+                "endDateEstimate": "2024-12-01"
+            },
+
+            "phase": {
+                "id": 3,
+                "name": "testing_with_client",
+                "phaseStatus": "IN_PROGRESS"
+            },
+
+            "tasks": [
+                {
+                    "id": 101,
+                    "description": "Mise en place du backend",
+                    "startDate": "2024-01-10",
+                    "endDate": "2024-02-15",
+                    "dueDate": "2024-02-20",
+                    "assignmentRate": 80,
+                    "estimatedWorkDays": 25,
+                    "actualWorkDays": 20,
+                    "status": "IN PROGRESS",
+                    "priority": "High",
+                    "progress": 85
+                },
+                {
+                    "id": 102,
+                    "description": "Intégration du frontend",
+                    "startDate": "2024-02-16",
+                    "endDate": "2024-03-10",
+                    "dueDate": "2024-03-15",
+                    "assignmentRate": 100,
+                    "estimatedWorkDays": 20,
+                    "actualWorkDays": 22,
+                    "status": "IN PROGRESS",
+                    "priority": "Medium",
+                    "progress": 100
+                }
+            ]
+        },
+        {
+            "id": 1,
+            "name": "Migration HPS V2",
+            "description": "Migration du cœur de système vers la version 2.",
+            "status": "TO_COME",
+            "progress": 75,
+            "startDate": "2024-01-25",
+            "endDate": "2024-06-25",
+            "createAt": "2024-01-01",
+            "deliveryDate": "2024-06-15",
+            "estimatedWorkDays": 120,
+            "actualWorkDays": 95,
+            "lastModified": "2024-05-20",
+
+            "client": {
+                "id": 10,
+                "name": "Attijariwafa Bank",
+                "code": "AWB01",
+                "contactEmail": "contact@attijari.ma",
+                "contactName": "Mme Khadija El Fassi",
+                "contactPhoneNumber": "+212612345678",
+                "activityDomain": "Banque",
+                "startDate": "2023-12-01",
+                "endDateEstimate": "2024-12-01"
+            },
+
+            "phase": {
+                "id": 3,
+                "name": "production_deployment",
+                "phaseStatus": "TO_COME"
+            },
+
+            "tasks": [
+                {
+                    "id": 101,
+                    "description": "Mise en place du backend",
+                    "startDate": "2024-01-10",
+                    "endDate": "2024-02-15",
+                    "dueDate": "2024-02-20",
+                    "assignmentRate": 80,
+                    "estimatedWorkDays": 25,
+                    "actualWorkDays": 20,
+                    "status": "TO_COME",
+                    "priority": "High",
+                    "progress": 85
+                },
+                {
+                    "id": 102,
+                    "description": "Intégration du frontend",
+                    "startDate": "2024-02-16",
+                    "endDate": "2024-03-10",
+                    "dueDate": "2024-03-15",
+                    "assignmentRate": 100,
+                    "estimatedWorkDays": 20,
+                    "actualWorkDays": 22,
+                    "status": "IN PROGRESS",
+                    "priority": "Medium",
+                    "progress": 100
+                }
+            ]
+        }
+    ]
+}

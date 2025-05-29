@@ -117,33 +117,33 @@ export class ClientsListComponent extends AbstractSearchComponent implements OnI
 
             }
         ];
-        // this.data=[
-        //
-        //     {
-        //         id: 1,
-        //         name: 'ABC Industries',
-        //         code: 'ABC001',
-        //         activityDomaine: 'Manufacture',
-        //         contactName: 'Karim El Fassi',
-        //         contactEmail: 'karim.fassi@abc.com',
-        //         contactPhone: '+212600112233',
-        //         startDate: '2024-01-15',
-        //         endDateEstimate: '2025-01-15'
-        //     },
-        //     {
-        //         id: 2,
-        //         name: 'TechCo SARL',
-        //         code: 'TECH02',
-        //         activityDomaine: 'IT Services',
-        //         contactName: 'Sara Benali',
-        //         contactEmail: 'sara.benali@techco.ma',
-        //         contactPhone: '+212600223344',
-        //         startDate: '2023-06-01',
-        //         endDateEstimate: '2024-06-01'
-        //     },
-        // ]
+        this.data=[
 
-        this.search();
+            {
+                id: 1,
+                name: 'ABC Industries',
+                code: 'ABC001',
+                activityDomaine: 'Manufacture',
+                contactName: 'Karim El Fassi',
+                contactEmail: 'karim.fassi@abc.com',
+                contactPhone: '+212600112233',
+                startDate: '2024-01-15',
+                endDateEstimate: '2025-01-15'
+            },
+            {
+                id: 2,
+                name: 'TechCo SARL',
+                code: 'TECH02',
+                activityDomaine: 'IT Services',
+                contactName: 'Sara Benali',
+                contactEmail: 'sara.benali@techco.ma',
+                contactPhone: '+212600223344',
+                startDate: '2023-06-01',
+                endDateEstimate: '2024-06-01'
+            },
+        ]
+
+        //this.search();
 
         // Deep-clone pour originalData
         this.originalData = this.data.map(d => ({ ...d }));

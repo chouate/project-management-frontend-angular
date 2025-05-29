@@ -1,0 +1,181 @@
+.status-in_progress {
+    background-color: #d7f1e8;
+    color: rgba(44, 122, 177, 0.93);
+}
+
+.status-to_come {
+    background-color: #e5dbef;
+    color: rgba(66, 38, 103, 0.69);
+}
+
+.status-pending {
+    background-color: #f6e0be;
+    color: #b87457;
+}
+
+.status-completed {
+    background-color: #deefad;
+    color: rgba(30, 89, 2, 0.93);
+}
+.status-closed {
+    background-color: #e86a60;
+    color: white;
+}
+
+//start style phaseStatues
+.phaseStatus-in_progress {
+    background-color: #d7f1e8;
+    color: rgba(44, 122, 177, 0.93);
+}
+
+.phaseStatus-to_come {
+    background-color: #e5dbef;
+    color: rgba(66, 38, 103, 0.69);
+}
+
+.phaseStatus-pending_validation {
+    background-color: #f6e0be;
+    color: #b87457;
+}
+
+.phaseStatus-completed {
+    background-color: #deefad;
+    color: rgba(30, 89, 2, 0.93);
+}
+//end style phaseStatuses
+/*
+start style phase
+ */
+.phase-study {
+    background-color: #d7f1e8;
+    color: rgba(44, 122, 177, 0.93);
+}
+
+.phase-workload_estimation {
+    background-color: #e5dbef;
+    color: rgba(66, 38, 103, 0.69);
+}
+
+.phase-development {
+    background-color: #f6e0be;
+    color: #b87457;
+}
+
+.phase-unit_testing {
+    background-color: #deefad;
+    color: rgba(30, 89, 2, 0.93);
+}
+.phase-testing_with_client{
+    background-color: #f6e3e3;
+    color: #e77b84;
+}
+.phase-production_deployment{
+    background-color: #cccccc;
+    color: white;
+}
+
+.production_deployment{
+    background-color: #cccccc;
+}
+.testing_with_client{
+    background-color: #cccccc;
+}
+.unit_testing{
+    background-color: #cccccc;
+}
+.development{
+    background-color: #cccccc;
+}
+.workload_estimation{
+    background-color: #cccccc;
+}
+.study{
+    background-color: #cccccc;
+}
+
+/*
+end style phase
+ */
+//::ng-deep {
+//    .p-datatable-frozen-tbody {
+//        z-index: 1;
+//    }
+//
+//    .p-datatable .p-datatable-tbody > tr > td.p-frozen-column {
+//        z-index: 1;
+//    }
+//
+//    .p-progressbar {
+//        z-index: 0;
+//        position: relative;
+//    }
+//}
+
+::ng-deep {
+    .p-datatable-scrollable {
+        .p-datatable-frozen-view {
+            background: white;
+            z-index: 3;
+        }
+
+        .p-datatable-thead {
+            z-index: 4 !important;  // Augmentation du z-index pour l'en-tête
+
+            th {
+                background: white;
+                position: sticky !important;
+                top: 0;
+                z-index: 4 !important;  // Même z-index que l'en-tête
+            }
+
+            th.p-frozen-column {
+                z-index: 5 !important;  // z-index plus élevé pour l'en-tête des colonnes gelées
+            }
+        }
+
+        .p-datatable-tbody {
+            td.p-frozen-column {
+                background: white;
+                z-index: 3 !important;
+            }
+        }
+
+    }
+
+    .progress-wrapper {
+        position: relative;
+        z-index: 1;
+    }
+
+    .progress-container {
+        position: relative;
+        flex: 1;
+        padding: 2px;
+        margin: 0 8px;
+        z-index: 1;
+
+        .p-progressbar {
+            position: relative;
+            z-index: 1;
+        }
+    }
+}
+
+.project-access-btn {
+    display: none;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+
+}
+
+td:hover {
+    .project-access-btn {
+        display: inline-flex;
+    }
+}
+
+
+
+
+
+
