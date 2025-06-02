@@ -20,5 +20,14 @@ export class   ProjectService {
             .then(data => data);
     }
 
+    getProjectById(projectId: number): Promise<any> {
+        return this.http.get<any>('assets/demo/data/test.json')
+            .toPromise()
+            .then(res => {
+                const projects = res.data;
+                return projects.find((project: any) => project.id === projectId);
+            });
+    }
+
 
 }

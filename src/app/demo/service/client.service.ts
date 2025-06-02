@@ -29,6 +29,12 @@ export class ClientService {
         );
     }
 
+    getClientsByPM(id: number): Observable<Client[]> {
+        return this.http.get<Client[]>(
+            `${this.apiUrl}/api/projectManagers/${id}/clients`
+        );
+    }
+
     createClient(client: Client): Observable<Client> {
         return this.http.post<Client>('http://localhost:8082/api/clients', client);
     }

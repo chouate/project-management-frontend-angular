@@ -9,12 +9,12 @@ export class UserService {
 
     constructor(private http: HttpClient) { }
 
-    getCollaborators() {
-        return this.http.get<any>('assets/demo/data/collaborators.json')
-            .toPromise()
-            .then(res => res.data as User[])
-            .then(data => data);
-    }
+    // getCollaborators() {
+    //     return this.http.get<any>('assets/demo/data/collaborators.json')
+    //         .toPromise()
+    //         .then(res => res.data as User[])
+    //         .then(data => data);
+    // }
 
     getCollabrators(): Observable<User[]> {
         return this.http.get<User[]>('http://localhost:8081/api/collaborators');

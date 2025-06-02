@@ -10,9 +10,14 @@ export interface Project{
     estimatedWorkDays?: number;
     actualWorkDays?: number;
 
+    clientId?: number;
+    projectManagerId?: number;
+    phaseId?: number;
+
     client?: Client;
     phase?: Phase;
     tasks?: Task[];
+    projectManager?: ProjectManager;
 
 }
 
@@ -20,6 +25,12 @@ interface Client{
     id?: number;
     name?: string;
     code?: string;
+}
+
+interface ProjectManager{
+    id?: number;
+    name?: string;
+    image?: string;
 }
 
 interface Phase{
@@ -32,5 +43,5 @@ interface Task{
     id?: number;
     description?: string;
     status?: string;
-    progress?: string;
+    progress?: number;
 }

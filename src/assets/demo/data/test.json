@@ -42,7 +42,65 @@
                     "assignmentRate": 80,
                     "estimatedWorkDays": 25,
                     "actualWorkDays": 20,
-                    "status": "IN PROGRESS",
+                    "status": "IN_PROGRESS",
+                    "priority": "High",
+                    "progress": 85,
+                    "owner": {
+                        "id": 12,
+                        "name" : "Echeouati El mehdi",
+                        "image" : "image.jpg",
+                        "role" : "DEVELOPER"
+                    }
+                },
+                {
+                    "id": 101,
+                    "description": "Mise en place du backend",
+                    "startDate": "2024-01-10",
+                    "endDate": "2024-02-15",
+                    "dueDate": "2024-02-20",
+                    "assignmentRate": 80,
+                    "estimatedWorkDays": 25,
+                    "actualWorkDays": 20,
+                    "status": "TO_COME",
+                    "priority": "High",
+                    "progress": 85
+                },
+                {
+                    "id": 101,
+                    "description": "Mise en place du backend",
+                    "startDate": "2024-01-10",
+                    "endDate": "2024-02-15",
+                    "dueDate": "2024-02-20",
+                    "assignmentRate": 80,
+                    "estimatedWorkDays": 25,
+                    "actualWorkDays": 20,
+                    "status": "IN_PROGRESS",
+                    "priority": "High",
+                    "progress": 85
+                },
+                {
+                    "id": 102,
+                    "description": "Intégration du frontend",
+                    "startDate": "2024-02-16",
+                    "endDate": "2024-03-10",
+                    "dueDate": "2024-03-15",
+                    "assignmentRate": 100,
+                    "estimatedWorkDays": 20,
+                    "actualWorkDays": 22,
+                    "status": "COMPLETED",
+                    "priority": "Medium",
+                    "progress": 100
+                },
+                {
+                    "id": 101,
+                    "description": "Mise en place du backend",
+                    "startDate": "2024-01-10",
+                    "endDate": "2024-02-15",
+                    "dueDate": "2024-02-20",
+                    "assignmentRate": 80,
+                    "estimatedWorkDays": 25,
+                    "actualWorkDays": 20,
+                    "status": "IN_PROGRESS",
                     "priority": "High",
                     "progress": 85
                 },
@@ -68,7 +126,59 @@
                     "assignmentRate": 80,
                     "estimatedWorkDays": 25,
                     "actualWorkDays": 20,
-                    "status": "IN PROGRESS",
+                    "status": "IN_PROGRESS",
+                    "priority": "High",
+                    "progress": 85
+                },
+                {
+                    "id": 102,
+                    "description": "Intégration du frontend",
+                    "startDate": "2024-02-16",
+                    "endDate": "2024-03-10",
+                    "dueDate": "2024-03-15",
+                    "assignmentRate": 100,
+                    "estimatedWorkDays": 20,
+                    "actualWorkDays": 22,
+                    "status": "COMPLETED",
+                    "priority": "Medium",
+                    "progress": 100
+                },
+                {
+                    "id": 101,
+                    "description": "Mise en place du backend",
+                    "startDate": "2024-01-10",
+                    "endDate": "2024-02-15",
+                    "dueDate": "2024-02-20",
+                    "assignmentRate": 80,
+                    "estimatedWorkDays": 25,
+                    "actualWorkDays": 20,
+                    "status": "IN_PROGRESS",
+                    "priority": "High",
+                    "progress": 85
+                },
+                {
+                    "id": 101,
+                    "description": "Mise en place du backend",
+                    "startDate": "2024-01-10",
+                    "endDate": "2024-02-15",
+                    "dueDate": "2024-02-20",
+                    "assignmentRate": 80,
+                    "estimatedWorkDays": 25,
+                    "actualWorkDays": 20,
+                    "status": "TO_COME",
+                    "priority": "High",
+                    "progress": 85
+                },
+                {
+                    "id": 101,
+                    "description": "Mise en place du backend",
+                    "startDate": "2024-01-10",
+                    "endDate": "2024-02-15",
+                    "dueDate": "2024-02-20",
+                    "assignmentRate": 80,
+                    "estimatedWorkDays": 25,
+                    "actualWorkDays": 20,
+                    "status": "IN_PROGRESS",
                     "priority": "High",
                     "progress": 85
                 },
@@ -88,8 +198,8 @@
             ]
         },
         {
-            "id": 1,
-            "name": "Migration HPS V2",
+            "id": 2,
+            "name": "Gestion des transactions",
             "description": "Migration du cœur de système vers la version 2.",
             "status": "IN_PROGRESS",
             "progress": 75,
@@ -129,7 +239,7 @@
                     "assignmentRate": 80,
                     "estimatedWorkDays": 25,
                     "actualWorkDays": 20,
-                    "status": "IN PROGRESS",
+                    "status": "IN_PROGRESS",
                     "priority": "High",
                     "progress": 85
                 },
@@ -162,8 +272,8 @@
             ]
         },
         {
-            "id": 1,
-            "name": "Migration HPS V2",
+            "id": 3,
+            "name": "Authentification via le badge",
             "description": "Migration du cœur de système vers la version 2.",
             "status": "PENDING",
             "progress": 75,
@@ -203,7 +313,7 @@
                     "assignmentRate": 80,
                     "estimatedWorkDays": 25,
                     "actualWorkDays": 20,
-                    "status": "IN PROGRESS",
+                    "status": "IN_PROGRESS",
                     "priority": "High",
                     "progress": 85
                 },
@@ -216,14 +326,14 @@
                     "assignmentRate": 100,
                     "estimatedWorkDays": 20,
                     "actualWorkDays": 22,
-                    "status": "IN PROGRESS",
+                    "status": "IN_PROGRESS",
                     "priority": "Medium",
                     "progress": 100
                 }
             ]
         },
         {
-            "id": 1,
+            "id": 4,
             "name": "Migration HPS V2",
             "description": "Migration du cœur de système vers la version 2.",
             "status": "COMPLETED",
@@ -284,7 +394,7 @@
             ]
         },
         {
-            "id": 1,
+            "id": 5,
             "name": "Migration HPS V2",
             "description": "Migration du cœur de système vers la version 2.",
             "status": "CLOSED",
@@ -345,7 +455,7 @@
             ]
         },
         {
-            "id": 1,
+            "id": 6,
             "name": "Migration HPS V2",
             "description": "Migration du cœur de système vers la version 2.",
             "status": "TO_COME",
@@ -386,7 +496,7 @@
                     "assignmentRate": 80,
                     "estimatedWorkDays": 25,
                     "actualWorkDays": 20,
-                    "status": "IN PROGRESS",
+                    "status": "IN_PROGRESS",
                     "priority": "High",
                     "progress": 85
                 },
@@ -406,7 +516,7 @@
             ]
         },
         {
-            "id": 1,
+            "id": 7,
             "name": "Migration HPS V2",
             "description": "Migration du cœur de système vers la version 2.",
             "status": "TO_COME",
@@ -467,7 +577,7 @@
             ]
         },
         {
-            "id": 1,
+            "id": 8,
             "name": "GAB transaction",
             "description": "Migration du cœur de système vers la version 2.",
             "status": "IN_PROGRESS",
@@ -508,7 +618,7 @@
                     "assignmentRate": 80,
                     "estimatedWorkDays": 25,
                     "actualWorkDays": 20,
-                    "status": "IN PROGRESS",
+                    "status": "IN_PROGRESS",
                     "priority": "High",
                     "progress": 85
                 },
@@ -521,14 +631,14 @@
                     "assignmentRate": 100,
                     "estimatedWorkDays": 20,
                     "actualWorkDays": 22,
-                    "status": "IN PROGRESS",
+                    "status": "IN_PROGRESS",
                     "priority": "Medium",
                     "progress": 100
                 }
             ]
         },
         {
-            "id": 1,
+            "id": 9,
             "name": "Migration HPS V2",
             "description": "Migration du cœur de système vers la version 2.",
             "status": "PENDING",
@@ -569,7 +679,7 @@
                     "assignmentRate": 80,
                     "estimatedWorkDays": 25,
                     "actualWorkDays": 20,
-                    "status": "IN PROGRESS",
+                    "status": "IN_PROGRESS",
                     "priority": "High",
                     "progress": 85
                 },
@@ -582,14 +692,14 @@
                     "assignmentRate": 100,
                     "estimatedWorkDays": 20,
                     "actualWorkDays": 22,
-                    "status": "IN PROGRESS",
+                    "status": "IN_PROGRESS",
                     "priority": "Medium",
                     "progress": 100
                 }
             ]
         },
         {
-            "id": 1,
+            "id": 10,
             "name": "Migration HPS V2",
             "description": "Migration du cœur de système vers la version 2.",
             "status": "COMPLETED",
@@ -643,14 +753,14 @@
                     "assignmentRate": 100,
                     "estimatedWorkDays": 20,
                     "actualWorkDays": 22,
-                    "status": "IN PROGRESS",
+                    "status": "IN_PROGRESS",
                     "priority": "Medium",
                     "progress": 100
                 }
             ]
         },
         {
-            "id": 1,
+            "id": 11,
             "name": "Migration HPS V2",
             "description": "Migration du cœur de système vers la version 2.",
             "status": "CLOSED",
@@ -691,7 +801,7 @@
                     "assignmentRate": 80,
                     "estimatedWorkDays": 25,
                     "actualWorkDays": 20,
-                    "status": "IN PROGRESS",
+                    "status": "IN_PROGRESS",
                     "priority": "High",
                     "progress": 85
                 },
@@ -704,14 +814,14 @@
                     "assignmentRate": 100,
                     "estimatedWorkDays": 20,
                     "actualWorkDays": 22,
-                    "status": "IN PROGRESS",
+                    "status": "IN_PROGRESS",
                     "priority": "Medium",
                     "progress": 100
                 }
             ]
         },
         {
-            "id": 1,
+            "id": 12,
             "name": "Migration HPS V2",
             "description": "Migration du cœur de système vers la version 2.",
             "status": "TO_COME",
@@ -765,7 +875,7 @@
                     "assignmentRate": 100,
                     "estimatedWorkDays": 20,
                     "actualWorkDays": 22,
-                    "status": "IN PROGRESS",
+                    "status": "IN_PROGRESS",
                     "priority": "Medium",
                     "progress": 100
                 }

@@ -7,6 +7,10 @@ import {ProductService} from "../../../../service/product.service";
 import {ConfirmationService, MessageService} from "primeng/api";
 import {ProjectService} from "../../../../service/project.service";
 import {Project} from "../../../../api/Project";
+import {Router} from "@angular/router";
+import {filter,switchMap} from "rxjs";
+import {AuthService} from "../../../../service/auth.service";
+import {ClientService} from "../../../../service/client.service";
 
 interface expandedRows {
     [key: string]: boolean;
@@ -23,10 +27,18 @@ export class ProjectListComponent implements OnInit {
     customers1: Customer[] = [];
     projects: Project[] = [];
 
+
     statuses: any[] = [];
     projectStatuses: any[] = [];
     phaseStatuses: any[] = [];
     phases: any[] = [];
+
+    //attributes for project dialog
+    projectDialog: boolean = false;
+    submitted: boolean = false;
+    project: Project = {};
+    useDuration: boolean = false;
+    clientsAffected: { label:string, value: number }[] = [];
 
     activityValues: number[] = [0, 100];
     progressValues: number[] = [0, 100];
@@ -40,7 +52,10 @@ export class ProjectListComponent implements OnInit {
 
     constructor(
         private customerService: CustomerService,
-        private projectService: ProjectService
+        private projectService: ProjectService,
+        private authService: AuthService,
+        private clientService: ClientService,
+        private router: Router
     ) { }
 
     ngOnInit() {
@@ -79,9 +94,24 @@ export class ProjectListComponent implements OnInit {
             { label: 'Unit Testing', value: 'unit_testing' },
             { label: 'Testing With Client', value: 'testing_with_client' },
             { label: 'Production Deployment', value: 'production_deployment' },
-
-
         ]
+
+
+        this.authService.currentUser$.pipe(
+            filter(u => !!u),
+            switchMap(user  =>
+                // @ts-ignore
+                this.clientService.getClientsByPM(user.id)
+
+            )
+        ).subscribe(clients => {
+            this.clientsAffected = clients.map(c => ({
+                label: `${c.name}: (code: ${c.code})`,
+                value: c.id
+            }));
+            console.log("clientsAffected: ")
+            console.log(this.clientsAffected);
+        });
     }
 
 
@@ -112,6 +142,39 @@ export class ProjectListComponent implements OnInit {
     accessProject(project: any) {
         // Ajoutez ici la logique pour accéder au projet
         console.log('Accessing project:', project);
+        this.router.navigate(['/projects', project.id]);
+
     }
 
+    add() {
+
+    }
+
+    confirmRemove() {
+
+    }
+    toggleDuration(value: boolean, event: Event) {
+        event.preventDefault(); // Empêche le comportement par défaut du lien
+        this.useDuration = value;
+    }
+    hideDialog() {
+        this.projectDialog = false;
+        this.submitted = false;
+    }
+
+    saveProject(){
+
+    }
+
+    openNewPoject() {
+        this.projectDialog = true;
+        this.project = {
+            status: 'to_come',
+            phase: {
+                name: 'study',
+                phaseStatus: 'to_come'
+            }
+        };
+        this.submitted = false;
+    }
 }

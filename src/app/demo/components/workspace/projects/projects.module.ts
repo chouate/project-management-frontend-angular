@@ -16,11 +16,19 @@ import {TableModule} from "primeng/table";
 import {ToastModule} from "primeng/toast";
 import {ToggleButtonModule} from "primeng/togglebutton";
 import {FormsModule} from "@angular/forms";
+import { ProjectDetailComponent } from './project-detail/project-detail.component';
+import {ChartModule} from "primeng/chart";
+import {CardModule} from "primeng/card";
+import {TabMenuModule} from "primeng/tabmenu";
+import {CalendarModule} from "primeng/calendar";
+import {DialogModule} from "primeng/dialog";
+import {InputTextareaModule} from "primeng/inputtextarea";
 
 
 @NgModule({
   declarations: [
-    ProjectListComponent
+    ProjectListComponent,
+    ProjectDetailComponent
   ],
     imports: [
         CommonModule,
@@ -37,7 +45,16 @@ import {FormsModule} from "@angular/forms";
         TableModule,
         ToastModule,
         ToggleButtonModule,
-        FormsModule
+        FormsModule,
+
+        TabMenuModule,
+        CardModule,
+        ChartModule,
+        CalendarModule,
+        DialogModule,
+        InputTextareaModule,
+
+
     ]
 })
 export class ProjectsModule { }

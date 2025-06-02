@@ -1,7 +1,7 @@
-<div class="grid">
+<div  class="grid">
     <div class="col-12">
         <div class="card">
-            <h5>Filter Menu</h5>
+            <h5>Manage Projects</h5>
             <p-table
                 #dt1
                 [value]="projects"
@@ -25,7 +25,7 @@
                             <button pButton label="Clear" class="p-button-outlined" icon="pi pi-filter-slash"
                                     (click)="clear(dt1)"></button>
                             <button pButton label="New" class="p-button-outlined" icon="pi pi-plus"
-                                    (click)="add()"></button>
+                                    (click)="openNewPoject()"></button>
                             <button *ngIf="multipleSelectionSwitch" pButton label="Remove" class="p-button-outlined" icon="pi pi-trash"
                                     (click)="confirmRemove()" [disabled]="true"></button>
                         </div>
@@ -49,7 +49,7 @@
 
                 <ng-template pTemplate="header">
                     <tr>
-                        <th style="min-width: 20rem; " pFrozenColumn >
+                        <th style="min-width: 25rem; " pFrozenColumn >
                             <div class="flex justify-content-between align-items-center">
                                 Project Name
                                 <p-columnFilter type="text" field="name" display="menu" placeholder="Search by Project name"></p-columnFilter>
@@ -253,6 +253,126 @@
         </div>
 
     </div>
-
-
 </div>
+
+<p-dialog [(visible)]="projectDialog" [style]="{width: '700px'}" header="Project Details" [modal]="true" class="p-fluid">
+    <ng-template pTemplate="content">
+
+        <div class="field">
+            <label for="name">Project Name*</label>
+            <input type="text" pInputText id="name" [(ngModel)]="project.name" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !project.name}"/>
+            <small style="color: red" class="ng-dirty ng-invalid" *ngIf="submitted && !project.name">Project Name is required.</small>
+            <!--        server error for require name           -->
+            <!--            <small style="color: red" class="ng-dirty ng-invalid" *ngIf="fieldErrors?.['name']">{{fieldErrors['name'] }}</small>-->
+        </div>
+        <div class="formgrid grid">
+            <!-- Status Field -->
+            <div class="field col-12 md:col-6">
+                <label for="status">Project Status</label>
+                <p-dropdown id="status" [(ngModel)]="project.status" [options]="projectStatuses" optionLabel="label" optionValue="value" placeholder="Select status" appendTo="body" styleClass="w-full">
+                    <ng-template let-status pTemplate="item">
+                        <span [class]="'customer-badge status-' + status.value">{{ status.label }}</span>
+                    </ng-template>
+                    <ng-template  let-status pTemplate="selectedItem">
+                        <span [class]="'customer-badge status-' + status.value" *ngIf="status">{{ status.label }}</span>
+                    </ng-template>
+                </p-dropdown>
+            </div>
+
+            <!-- Actual Work Days Field-->
+            <div class="field col-12 md:col-6">
+                <label for="actualWorkDays">Actual Work Days</label>
+                <input type="number" id="actualWorkDays" pInputText [(ngModel)]="project.actualWorkDays" placeholder="Number of actual work days"/>
+            </div>
+        </div>
+        <div class="formgrid grid">
+            <!-- Phase -->
+            <div class="field col-12 md:col-6">
+                <label for="phase">Phase</label>
+                <p-dropdown id="phase" [(ngModel)]="project.phase.name" [options]="phases" optionValue="value" optionLabel="label" placeholder="Select phase" appendTo="body" styleClass="w-full"
+                            [ngClass]="'phase-' + (project.phase.name?.toLowerCase()?.replace(' ', '_') || '')">
+                    <ng-template let-phase pTemplate="item">
+                        <span [class]="'customer-badge phase-' + phase.value.toLowerCase()" *ngIf="phase">{{ phase.label }}</span>
+                    </ng-template>
+                    <ng-template let-phase pTemplate="selectedItem">
+                        <span  *ngIf="phase">{{ phase.label }}</span>
+                    </ng-template>
+                </p-dropdown>
+            </div>
+
+            <!-- Phase Status -->
+            <div  class="field col-12 md:col-6">
+                <label for="phaseStatus">Phase Status</label>
+                <p-dropdown id="phaseStatus" [(ngModel)]="project.phase.phaseStatus" [options]="phaseStatuses" optionValue="value" optionLabel="label" placeholder="Select phase status" appendTo="body" styleClass="w-full">
+                    <ng-template  let-status pTemplate="item">
+                        <span [class]="'customer-badge phaseStatus-' + status.value">{{ status.label }}</span>
+                    </ng-template>
+                    <ng-template let-status pTemplate="selectedItem">
+                        <span [class]="'customer-badge phaseStatus-' + status.value" *ngIf="status">{{ status.label }}</span>
+                    </ng-template>
+                </p-dropdown>
+            </div>
+        </div>
+        <div class="field">
+            <label for="name">Description</label>
+            <textarea id="description" pInputTextarea [(ngModel)]="project.description" required rows="3" cols="20"></textarea>
+        </div>
+        <div class="formgrid grid">
+            <div class="field col-12 md:col-4">
+                <label for="startDate">Start Date</label>
+                <p-calendar appendTo="body" id="startDate" dateFormat="dd/mm/yy" dataType="string" [showIcon]="true" inputId="icon" [(ngModel)]="project.startDate"></p-calendar>
+            </div>
+            <div class="field col-12 md:col-4">
+                <!-- Mode Date -->
+                <ng-container *ngIf="!useDuration">
+                    <div class="flex justify-content-between align-items-center mb-2">
+                        <label for="endDate" >End Date</label>
+                        <a href="#" (click)="toggleDuration(true, $event)" style="font-size: 12px;">(Enter Duration)</a>
+                    </div>
+                    <p-calendar appendTo="body" id="endDate" dateFormat="dd/mm/yy" dataType="string" [showIcon]="true" [(ngModel)]="project.endDate"></p-calendar>
+                </ng-container>
+
+                <!-- Mode Duration -->
+                <ng-container *ngIf="useDuration">
+                    <div class="flex justify-content-between align-items-center mb-2">
+                        <label for="duration" class="m-0">Duration (days)</label>
+                        <a href="#" (click)="toggleDuration(false, $event)" style="font-size: 12px;">(Enter Date)</a>
+                    </div>
+                    <input type="number" id="duration" pInputText [(ngModel)]="project.estimatedWorkDays" placeholder="Enter number of days" />
+                </ng-container>
+            </div>
+
+            <div class="field col-12 md:col-4">
+                <label for="deliveryDate">Delivery Date</label>
+                <p-calendar appendTo="body" id="deliveryDate" dateFormat="dd/mm/yy" dataType="string" [showIcon]="true" [(ngModel)]="project.deliveryDate"></p-calendar>
+            </div>
+
+        </div>
+        <div class="field">
+            <label for="clientId">Client</label>
+            <p-dropdown [(ngModel)]="project.clientId"
+                        id="clientId"
+                        inputId="clientId"
+                        [options]="clientsAffected"
+                        optionValue="value"
+                        optionLabel="label"
+                        placeholder="Select the client"
+                        appendTo="body"
+                        styleClass="w-full"
+            >
+                <ng-template pTemplate="item" let-client >
+                    {{ client.label}}
+                </ng-template>
+                <ng-template pTemplate="selectedItem" let-client>
+                    <span *ngIf="client" >{{client.label}}</span>
+                </ng-template>
+            </p-dropdown>
+        </div>
+
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveProject()"></button>
+    </ng-template>
+</p-dialog>

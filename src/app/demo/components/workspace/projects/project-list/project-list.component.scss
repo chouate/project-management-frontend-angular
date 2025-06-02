@@ -96,6 +96,8 @@ start style phase
 /*
 end style phase
  */
+
+
 //::ng-deep {
 //    .p-datatable-frozen-tbody {
 //        z-index: 1;
@@ -173,6 +175,44 @@ td:hover {
         display: inline-flex;
     }
 }
+
+/*
+start style for the phas field in the project dilog
+ */
+::ng-deep .phase-study .p-dropdown {
+    background-color: #d7f1e8 !important;
+    color: rgba(44, 122, 177, 0.93) !important;
+}
+
+::ng-deep .phase-workload_estimation .p-dropdown {
+    background-color: #e5dbef !important;
+    color: rgba(66, 38, 103, 0.69) !important;
+}
+
+::ng-deep .phase-development .p-dropdown {
+    background-color: #f6e0be !important;
+    color: #b87457 !important;
+}
+
+::ng-deep .phase-unit_testing .p-dropdown {
+    background-color: #deefad !important;
+    color: rgba(30, 89, 2, 0.93) !important;
+}
+
+::ng-deep .phase-testing_with_client .p-dropdown {
+    background-color: #f6e3e3 !important;
+    color: #e77b84 !important;
+}
+
+::ng-deep .phase-production_deployment .p-dropdown {
+    background-color: #cccccc !important;
+    color: white !important;
+}
+
+/*
+end style for the phas field in the project dilog
+ */
+
 
 
 

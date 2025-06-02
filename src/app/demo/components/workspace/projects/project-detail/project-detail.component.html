@@ -1,0 +1,308 @@
+<!-- project-details.component.html -->
+<div class="grid">
+
+    <!-- TabMenu -->
+    <div class="col-12">
+        <div class="card">
+            <h5>{{ project?.name }}</h5>
+            <p-tabMenu [model]="items" [activeItem]="activeItem" (activeItemChange)="onTabChange($event)"></p-tabMenu>
+
+            <!-- Contenu dynamique basé sur l'onglet sélectionné -->
+            <div class="mt-4">
+                <!-- Dashboard -->
+                <div *ngIf="activeItem?.label === 'Dashboard'" class="grid">
+                    <div class="col-12 md:col-6 lg:col-4">
+                        <!-- Insérer ici les graphiques -->
+                        <!-- Exemple : -->
+                        <p-card header="Progression du projet">
+<!--                            <p-chart type="doughnut" [data]="chartData"></p-chart>-->
+                        </p-card>
+                    </div>
+                </div>
+
+                <!-- Tasks -->
+                <div *ngIf="activeItem?.label === 'Tasks'">
+<!--                    <h5>Manage Tasks</h5>-->
+                    <p-table
+                        #dt1
+                        [value]="project.tasks"
+                        [scrollable]="true"
+                        scrollHeight="500px"
+
+                        scrollDirection="both"
+                        dataKey="id"
+                        [rows]="10"
+
+                        [rowHover]="true"
+                        styleClass="p-datatable-gridlines"
+                        [paginator]="true"
+                        [globalFilterFields]="['name','country.name','representative.name','status']"
+                        responsiveLayout="scroll"
+                    >
+                        <ng-template pTemplate="caption">
+                            <div class="flex justify-content-between flex-column sm:flex-row">
+                                <!-- Group for Clear and Add button side by side with space in between -->
+                                <div class="flex gap-2">
+                                    <button pButton label="Clear" class="p-button-outlined" icon="pi pi-filter-slash"
+                                            (click)="clear(dt1)"></button>
+                                    <button pButton label="New" class="p-button-outlined" icon="pi pi-plus"
+                                            (click)="openNewTask()"></button>
+                                    <button *ngIf="multipleSelectionSwitch" pButton label="Remove" class="p-button-outlined" icon="pi pi-trash"
+                                            (click)="confirmRemove()" [disabled]="true"></button>
+                                </div>
+                                <span class="p-input-icon-left mb-2">
+                                    <i class="pi pi-search"></i>
+                                    <input pInputText type="text" #filter (input)="onGlobalFilter(dt1, $event)" placeholder="Search Keyword" class="w-full"/>
+                                </span>
+                            </div>
+                        </ng-template>
+
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th style="min-width: 25rem; " pFrozenColumn >
+                                    <div class="flex justify-content-between align-items-center">
+                                        Task Name
+                                        <p-columnFilter type="text" field="description" display="menu" placeholder="Search by Task name"></p-columnFilter>
+                                    </div>
+                                </th>
+                                <th style="min-width: 30rem">
+                                    <div class="flex justify-content-between align-items-center">
+                                        Description
+                                        <p-columnFilter type="text" field="description" display="menu" placeholder="Search by Description"></p-columnFilter>
+                                    </div>
+                                </th>
+                                <th style="min-width: 12rem">
+                                    <div class="flex justify-content-between align-items-center">
+                                        Task Status
+                                        <p-columnFilter field="status" matchMode="equals" display="menu">
+                                            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                                <p-dropdown [ngModel]="value" [options]="taskStatuses" (onChange)="filter($event.value)" placeholder="Any" [style]="{'min-width': '12rem'}" >
+                                                    <ng-template let-option pTemplate="item">
+                                                        <span [class]="'customer-badge status-' + option.value">{{option.label}}</span>
+                                                    </ng-template>
+                                                </p-dropdown>
+                                            </ng-template>
+                                        </p-columnFilter>
+                                    </div>
+                                </th>
+                                <th style="min-width: 10rem">
+                                    <div class="flex justify-content-between align-items-center">
+                                        Actual Work Days
+                                        <p-columnFilter type="numeric" field="actualWorkDays" display="menu" ></p-columnFilter>
+                                    </div>
+                                </th>
+
+                                <th style="min-width: 5rem">
+                                    <div class="flex justify-content-between align-items-center">
+                                        %
+                                        <p-columnFilter type="numeric" field="progress" display="menu" ></p-columnFilter>
+                                    </div>
+                                </th>
+
+                                <th style="min-width: 12rem">
+                                    <div class="flex justify-content-between align-items-center">
+                                        Owner
+                                        <p-columnFilter type="text" field="owner.name" display="menu" placeholder="Search by client name"></p-columnFilter>
+                                    </div>
+                                </th>
+                                <th style="min-width: 15rem">
+                                    <div class="flex justify-content-between align-items-center">
+                                        Completion Percentage
+                                        <!--                                <p-columnFilter field="progress" matchMode="between" display="menu" [showMatchModes]="false" [showOperator]="false" [showAddButton]="false">-->
+                                        <!--                                    <ng-template pTemplate="filter" let-filter="filterCallback">-->
+                                        <!--                                        <p-slider [ngModel]="progressValues" [range]="true" (onSlideEnd)="filter($event.values)" styleClass="m-3" [style]="{'min-width': '12rem'}" ></p-slider>-->
+                                        <!--                                        <div class="flex align-items-center justify-content-between px-2">-->
+                                        <!--                                            <span>{{progressValues[0]}}</span>-->
+                                        <!--                                            <span>{{progressValues[1]}}</span>-->
+                                        <!--                                        </div>-->
+                                        <!--                                    </ng-template>-->
+                                        <!--                                </p-columnFilter>-->
+                                    </div>
+                                </th>
+                                <th style="min-width: 10rem">
+                                    <div class="flex justify-content-between align-items-center">
+                                        Estimated Work Days
+                                        <p-columnFilter type="numeric" field="estimatedWorkDays" display="menu" ></p-columnFilter>
+                                    </div>
+                                </th>
+                                <th style="min-width: 10rem">
+                                    <div class="flex justify-content-between align-items-center">
+                                        Start Date
+                                        <p-columnFilter type="date" field="startDate" display="menu" placeholder="mm/dd/yyyy"></p-columnFilter>
+                                    </div>
+                                </th>
+                                <th style="min-width: 10rem">
+                                    <div class="flex justify-content-between align-items-center">
+                                        End Date
+                                        <p-columnFilter type="date" field="endDate" display="menu" placeholder="mm/dd/yyyy"></p-columnFilter>
+                                    </div>
+                                </th>
+                            </tr>
+                        </ng-template>
+
+                        <ng-template pTemplate="body" let-task>
+                            <tr style="min-width: 20rem;">
+                                <td class="font-bold " pFrozenColumn>
+                                    <div class="flex align-items-center justify-content-between gap-2">
+                                        <span>{{task.description}}</span>
+                                        <button pButton
+                                                type="button"
+                                                label="Access Task"
+                                                class="p-button-text p-button-sm project-access-btn"
+                                                (click)="accessTask(project)">
+                                        </button>
+                                    </div>
+                                </td>
+                                <td>
+                                    {{task.description}}
+                                </td>
+                                <td [class]="' status-' + task?.status.toLowerCase()" *ngIf="task.status">
+                                    <span>{{task.status}}</span>
+                                </td>
+                                <td>
+                                    {{task.actualWorkDays }} days
+                                </td>
+                                <td>
+                                    {{task.progress}} %
+                                </td>
+                                <td style="width:16%; min-width:20rem;">
+
+                                    <img *ngIf="task?.owner?.name"  [alt]="task?.owner.name"
+                                         [src]="'assets/demo/images/user/' + task.owner?.image "
+                                         (error)="onImageError($event)"
+                                         width="32" style="vertical-align: middle"/>
+                                    <span *ngIf="task?.owner?.name" class="image-text ml-2">{{task?.owner?.name}}</span>
+                                </td>
+                                <td style="overflow: hidden;">
+                                    <div class="flex align-items-center justify-content-between" style="min-width: 0rem;">
+                                        <span title="Actual Work Days" style="cursor: pointer;" class="text-green-600 font-semibold">{{ getActualWorkDaysCount(task) }}</span>
+                                        <div style="position: relative; padding: 2px; flex: 1; z-index: 0;" class="progress-container">
+                                            <p-progressBar [value]="task.progress" [showValue]="true" [style]="{'height': '0.8rem', 'font-size': '0.7rem', 'font-weight': 'bold'}"></p-progressBar>
+                                        </div>
+                                        <span title="Days Remaining" style="cursor: pointer;" class="text-red-600 font-semibold">{{ getDaysRemaining(task) }}</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    {{task.estimatedWorkDays }} days
+                                </td>
+                                <td>
+                                    {{task.startDate | date: 'MM/dd/yyyy'}}
+                                </td>
+                                <td>
+                                    {{task.endDate | date: 'MM/dd/yyyy'}}
+                                </td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="emptymessage">
+                            <tr>
+                                <td colspan="8">No Tasks found.</td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="loadingbody">
+                            <tr>
+                                <td colspan="8">Loading tasks data. Please wait.</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+
+                <!-- Documents -->
+                <div *ngIf="activeItem?.label === 'Documents'">
+                    <!-- Liste des documents -->
+                    <h2>la vue des documents </h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<p-dialog [(visible)]="taskDialog" [style]="{width: '600px'}" header="Task Details" [modal]="true" class="p-fluid">
+    <ng-template pTemplate="content">
+
+        <div class="field">
+            <label for="name">Task Name*</label>
+            <input type="text" pInputText id="name" [(ngModel)]="task.name" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !task.name}"/>
+            <small style="color: red" class="ng-dirty ng-invalid" *ngIf="submitted && !task.name">Task Name is required.</small>
+            <!--        server error for require name           -->
+<!--            <small style="color: red" class="ng-dirty ng-invalid" *ngIf="fieldErrors?.['name']">{{fieldErrors['name'] }}</small>-->
+        </div>
+        <div class="formgrid grid">
+            <!-- Status Field -->
+            <div class="field col-12 md:col-6">
+                <label for="status">Task Status</label>
+                <p-dropdown id="status" [(ngModel)]="task.status" [options]="taskStatuses" optionLabel="label" optionValue="value" placeholder="Select status" appendTo="body" styleClass="w-full">
+                    <ng-template let-status pTemplate="item">
+                        <span [class]="'customer-badge status-' + status.value">{{ status.label }}</span>
+                    </ng-template>
+                    <ng-template  let-status pTemplate="selectedItem">
+                        <span [class]="'customer-badge status-' + status.value" *ngIf="status">{{ status.label }}</span>
+                    </ng-template>
+                </p-dropdown>
+            </div>
+
+            <!-- Actual Work Days Field-->
+            <div class="field col-12 md:col-6">
+                <label for="actualWorkDays">Actual Work Days</label>
+                <input type="number" id="actualWorkDays" pInputText [(ngModel)]="task.actualWorkDays" placeholder="Number of actual work days"/>
+            </div>
+        </div>
+
+        <div class="field">
+            <label for="name">Description</label>
+            <textarea id="description" pInputTextarea [(ngModel)]="task.description" required rows="3" cols="20"></textarea>
+        </div>
+        <div class="formgrid grid">
+            <div class="field col-12 md:col-6">
+                <label for="startDate">Start Date</label>
+                <p-calendar appendTo="body" id="startDate" dateFormat="dd/mm/yy" dataType="string" [showIcon]="true" inputId="icon" [(ngModel)]="task.startDate"></p-calendar>
+            </div>
+            <div class="field col-12 md:col-6">
+                <!-- Mode Date -->
+                <ng-container *ngIf="!useDuration">
+                    <div class="flex justify-content-between align-items-center mb-2">
+                        <label for="endDate" >End Date</label>
+                        <a href="#" (click)="toggleDuration(true, $event)" style="font-size: 12px;">(Enter Duration)</a>
+                    </div>
+                    <p-calendar appendTo="body" id="endDate" dateFormat="dd/mm/yy" dataType="string" [showIcon]="true" [(ngModel)]="task.endDate"></p-calendar>
+                </ng-container>
+
+                <!-- Mode Duration -->
+                <ng-container *ngIf="useDuration">
+                    <div class="flex justify-content-between align-items-center mb-2">
+                        <label for="duration" class="m-0">Duration (days)</label>
+                        <a href="#" (click)="toggleDuration(false, $event)" style="font-size: 12px;">(Enter Date)</a>
+                    </div>
+                    <input type="number" id="duration" pInputText [(ngModel)]="task.estimatedWorkDays" placeholder="Enter number of days" />
+                </ng-container>
+            </div>
+
+        </div>
+        <div class="field">
+            <label for="ownerId">Owner</label>
+            <p-dropdown [(ngModel)]="task.ownerId"
+                        id="ownerId"
+                        inputId="ownerId"
+                        [options]="owners"
+                        optionValue="value"
+                        optionLabel="label"
+                        placeholder="Select the owner"
+                        appendTo="body"
+                        styleClass="w-full"
+            >
+                <ng-template pTemplate="item" let-pm >
+                    {{ pm.label}}
+                </ng-template>
+                <ng-template pTemplate="selectedItem" let-pm>
+                    <span *ngIf="pm" >{{pm.label}}</span>
+                </ng-template>
+            </p-dropdown>
+        </div>
+
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveTask()"></button>
+    </ng-template>
+</p-dialog>
