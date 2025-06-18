@@ -1,6 +1,7 @@
 <div  class="grid">
     <div class="col-12">
         <div class="card">
+            <p-toast></p-toast>
             <h5>Manage Projects</h5>
             <p-table
                 #dt1
@@ -118,7 +119,7 @@
                         <th style="min-width: 10rem">
                             <div class="flex justify-content-between align-items-center">
                                 Phase Status
-                                <p-columnFilter field="phase.phaseStatus" matchMode="equals" display="menu">
+                                <p-columnFilter field="phase.status.name" matchMode="equals" display="menu">
                                     <ng-template pTemplate="filter" let-value let-filter="filterCallback">
                                         <p-dropdown [ngModel]="value" [options]="phaseStatuses" (onChange)="filter($event.value)" placeholder="Any" [style]="{'min-width': '12rem'}" >
                                             <ng-template let-option pTemplate="item">
@@ -160,6 +161,7 @@
                                 <p-columnFilter type="numeric" field="estimatedWorkDays" display="menu" ></p-columnFilter>
                             </div>
                         </th>
+                        <th></th>
                     </tr>
                 </ng-template>
 
@@ -175,33 +177,53 @@
 <!--                </ng-template>-->
 
                 <ng-template pTemplate="body" let-project>
-                    <tr>
-                        <td class="font-bold " pFrozenColumn>
-                            <div class="flex align-items-center justify-content-between gap-2">
-                                <span>{{project.name}}</span>
-                                <button pButton
-                                        type="button"
-                                        label="Access Project"
-                                        class="p-button-text p-button-sm project-access-btn"
-                                        (click)="accessProject(project)">
-                                </button>
+                    <tr >
+                        <td class="font-bold" pFrozenColumn>
+                            <div class="flex align-items-center justify-content-between">
+                                <!-- Nom du projet à gauche -->
+                                <span>{{ project.name }}</span>
+
+                                <!-- Boutons côte à côte à droite -->
+                                <div class="flex gap-2">
+                                    <button pButton
+                                            type="button"
+                                            icon="pi pi-trash"
+                                            class="p-button-rounded p-button-text p-button-sm p-button-danger project-access-btn"
+                                            style="width: 1.8rem; height: 1.8rem; font-size: 0.7rem;"
+                                            (click)="trashProject(project)">
+                                    </button>
+                                    <button pButton
+                                            type="button"
+                                            icon="pi pi-pencil"
+                                            class="p-button-rounded p-button-text p-button-sm p-button-warning project-access-btn"
+                                            style="width: 1.8rem; height: 1.8rem; font-size: 0.7rem;"
+                                            (click)="editProject(project)">
+                                    </button>
+                                    <button pButton
+                                            type="button"
+                                            label="Access Project"
+                                            class="p-button-text p-button-sm project-access-btn"
+                                            style="font-size: 0.8rem; padding: 0.2rem 0.4rem;"
+                                            (click)="accessProject(project)">
+                                    </button>
+                                </div>
                             </div>
                         </td>
-                        <td>
+                        <td [ngClass]="{ 'red-text': project.progress > 100 }">
                             {{project.progress}} %
                         </td>
                         <td style="overflow: hidden;">
                             <div class="flex align-items-center justify-content-between" style="min-width: 0rem;">
-                                <span title="Closed Tasks" style="cursor: pointer;" class="text-green-600 font-semibold">{{ getClosedTasksCount(project) }}</span>
+                                <span title="Completed Tasks" style="cursor: pointer;" class="text-green-600 font-semibold">{{ getClosedTasksCount(project) }}</span>
                                 <div style="position: relative; padding: 2px; flex: 1; z-index: 0;" class="progress-container">
                                     <p-progressBar [value]="getTaskProgress(project)" [showValue]="true" [style]="{'height': '0.8rem', 'font-size': '0.7rem', 'font-weight': 'bold'}"></p-progressBar>
                                 </div>
-                                <span title="Open Tasks" style="cursor: pointer;" class="text-red-600 font-semibold">{{ getOpenTasksCount(project) }}</span>
+                                <span title="Open Tasks" style="cursor: pointer;" class="text-blue-600 font-semibold">{{ getOpenTasksCount(project) }}</span>
                             </div>
                         </td>
 
-                        <td *ngIf="project.status">
-                            <span [class]="'customer-badge status-' + project?.status.toLowerCase()">{{project.status}}</span>
+                        <td >
+                            <span *ngIf="project.status" [class]="'customer-badge status-' + project?.status.toLowerCase()">{{project.status}}</span>
                         </td>
                         <td>
                             <span class="font-bold">{{ project.client?.name }}</span><br>
@@ -210,14 +232,14 @@
                         <td>
                             {{project.description}}
                         </td>
-                        <td [class]="'phase-' +project.phase?.name.toLowerCase().replace(' ', '_')" *ngIf="project.phase?.name">
-                            <span >
+                        <td [class]="'phase-' +project.phase?.name.toLowerCase().replace(' ', '_')" >
+                            <span *ngIf="project.phase?.name" >
                                 {{ project.phase?.name.replace('_',' ') }}
                             </span>
                         </td>
-                        <td *ngIf="project.phase?.phaseStatus">
-                          <span [class]="'customer-badge phaseStatus-' + project.phase?.phaseStatus?.toLowerCase()">
-                            {{ project.phase?.phaseStatus }}
+                        <td >
+                          <span *ngIf="project.statusPhase?.name" [class]="'customer-badge phaseStatus-' + project.statusPhase?.name?.toLowerCase()">
+                            {{ project.statusPhase?.name }}
                           </span>
                         </td>
 
@@ -228,13 +250,20 @@
                             {{project.endDate | date: 'MM/dd/yyyy'}}
                         </td>
                         <td>
-                            {{project.deliveryDate | date: 'MM/dd/yyyy'}}
+                            <span >{{project.deliveryDate | date: 'MM/dd/yyyy'}}</span>
                         </td>
                         <td>
                             {{project.actualWorkDays }} days
                         </td>
                         <td>
                             {{project.estimatedWorkDays }} days
+                        </td>
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
+                                        (click)="editProject(project)"></button>
+                                <!-- <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteProject(project)"></button> -->
+                            </div>
                         </td>
 
                     </tr>
@@ -245,6 +274,7 @@
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="loadingbody">
+                    <br><br>
                     <tr>
                         <td colspan="8">Loading projects data. Please wait.</td>
                     </tr>
@@ -303,7 +333,7 @@
             <!-- Phase Status -->
             <div  class="field col-12 md:col-6">
                 <label for="phaseStatus">Phase Status</label>
-                <p-dropdown id="phaseStatus" [(ngModel)]="project.phase.phaseStatus" [options]="phaseStatuses" optionValue="value" optionLabel="label" placeholder="Select phase status" appendTo="body" styleClass="w-full">
+                <p-dropdown id="phaseStatus" [(ngModel)]="project.statusPhase.name" [options]="phaseStatuses" optionValue="value" optionLabel="label" placeholder="Select phase status" appendTo="body" styleClass="w-full">
                     <ng-template  let-status pTemplate="item">
                         <span [class]="'customer-badge phaseStatus-' + status.value">{{ status.label }}</span>
                     </ng-template>
@@ -320,7 +350,7 @@
         <div class="formgrid grid">
             <div class="field col-12 md:col-4">
                 <label for="startDate">Start Date</label>
-                <p-calendar appendTo="body" id="startDate" dateFormat="dd/mm/yy" dataType="string" [showIcon]="true" inputId="icon" [(ngModel)]="project.startDate"></p-calendar>
+                <p-calendar appendTo="body" id="startDate" dateFormat="mm/dd/yy" dataType="string" [showIcon]="true" inputId="icon" [(ngModel)]="project.startDate"></p-calendar>
             </div>
             <div class="field col-12 md:col-4">
                 <!-- Mode Date -->
@@ -329,7 +359,7 @@
                         <label for="endDate" >End Date</label>
                         <a href="#" (click)="toggleDuration(true, $event)" style="font-size: 12px;">(Enter Duration)</a>
                     </div>
-                    <p-calendar appendTo="body" id="endDate" dateFormat="dd/mm/yy" dataType="string" [showIcon]="true" [(ngModel)]="project.endDate"></p-calendar>
+                    <p-calendar appendTo="body" id="endDate" dateFormat="mm/dd/yy" dataType="string" [showIcon]="true" [(ngModel)]="project.endDate"></p-calendar>
                 </ng-container>
 
                 <!-- Mode Duration -->
@@ -344,7 +374,7 @@
 
             <div class="field col-12 md:col-4">
                 <label for="deliveryDate">Delivery Date</label>
-                <p-calendar appendTo="body" id="deliveryDate" dateFormat="dd/mm/yy" dataType="string" [showIcon]="true" [(ngModel)]="project.deliveryDate"></p-calendar>
+                <p-calendar appendTo="body" id="deliveryDate" dateFormat="mm/dd/yy" dataType="string" [showIcon]="true" [(ngModel)]="project.deliveryDate"></p-calendar>
             </div>
 
         </div>

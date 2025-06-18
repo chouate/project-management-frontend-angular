@@ -1,6 +1,7 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import { Location } from '@angular/common';
 import {Project} from "../../../../api/Project";
-import {MenuItem} from "primeng/api";
+import {MenuItem, MessageService} from "primeng/api";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ProjectService} from "../../../../service/project.service";
 import {Table} from "primeng/table";
@@ -9,14 +10,16 @@ import {Task} from "../../../../api/Task";
 import {filter, switchMap} from "rxjs";
 import {AuthService} from "../../../../service/auth.service";
 import {UserService} from "../../../../service/user.service";
+import {TaskService} from "../../../../service/task.service";
 
 @Component({
   selector: 'app-project-detail',
   templateUrl: './project-detail.component.html',
-  styleUrls: ['./project-detail.component.scss']
+  styleUrls: ['./project-detail.component.scss'],
+  providers: [MessageService]
 })
 export class ProjectDetailComponent implements OnInit{
-    project: Project;
+    project: Project={};
     items: MenuItem[];
     activeItem: MenuItem;
 
@@ -41,6 +44,9 @@ export class ProjectDetailComponent implements OnInit{
         private projectService: ProjectService,
         private authService: AuthService,
         private userService: UserService,
+        private taskService: TaskService,
+        private messageService: MessageService,
+        private location: Location,
         private router: Router
     ) {}
 
@@ -48,13 +54,36 @@ export class ProjectDetailComponent implements OnInit{
         // Récupérer l'ID du projet depuis l'URL
         const projectId:number = Number(this.route.snapshot.params['id']);
 
-        // Charger les détails du projet
-        this.projectService.getProjectById(projectId).then(project => {
-            this.project = project;
-            console.log(projectId);
-            console.log("project detail");
-            console.log(this.project);
+        // // Charger les détails du projet
+        // this.projectService.getProjectByIdStatic(projectId).then(project => {
+        //     this.project = project;
+        //     console.log(projectId);
+        //     console.log("project detail");
+        //     console.log(this.project);
+        // });
+
+        this.projectService.getProjectById(projectId).subscribe({
+            next: (project: Project) => {
+                this.project = project;
+                // Vérifier s'il y a des tâches et formater les dates
+                if (this.project.tasks && this.project.tasks.length > 0) {
+                    this.project.tasks.forEach(task => {
+                        if (task.startDate) {
+                            task.startDate = new Date(task.startDate);
+                        }
+                        if (task.endDate) {
+                            task.endDate =  new Date(task.endDate);
+                        }
+                    });
+                }
+                console.log("Project ID:", projectId);
+                console.log("Project detail:", this.project);
+            },
+            error: (error) => {
+                console.error("Error in loading the project :", error);
+            }
         });
+
 
         // Configuration du TabMenu
         this.items = [
@@ -101,7 +130,9 @@ export class ProjectDetailComponent implements OnInit{
     openNewTask() {
         this.taskDialog = true;
         this.task = {
-            status: 'to_come',
+            status: {
+                name: 'to_come'
+            },
         };
         this.submitted = false;
     }
@@ -138,12 +169,168 @@ export class ProjectDetailComponent implements OnInit{
         this.submitted = false;
     }
 
-    saveTask(){
-
-    }
 
     toggleDuration(value: boolean, event: Event) {
         event.preventDefault(); // Empêche le comportement par défaut du lien
         this.useDuration = value;
     }
+
+    formatDateToMMDDYYYY(date: Date | string): string | null {
+        if (!date) return null;
+        const d = new Date(date);
+        const month = ('0' + (d.getMonth() + 1)).slice(-2);
+        const day = ('0' + d.getDate()).slice(-2);
+        const year = d.getFullYear();
+        return `${month}/${day}/${year}`;
+    }
+
+    getStatusIdByName(statusName: string): number {
+        switch (statusName) {
+            case 'to_come': return 1;
+            case 'in_progress': return 2;
+            case 'completed': return 3;
+            default: return 1;
+        }
+    }
+
+    saveTask() {
+        this.submitted = true;
+
+        if (!this.task.name || !this.project.id) {
+            return;
+        }
+
+        // -- GESTION DATES & DURÉE --
+        if (this.useDuration) {
+            // Mode durée => on calcule endDate
+            if (this.task.estimatedWorkDays && this.task.startDate) {
+                const startDate = new Date(this.task.startDate);
+                startDate.setDate(startDate.getDate() + this.task.estimatedWorkDays);
+                this.task.endDate = startDate;
+            }
+        } else {
+            // Mode date => on calcule estimatedWorkDays
+            if (this.task.startDate && this.task.endDate) {
+                const start = new Date(this.task.startDate);
+                const end = new Date(this.task.endDate);
+                const diff = end.getTime() - start.getTime();
+                this.task.estimatedWorkDays = Math.round(diff / (1000 * 3600 * 24));
+            }
+        }
+
+        // -- CALCUL PROGRESSION --
+        let progress = 0;
+        if (this.task.actualWorkDays != null && this.task.estimatedWorkDays && this.task.estimatedWorkDays > 0) {
+            progress = Math.round((this.task.actualWorkDays / this.task.estimatedWorkDays) * 100);
+        }
+
+        const payload = {
+            id: this.task.id,
+            name: this.task.name,
+            description: this.task.description,
+            startDate: this.formatDateToMMDDYYYY(this.task.startDate),
+            endDate: this.formatDateToMMDDYYYY(this.task.endDate),
+            estimatedWorkDays: this.task.estimatedWorkDays,
+            actualWorkDays: this.task.actualWorkDays,
+            completionPercentage: this.task.completionPercentage,
+            progress: progress,
+            projectId: this.project.id,
+            ownerId: this.task.ownerId,
+            status: {
+                id: this.getStatusIdByName(this.task.status.name)
+            }
+        };
+
+        // -- UPDATE --
+        if (this.task.id) {
+            this.taskService.updateTask(payload).subscribe({
+                next: (updatedTask) => {
+                    console.log("payload: ")
+                    console.log(payload)
+
+                    console.log("updatedTask: ")
+                    console.log(updatedTask)
+                    const index = this.project.tasks.findIndex(t => t.id === updatedTask.id);
+                    if (index !== -1) {
+                        updatedTask.startDate = updatedTask.startDate ? new Date(updatedTask.startDate) : null;
+                        updatedTask.endDate = updatedTask.endDate ? new Date(updatedTask.endDate) : null;
+                        // remplace la tâche dans la liste locale
+                        this.project.tasks[index] = updatedTask;
+                        this.project.tasks = [...this.project.tasks]; // déclenche la détection de changement
+                    }
+                    this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Task Updated', life: 3000 });
+                    this.taskDialog = false;
+                    this.task = {};
+                    this.submitted = false;
+                },
+                error: err => {
+                    console.error("Erreur lors de la mise à jour :", err);
+                    const detail = err.error?.message ?? 'Task not updated.';
+                    this.messageService.add({ severity: 'error', summary: 'Error', detail, life: 3000 });
+                }
+            });
+        }
+        // -- CREATE --
+        else {
+            this.taskService.createTask(payload).subscribe({
+                next: (createdTask) => {
+                    //formter les dates pour les filtrages
+                    if(createdTask.startDate){
+                        createdTask.startDate = new Date(createdTask.startDate);
+                    }
+                    if (createdTask.endDate){
+                        createdTask.endDate = new Date(createdTask.endDate);
+                    }
+
+                    this.project.tasks = [...(this.project.tasks || []), createdTask];
+                    this.taskDialog = false;
+                    this.task = {};
+                    this.submitted = false;
+                    this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Task Created', life: 3000 });
+                },
+                error: err => {
+                    console.error("Erreur lors de la création :", err);
+                    const detail = err.error?.message ?? 'Task not created.';
+                    this.messageService.add({ severity: 'error', summary: 'Error', detail, life: 3000 });
+                }
+            });
+        }
+    }
+
+
+    editTask(task: Task) {
+        this.task = {
+            ...task,
+            status: { name: task.status?.name.toLowerCase() ?? 'to_come' },
+            ownerId: task.owner?.id ?? null
+        };
+        this.useDuration = false; // facultatif : remettre le mode date
+        this.taskDialog = true;
+        this.submitted = false;
+    }
+    trashTask(task: Task){
+
+    }
+
+    goBackToProjectList() {
+        //this.router.navigate(['/projects']);
+        this.location.back();
+    }
+
+    countWorkingDays(startDate: Date, endDate: Date): number {
+        let count = 0;
+        const current = new Date(startDate);
+
+        while (current <= endDate) {
+            const day = current.getDay();
+            if (day !== 0 && day !== 6) { // pas dimanche (0) ni samedi (6)
+                count++;
+            }
+            current.setDate(current.getDate() + 1);
+        }
+
+        return count;
+    }
+
+
 }

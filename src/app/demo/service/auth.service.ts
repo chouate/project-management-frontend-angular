@@ -23,4 +23,9 @@ export class AuthService  {
     getUserRole(): string {
         return this.currentUser$.getValue()?.role || '';
     }
+
+    getCurrentUserId(): number {
+        return this.currentUser$.value?.id;
+    }
+
 }

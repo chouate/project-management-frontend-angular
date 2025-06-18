@@ -9,7 +9,7 @@ import {Observable} from "rxjs";
 })
 export class ClientService {
 
-    private readonly apiUrl = 'http://localhost:8082';
+    private readonly apiUrl = 'http://localhost:8088';
 
     constructor(private http: HttpClient) { }
     // getClients() {
@@ -20,7 +20,7 @@ export class ClientService {
     // }
 
     getClients(): Observable<Client[]> {
-        return this.http.get<Client[]>('http://localhost:8082/api/clients/getAll');
+        return this.http.get<Client[]>('http://localhost:8088/api/clients/getAll');
     }
 
     getClientsByDirector(directorId: number): Observable<Client[]> {
@@ -36,15 +36,15 @@ export class ClientService {
     }
 
     createClient(client: Client): Observable<Client> {
-        return this.http.post<Client>('http://localhost:8082/api/clients', client);
+        return this.http.post<Client>('http://localhost:8088/api/clients', client);
     }
 
     updateClient(client: Client): Observable<Client> {
-        return this.http.patch<Client>(`http://localhost:8082/api/clients/${client.id}`, client);
+        return this.http.patch<Client>(`http://localhost:8088/api/clients/${client.id}`, client);
     }
 
     deleteClient(id: number): Observable<any>{
-        return this.http.delete(`http://localhost:8082/api/clients/${id}`);
+        return this.http.delete(`http://localhost:8088/api/clients/${id}`);
     }
 
 

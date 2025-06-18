@@ -1,3 +1,4 @@
+
 export interface Project{
     id?: number;
     name?: string;
@@ -13,9 +14,11 @@ export interface Project{
     clientId?: number;
     projectManagerId?: number;
     phaseId?: number;
+    statusPhaseId?: number;
 
     client?: Client;
     phase?: Phase;
+    statusPhase?: PhaseStatus;
     tasks?: Task[];
     projectManager?: ProjectManager;
 
@@ -36,12 +39,43 @@ interface ProjectManager{
 interface Phase{
     id?: number;
     name?: string;
-    phaseStatus?: string;
+    description?: string;
+    //status?: PhaseStatus;
 }
 
-interface Task{
+interface PhaseStatus{
     id?: number;
+    name?: string;
     description?: string;
-    status?: string;
+}
+
+
+ interface Task{
+    id?: number;
+    name?: string;
+    description?: string;
+    status?: TaskStatus;
+    actualWorkDays?: number;
     progress?: number;
+    owner?: Owner;
+    ownerId?: number;
+    completionPercentage?: number;
+    startDate?: Date;
+    endDate?: Date;
+    estimatedWorkDays?: number;
+
+}
+
+interface Owner{
+    id?: number;
+    name?: string;
+    firstName?: string;
+    lastName?: string;
+    image?: string;
+}
+
+interface TaskStatus{
+    id?: number;
+    name?: string;
+    description?: string;
 }

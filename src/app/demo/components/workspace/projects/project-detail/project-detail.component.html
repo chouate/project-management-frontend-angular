@@ -4,7 +4,22 @@
     <!-- TabMenu -->
     <div class="col-12">
         <div class="card">
-            <h5>{{ project?.name }}</h5>
+            <p-toast></p-toast>
+<!--            <h5>{{ project?.name }}</h5>-->
+            <div class="flex justify-content-between align-items-center mb-3">
+                <!-- Nom du projet à gauche -->
+                <h5 class="m-0">{{ project?.name }}</h5>
+
+                <!-- Bouton de retour à droite -->
+                <button pButton type="button"
+                        icon="pi pi-arrow-left"
+                        class="p-button-rounded p-button-text p-button-sm"
+                        style="width: 2rem; height: 2rem;"
+                        (click)="goBackToProjectList()"
+                        pTooltip="Back" tooltipPosition="bottom">
+                </button>
+            </div>
+
             <p-tabMenu [model]="items" [activeItem]="activeItem" (activeItemChange)="onTabChange($event)"></p-tabMenu>
 
             <!-- Contenu dynamique basé sur l'onglet sélectionné -->
@@ -24,7 +39,9 @@
                 <div *ngIf="activeItem?.label === 'Tasks'">
 <!--                    <h5>Manage Tasks</h5>-->
                     <p-table
+
                         #dt1
+
                         [value]="project.tasks"
                         [scrollable]="true"
                         scrollHeight="500px"
@@ -62,7 +79,7 @@
                                 <th style="min-width: 25rem; " pFrozenColumn >
                                     <div class="flex justify-content-between align-items-center">
                                         Task Name
-                                        <p-columnFilter type="text" field="description" display="menu" placeholder="Search by Task name"></p-columnFilter>
+                                        <p-columnFilter type="text" field="name" display="menu" placeholder="Search by Task name"></p-columnFilter>
                                     </div>
                                 </th>
                                 <th style="min-width: 30rem">
@@ -74,7 +91,7 @@
                                 <th style="min-width: 12rem">
                                     <div class="flex justify-content-between align-items-center">
                                         Task Status
-                                        <p-columnFilter field="status" matchMode="equals" display="menu">
+                                        <p-columnFilter field="status.name" matchMode="equals" display="menu">
                                             <ng-template pTemplate="filter" let-value let-filter="filterCallback">
                                                 <p-dropdown [ngModel]="value" [options]="taskStatuses" (onChange)="filter($event.value)" placeholder="Any" [style]="{'min-width': '12rem'}" >
                                                     <ng-template let-option pTemplate="item">
@@ -137,47 +154,79 @@
                                         <p-columnFilter type="date" field="endDate" display="menu" placeholder="mm/dd/yyyy"></p-columnFilter>
                                     </div>
                                 </th>
+                                <th></th>
                             </tr>
                         </ng-template>
 
                         <ng-template pTemplate="body" let-task>
                             <tr style="min-width: 20rem;">
-                                <td class="font-bold " pFrozenColumn>
-                                    <div class="flex align-items-center justify-content-between gap-2">
-                                        <span>{{task.description}}</span>
-                                        <button pButton
-                                                type="button"
-                                                label="Access Task"
-                                                class="p-button-text p-button-sm project-access-btn"
-                                                (click)="accessTask(project)">
-                                        </button>
+<!--                                <td class="font-bold " pFrozenColumn>-->
+<!--                                    <div class="flex align-items-center justify-content-between gap-2">-->
+<!--                                        <span>{{task.name}}</span>-->
+<!--                                        <button pButton-->
+<!--                                                type="button"-->
+<!--                                                label="Access Task"-->
+<!--                                                class="p-button-text p-button-sm project-access-btn"-->
+<!--                                                (click)="accessTask(project)">-->
+<!--                                        </button>-->
+<!--                                    </div>-->
+<!--                                </td>-->
+                                <td class="font-bold" pFrozenColumn>
+                                    <div class="flex align-items-center justify-content-between">
+                                        <!-- Nom du tache à gauche -->
+                                        <span>{{ task.name }}</span>
+
+                                        <!-- Boutons côte à côte à droite -->
+                                        <div class="flex gap-2">
+                                            <button pButton
+                                                    type="button"
+                                                    icon="pi pi-trash"
+                                                    class="p-button-rounded p-button-text p-button-sm p-button-danger project-access-btn"
+                                                    style="width: 1.8rem; height: 1.8rem; font-size: 0.7rem;"
+                                                    (click)="trashTask(task)">
+                                            </button>
+                                            <button pButton
+                                                    type="button"
+                                                    icon="pi pi-pencil"
+                                                    class="p-button-rounded p-button-text p-button-sm p-button-warning project-access-btn"
+                                                    style="width: 1.8rem; height: 1.8rem; font-size: 0.7rem;"
+                                                    (click)="editTask(task)">
+                                            </button>
+<!--                                            <button pButton-->
+<!--                                                    type="button"-->
+<!--                                                    label="Access Project"-->
+<!--                                                    class="p-button-text p-button-sm project-access-btn"-->
+<!--                                                    style="font-size: 0.8rem; padding: 0.2rem 0.4rem;"-->
+<!--                                                    (click)="accessProject(project)">-->
+<!--                                            </button>-->
+                                        </div>
                                     </div>
                                 </td>
                                 <td>
                                     {{task.description}}
                                 </td>
-                                <td [class]="' status-' + task?.status.toLowerCase()" *ngIf="task.status">
-                                    <span>{{task.status}}</span>
+                                <td [class]="' status-' + task?.status.name.toLowerCase()" >
+                                    <span *ngIf="task.status.name">{{task.status.name}}</span>
                                 </td>
                                 <td>
                                     {{task.actualWorkDays }} days
                                 </td>
-                                <td>
+                                <td [ngClass]="{ 'red-text': task.progress > 100 }">
                                     {{task.progress}} %
                                 </td>
                                 <td style="width:16%; min-width:20rem;">
 
-                                    <img *ngIf="task?.owner?.name"  [alt]="task?.owner.name"
+                                    <img *ngIf="task?.owner?.image"  [alt]="task?.owner.name"
                                          [src]="'assets/demo/images/user/' + task.owner?.image "
                                          (error)="onImageError($event)"
                                          width="32" style="vertical-align: middle"/>
-                                    <span *ngIf="task?.owner?.name" class="image-text ml-2">{{task?.owner?.name}}</span>
+                                    <span *ngIf="task?.owner?.firstName" class="image-text ml-2">{{task?.owner?.firstName}}  {{task?.owner?.lastName}}</span>
                                 </td>
                                 <td style="overflow: hidden;">
                                     <div class="flex align-items-center justify-content-between" style="min-width: 0rem;">
                                         <span title="Actual Work Days" style="cursor: pointer;" class="text-green-600 font-semibold">{{ getActualWorkDaysCount(task) }}</span>
                                         <div style="position: relative; padding: 2px; flex: 1; z-index: 0;" class="progress-container">
-                                            <p-progressBar [value]="task.progress" [showValue]="true" [style]="{'height': '0.8rem', 'font-size': '0.7rem', 'font-weight': 'bold'}"></p-progressBar>
+                                            <p-progressBar [value]="task.completionPercentage" [showValue]="true" [style]="{'height': '0.8rem', 'font-size': '0.7rem', 'font-weight': 'bold'}"></p-progressBar>
                                         </div>
                                         <span title="Days Remaining" style="cursor: pointer;" class="text-red-600 font-semibold">{{ getDaysRemaining(task) }}</span>
                                     </div>
@@ -186,10 +235,17 @@
                                     {{task.estimatedWorkDays }} days
                                 </td>
                                 <td>
-                                    {{task.startDate | date: 'MM/dd/yyyy'}}
+                                    {{ task.startDate ? (task.startDate | date: 'MM/dd/yyyy') : '' }}
                                 </td>
                                 <td>
                                     {{task.endDate | date: 'MM/dd/yyyy'}}
+                                </td>
+                                <td>
+                                    <div class="flex">
+                                        <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
+                                                (click)="editTask(task)"></button>
+                                        <!-- <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteProject(project)"></button> -->
+                                    </div>
                                 </td>
                             </tr>
                         </ng-template>
@@ -231,7 +287,7 @@
             <!-- Status Field -->
             <div class="field col-12 md:col-6">
                 <label for="status">Task Status</label>
-                <p-dropdown id="status" [(ngModel)]="task.status" [options]="taskStatuses" optionLabel="label" optionValue="value" placeholder="Select status" appendTo="body" styleClass="w-full">
+                <p-dropdown id="status" [(ngModel)]="task.status.name" [options]="taskStatuses" optionLabel="label" optionValue="value" placeholder="Select status" appendTo="body" styleClass="w-full">
                     <ng-template let-status pTemplate="item">
                         <span [class]="'customer-badge status-' + status.value">{{ status.label }}</span>
                     </ng-template>
@@ -255,7 +311,8 @@
         <div class="formgrid grid">
             <div class="field col-12 md:col-6">
                 <label for="startDate">Start Date</label>
-                <p-calendar appendTo="body" id="startDate" dateFormat="dd/mm/yy" dataType="string" [showIcon]="true" inputId="icon" [(ngModel)]="task.startDate"></p-calendar>
+                <p-calendar appendTo="body" id="startDate" dateFormat="mm/dd/yy" dataType="string" [showIcon]="true" inputId="icon" [(ngModel)]="task.startDate"
+                            [disabledDays]="[0,6]">></p-calendar>
             </div>
             <div class="field col-12 md:col-6">
                 <!-- Mode Date -->
@@ -264,7 +321,8 @@
                         <label for="endDate" >End Date</label>
                         <a href="#" (click)="toggleDuration(true, $event)" style="font-size: 12px;">(Enter Duration)</a>
                     </div>
-                    <p-calendar appendTo="body" id="endDate" dateFormat="dd/mm/yy" dataType="string" [showIcon]="true" [(ngModel)]="task.endDate"></p-calendar>
+                    <p-calendar appendTo="body" id="endDate" dateFormat="mm/dd/yy" dataType="string" [showIcon]="true" [(ngModel)]="task.endDate"
+                                [disabledDays]="[0,6]">></p-calendar>
                 </ng-container>
 
                 <!-- Mode Duration -->

@@ -46,7 +46,7 @@ import {InputTextareaModule} from "primeng/inputtextarea";
         ToastModule,
         ToggleButtonModule,
         FormsModule,
-
+        ToastModule,
         TabMenuModule,
         CardModule,
         ChartModule,

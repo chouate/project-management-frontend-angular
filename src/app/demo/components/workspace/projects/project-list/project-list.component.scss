@@ -219,3 +219,12 @@ end style for the phas field in the project dilog
 
 
 
+::ng-deep .p-datatable .p-datatable-tbody > tr {
+    min-height: 56px !important; // ou 3.5rem
+    height: 56px !important;
+    display: table-row !important; // pour éviter les conflits d'affichage
+}
+
+.red-text {
+    color: #ee0529;
+}
