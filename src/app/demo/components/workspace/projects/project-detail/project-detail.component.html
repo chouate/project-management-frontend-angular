@@ -108,6 +108,12 @@
                                         <p-columnFilter type="numeric" field="actualWorkDays" display="menu" ></p-columnFilter>
                                     </div>
                                 </th>
+                                <th style="min-width: 10rem">
+                                    <div class="flex justify-content-between align-items-center">
+                                        Estimated Work Days
+                                        <p-columnFilter type="numeric" field="estimatedWorkDays" display="menu" ></p-columnFilter>
+                                    </div>
+                                </th>
 
                                 <th style="min-width: 5rem">
                                     <div class="flex justify-content-between align-items-center">
@@ -115,7 +121,12 @@
                                         <p-columnFilter type="numeric" field="progress" display="menu" ></p-columnFilter>
                                     </div>
                                 </th>
-
+                                <th style="min-width: 12rem; "  >
+                                    <div class="flex justify-content-between align-items-center">
+                                        Technology
+                                        <p-columnFilter type="text" field="technology.name" display="menu" placeholder="Search by Technology name"></p-columnFilter>
+                                    </div>
+                                </th>
                                 <th style="min-width: 12rem">
                                     <div class="flex justify-content-between align-items-center">
                                         Owner
@@ -138,8 +149,8 @@
                                 </th>
                                 <th style="min-width: 10rem">
                                     <div class="flex justify-content-between align-items-center">
-                                        Estimated Work Days
-                                        <p-columnFilter type="numeric" field="estimatedWorkDays" display="menu" ></p-columnFilter>
+                                        Duration
+                                        <p-columnFilter type="numeric" field="duration" display="menu" ></p-columnFilter>
                                     </div>
                                 </th>
                                 <th style="min-width: 10rem">
@@ -209,10 +220,16 @@
                                     <span *ngIf="task.status.name">{{task.status.name}}</span>
                                 </td>
                                 <td>
-                                    {{task.actualWorkDays }} days
+                                    {{task.actualWorkDays }} man/days
+                                </td>
+                                <td>
+                                    {{task.estimatedWorkDays }} man/days
                                 </td>
                                 <td [ngClass]="{ 'red-text': task.progress > 100 }">
                                     {{task.progress}} %
+                                </td>
+                                <td>
+                                    {{task?.technology?.name}}
                                 </td>
                                 <td style="width:16%; min-width:20rem;">
 
@@ -224,15 +241,24 @@
                                 </td>
                                 <td style="overflow: hidden;">
                                     <div class="flex align-items-center justify-content-between" style="min-width: 0rem;">
-                                        <span title="Actual Work Days" style="cursor: pointer;" class="text-green-600 font-semibold">{{ getActualWorkDaysCount(task) }}</span>
-                                        <div style="position: relative; padding: 2px; flex: 1; z-index: 0;" class="progress-container">
+                                        <span pTooltip="Actual Work Days" style="cursor: pointer;" class="text-green-600 font-semibold">{{ getActualWorkDaysCount(task) }}</span>
+                                        <div style="position: relative; padding: 2px;  flex: 1; z-index: 0;" class="progress-container">
                                             <p-progressBar [value]="task.completionPercentage" [showValue]="true" [style]="{'height': '0.8rem', 'font-size': '0.7rem', 'font-weight': 'bold'}"></p-progressBar>
                                         </div>
-                                        <span title="Days Remaining" style="cursor: pointer;" class="text-red-600 font-semibold">{{ getDaysRemaining(task) }}</span>
+<!--                                        <span pTooltip="Days Remaining" style="cursor: pointer;" class="text-red-600 font-semibold">{{ getDaysRemaining(task) }}</span>-->
+                                        <span
+                                            pTooltip="{{ getDaysRemainingTooltip(task) }}"
+                                            style="cursor: pointer;"
+                                            [ngClass]="getDaysRemainingStyle(task)">
+                                            <!-- Icône de retard si nécessaire -->
+                                            <i *ngIf="getDaysRemaining(task) < 0" class="pi pi-exclamation-triangle mr-1 text-red-600"></i>
+                                            {{ getDaysRemainingDisplay(task) }}
+
+                                        </span>
                                     </div>
                                 </td>
                                 <td>
-                                    {{task.estimatedWorkDays }} days
+                                    {{task.duration }} days
                                 </td>
                                 <td>
                                     {{ task.startDate ? (task.startDate | date: 'MM/dd/yyyy') : '' }}
@@ -273,7 +299,7 @@
 </div>
 
 
-<p-dialog [(visible)]="taskDialog" [style]="{width: '600px'}" header="Task Details" [modal]="true" class="p-fluid">
+<p-dialog [(visible)]="taskDialog" [style]="{width: '700px', height: '1000px'}" header="Task Details" [modal]="true" class="p-fluid">
     <ng-template pTemplate="content">
 
         <div class="field">
@@ -300,10 +326,50 @@
             <!-- Actual Work Days Field-->
             <div class="field col-12 md:col-6">
                 <label for="actualWorkDays">Actual Work Days</label>
-                <input type="number" id="actualWorkDays" pInputText [(ngModel)]="task.actualWorkDays" placeholder="Number of actual work days"/>
+                <div class="p-inputgroup">
+                    <input type="number" [min]="0" step="1" id="actualWorkDays" pInputText [(ngModel)]="task.actualWorkDays" placeholder="Number of actual work days"/>
+                    <span class="p-inputgroup-addon">man-days</span>
+                </div>
             </div>
         </div>
 
+<!--        <div class="field">-->
+<!--            <label for="status">Task Status</label>-->
+<!--            <p-dropdown id="status" [(ngModel)]="task.status.name" [options]="taskStatuses" optionLabel="label" optionValue="value" placeholder="Select status" appendTo="body" styleClass="w-full">-->
+<!--                <ng-template let-status pTemplate="item">-->
+<!--                    <span [class]="'customer-badge status-' + status.value">{{ status.label }}</span>-->
+<!--                </ng-template>-->
+<!--                <ng-template  let-status pTemplate="selectedItem">-->
+<!--                    <span [class]="'customer-badge status-' + status.value" *ngIf="status">{{ status.label }}</span>-->
+<!--                </ng-template>-->
+<!--            </p-dropdown>-->
+<!--        </div>-->
+<!--        &lt;!&ndash; Actual Work Days Field&ndash;&gt;-->
+<!--        <div class="field ">-->
+<!--            <label for="actualWorkDays">Actual Work Days</label>-->
+<!--            <div class="p-inputgroup">-->
+<!--                <input type="number" [min]="0" step="1" id="actualWorkDays" pInputText [(ngModel)]="task.actualWorkDays" placeholder="Number of actual work days"/>-->
+<!--                <span class="p-inputgroup-addon">man-days</span>-->
+<!--            </div>-->
+<!--        </div>-->
+        <div class="field ">
+            <label for="estimatedWorkDays">Estimated Work Days</label>
+            <div class="p-inputgroup">
+                <input type="number"
+                       id="estimatedWorkDays"
+                       pInputText
+                       [(ngModel)]="task.estimatedWorkDays"
+                       [min]="0"
+                       step="1"
+                       placeholder="Enter estimated work days"
+                       [ngClass]="{ 'ng-invalid ng-dirty': submitted && task.estimatedWorkDays <= 0 }"
+                />
+                <span class="p-inputgroup-addon">man-days</span>
+            </div>
+            <small *ngIf="submitted && (task.estimatedWorkDays == null || task.estimatedWorkDays <= 0)" style="color: red;">
+                Estimated work days is required.
+            </small>
+        </div>
         <div class="field">
             <label for="name">Description</label>
             <textarea id="description" pInputTextarea [(ngModel)]="task.description" required rows="3" cols="20"></textarea>
@@ -312,7 +378,7 @@
             <div class="field col-12 md:col-6">
                 <label for="startDate">Start Date</label>
                 <p-calendar appendTo="body" id="startDate" dateFormat="mm/dd/yy" dataType="string" [showIcon]="true" inputId="icon" [(ngModel)]="task.startDate"
-                            [disabledDays]="[0,6]">></p-calendar>
+                            [disabledDays]="[0,6]"></p-calendar>
             </div>
             <div class="field col-12 md:col-6">
                 <!-- Mode Date -->
@@ -322,7 +388,7 @@
                         <a href="#" (click)="toggleDuration(true, $event)" style="font-size: 12px;">(Enter Duration)</a>
                     </div>
                     <p-calendar appendTo="body" id="endDate" dateFormat="mm/dd/yy" dataType="string" [showIcon]="true" [(ngModel)]="task.endDate"
-                                [disabledDays]="[0,6]">></p-calendar>
+                                [disabledDays]="[0,6]"></p-calendar>
                 </ng-container>
 
                 <!-- Mode Duration -->
@@ -331,28 +397,84 @@
                         <label for="duration" class="m-0">Duration (days)</label>
                         <a href="#" (click)="toggleDuration(false, $event)" style="font-size: 12px;">(Enter Date)</a>
                     </div>
-                    <input type="number" id="duration" pInputText [(ngModel)]="task.estimatedWorkDays" placeholder="Enter number of days" />
+                    <div class="p-inputgroup">
+                        <input type="number" [min]="0" step="1" id="duration" pInputText [(ngModel)]="task.duration" placeholder="Enter number of days" />
+                        <span class="p-inputgroup-addon">days</span>
+                    </div>
                 </ng-container>
             </div>
 
         </div>
         <div class="field">
+            <label for="technologyId">Technology</label>
+            <p-dropdown
+                [(ngModel)]="task.technologyId"
+                id="technologyId"
+                [options]="technologies"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Select technology"
+                appendTo="body"
+                styleClass="w-full">
+            </p-dropdown>
+        </div>
+<!--        <div class="field">-->
+<!--            <label for="ownerId">Owner</label>-->
+<!--            <p-dropdown [(ngModel)]="task.ownerId"-->
+<!--                        id="ownerId"-->
+<!--                        inputId="ownerId"-->
+<!--                        [options]="owners"-->
+<!--                        optionValue="value"-->
+<!--                        optionLabel="label"-->
+<!--                        [itemTemplate]="techTemplate"-->
+<!--                        placeholder="Select the owner"-->
+<!--                        appendTo="body"-->
+<!--                        styleClass="w-full"-->
+<!--            >-->
+<!--&lt;!&ndash;                <ng-template pTemplate="item" let-owner >&ndash;&gt;-->
+<!--&lt;!&ndash;                    {{ owner.label}}&ndash;&gt;-->
+<!--&lt;!&ndash;                </ng-template>&ndash;&gt;-->
+<!--&lt;!&ndash;                <ng-template pTemplate="selectedItem" let-owner>&ndash;&gt;-->
+<!--&lt;!&ndash;                    <span *ngIf="owner" >{{owner.label}}</span>&ndash;&gt;-->
+<!--&lt;!&ndash;                </ng-template>&ndash;&gt;-->
+<!--                <ng-template #techTemplate let-owner>-->
+<!--                    <div class="flex flex-column">-->
+<!--                        <div class="font-bold">{{owner.label}}</div>-->
+<!--&lt;!&ndash;                        <div class="text-sm">Tech: {{ owner.technologies.map(t => t.name).join(', ') }}</div>&ndash;&gt;-->
+<!--                        <div class="text-sm">Charge: X jrs</div>-->
+<!--                        <div class="text-sm text-green-600" *ngIf="true">Dispo</div>-->
+<!--                        <div class="text-sm text-red-600" *ngIf="true">Surchargé</div>-->
+<!--                    </div>-->
+<!--                </ng-template>-->
+<!--            </p-dropdown>-->
+<!--        </div>-->
+
+        <div class="field">
             <label for="ownerId">Owner</label>
-            <p-dropdown [(ngModel)]="task.ownerId"
-                        id="ownerId"
-                        inputId="ownerId"
-                        [options]="owners"
-                        optionValue="value"
-                        optionLabel="label"
-                        placeholder="Select the owner"
-                        appendTo="body"
-                        styleClass="w-full"
+            <p-dropdown
+                [(ngModel)]="task.ownerId"
+                id="ownerId"
+                inputId="ownerId"
+                [options]="owners"
+                optionValue="value"
+                optionLabel="label"
+                placeholder="Select the owner"
+                appendTo="body"
+                styleClass="w-full"
             >
-                <ng-template pTemplate="item" let-pm >
-                    {{ pm.label}}
+                <!-- Template pour chaque élément de la liste déroulante -->
+                <ng-template let-owner pTemplate="item">
+                    <div class="flex flex-column">
+                        <div class="font-bold">{{ owner.label }}</div>
+                        <div class="text-sm">Charge: X jrs</div>
+                        <div class="text-sm text-green-600" *ngIf="true">Dispo</div>
+                        <div class="text-sm text-red-600" *ngIf="true">Surchargé</div>
+                    </div>
                 </ng-template>
-                <ng-template pTemplate="selectedItem" let-pm>
-                    <span *ngIf="pm" >{{pm.label}}</span>
+
+                <!-- Template pour l’élément sélectionné -->
+                <ng-template let-owner pTemplate="selectedItem">
+                    <span *ngIf="owner">{{ owner.label }}</span>
                 </ng-template>
             </p-dropdown>
         </div>

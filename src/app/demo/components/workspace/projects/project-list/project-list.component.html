@@ -145,6 +145,12 @@
                         </th>
                         <th style="min-width: 10rem">
                             <div class="flex justify-content-between align-items-center">
+                                Duration
+                                <p-columnFilter type="numeric" field="duration" display="menu" ></p-columnFilter>
+                            </div>
+                        </th>
+                        <th style="min-width: 10rem">
+                            <div class="flex justify-content-between align-items-center">
                                 Delivery Date
                                 <p-columnFilter type="date" field="deliveryDate" display="menu" placeholder="mm/dd/yyyy"></p-columnFilter>
                             </div>
@@ -214,11 +220,11 @@
                         </td>
                         <td style="overflow: hidden;">
                             <div class="flex align-items-center justify-content-between" style="min-width: 0rem;">
-                                <span title="Completed Tasks" style="cursor: pointer;" class="text-green-600 font-semibold">{{ getClosedTasksCount(project) }}</span>
+                                <span  pTooltip="Completed Tasks" style="cursor: pointer;" class="text-green-600 font-semibold">{{ getClosedTasksCount(project) }}</span>
                                 <div style="position: relative; padding: 2px; flex: 1; z-index: 0;" class="progress-container">
                                     <p-progressBar [value]="getTaskProgress(project)" [showValue]="true" [style]="{'height': '0.8rem', 'font-size': '0.7rem', 'font-weight': 'bold'}"></p-progressBar>
                                 </div>
-                                <span title="Open Tasks" style="cursor: pointer;" class="text-blue-600 font-semibold">{{ getOpenTasksCount(project) }}</span>
+                                <span pTooltip="Open Tasks" style="cursor: pointer;" class="text-blue-600 font-semibold">{{ getOpenTasksCount(project) }}</span>
                             </div>
                         </td>
 
@@ -250,13 +256,16 @@
                             {{project.endDate | date: 'MM/dd/yyyy'}}
                         </td>
                         <td>
+                            {{project.duration }} days
+                        </td>
+                        <td>
                             <span >{{project.deliveryDate | date: 'MM/dd/yyyy'}}</span>
                         </td>
                         <td>
-                            {{project.actualWorkDays }} days
+                            {{project.actualWorkDays }} man-days
                         </td>
                         <td>
-                            {{project.estimatedWorkDays }} days
+                            {{project.estimatedWorkDays }} man-days
                         </td>
                         <td>
                             <div class="flex">
@@ -312,8 +321,29 @@
             <!-- Actual Work Days Field-->
             <div class="field col-12 md:col-6">
                 <label for="actualWorkDays">Actual Work Days</label>
-                <input type="number" id="actualWorkDays" pInputText [(ngModel)]="project.actualWorkDays" placeholder="Number of actual work days"/>
+                <div class="p-inputgroup">
+                    <input type="number" [min]="0" step="1" disabled id="actualWorkDays" pInputText [(ngModel)]="project.actualWorkDays" placeholder="Number of actual work days"/>
+                    <span class="p-inputgroup-addon">man-days</span>
+                </div>
             </div>
+        </div>
+        <div class="field ">
+            <label for="estimatedWorkDays">Estimated Work Days</label>
+            <div class="p-inputgroup">
+                <input type="number"
+                       id="estimatedWorkDays"
+                       pInputText
+                       [(ngModel)]="project.estimatedWorkDays"
+                       [min]="0"
+                       step="1"
+                       placeholder="Enter estimated work days"
+                       [ngClass]="{ 'ng-invalid ng-dirty': submitted && project.estimatedWorkDays <= 0 }"
+                />
+                <span class="p-inputgroup-addon">man-days</span>
+            </div>
+            <small *ngIf="submitted && (project.estimatedWorkDays == null || project.estimatedWorkDays <= 0)" style="color: red;">
+                Estimated work days is required.
+            </small>
         </div>
         <div class="formgrid grid">
             <!-- Phase -->
@@ -343,6 +373,7 @@
                 </p-dropdown>
             </div>
         </div>
+
         <div class="field">
             <label for="name">Description</label>
             <textarea id="description" pInputTextarea [(ngModel)]="project.description" required rows="3" cols="20"></textarea>
@@ -350,7 +381,8 @@
         <div class="formgrid grid">
             <div class="field col-12 md:col-4">
                 <label for="startDate">Start Date</label>
-                <p-calendar appendTo="body" id="startDate" dateFormat="mm/dd/yy" dataType="string" [showIcon]="true" inputId="icon" [(ngModel)]="project.startDate"></p-calendar>
+                <p-calendar appendTo="body" id="startDate" dateFormat="mm/dd/yy" dataType="string" [showIcon]="true" inputId="icon" [(ngModel)]="project.startDate"
+                            [disabledDays]="[0,6]"></p-calendar>
             </div>
             <div class="field col-12 md:col-4">
                 <!-- Mode Date -->
@@ -359,7 +391,8 @@
                         <label for="endDate" >End Date</label>
                         <a href="#" (click)="toggleDuration(true, $event)" style="font-size: 12px;">(Enter Duration)</a>
                     </div>
-                    <p-calendar appendTo="body" id="endDate" dateFormat="mm/dd/yy" dataType="string" [showIcon]="true" [(ngModel)]="project.endDate"></p-calendar>
+                    <p-calendar appendTo="body" id="endDate" dateFormat="mm/dd/yy" dataType="string" [showIcon]="true" [(ngModel)]="project.endDate"
+                                [disabledDays]="[0,6]"></p-calendar>
                 </ng-container>
 
                 <!-- Mode Duration -->
@@ -368,13 +401,18 @@
                         <label for="duration" class="m-0">Duration (days)</label>
                         <a href="#" (click)="toggleDuration(false, $event)" style="font-size: 12px;">(Enter Date)</a>
                     </div>
-                    <input type="number" id="duration" pInputText [(ngModel)]="project.estimatedWorkDays" placeholder="Enter number of days" />
+                    <div class="p-inputgroup">
+                        <input type="number" [min]="0" step="1" id="duration" pInputText [(ngModel)]="project.duration" placeholder="Enter number of days" />
+                        <span class="p-inputgroup-addon">days</span>
+                    </div>
+
                 </ng-container>
             </div>
 
             <div class="field col-12 md:col-4">
                 <label for="deliveryDate">Delivery Date</label>
-                <p-calendar appendTo="body" id="deliveryDate" dateFormat="mm/dd/yy" dataType="string" [showIcon]="true" [(ngModel)]="project.deliveryDate"></p-calendar>
+                <p-calendar appendTo="body" id="deliveryDate" dateFormat="mm/dd/yy" dataType="string" [showIcon]="true" [(ngModel)]="project.deliveryDate"
+                            [disabledDays]="[0,6]"></p-calendar>
             </div>
 
         </div>

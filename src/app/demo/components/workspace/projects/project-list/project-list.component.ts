@@ -186,11 +186,11 @@ export class ProjectListComponent implements OnInit {
         //     this.project.estimatedWorkDays = dayDiff;
         // }
 
-        if(this.useDuration){
-            this.project.endDate = null;
-        }else {
-            this.project.estimatedWorkDays = null;
-        }
+        // if(this.useDuration){
+        //     this.project.endDate = null;
+        // }else {
+        //     this.project.estimatedWorkDays = null;
+        // }
     }
     hideDialog() {
         this.projectDialog = false;
@@ -215,34 +215,57 @@ export class ProjectListComponent implements OnInit {
         if (!this.project.name) {
             return;
         }
+        if(this.project.estimatedWorkDays == null || this.project.estimatedWorkDays <= 0){
+            return;
+        }
 
         if (this.useDuration) {
             // Si l'utilisateur a choisi de saisir la durée (estimatedWorkDays), calculer endDate
-            if (this.project.estimatedWorkDays && this.project.startDate) {
+            if (this.project.duration && this.project.startDate) {
                 const startDate = new Date(this.project.startDate);
-                startDate.setDate(startDate.getDate() + this.project.estimatedWorkDays); // Ajouter la durée à la startDate
-                this.project.endDate = startDate ;
+                // startDate.setDate(startDate.getDate() + this.project.estimatedWorkDays); // Ajouter la durée à la startDate
+                // this.project.endDate = startDate ;
+                this.project.endDate = this.addWorkingDays(startDate, this.project.duration);
+
             }
         } else {
             // Si l'utilisateur a choisi de saisir les dates (startDate, endDate), calculer estimatedWorkDays
             if (this.project.startDate && this.project.endDate) {
                 const startDate = new Date(this.project.startDate);
                 const endDate = new Date(this.project.endDate);
-                const timeDiff = endDate.getTime() - startDate.getTime();
-                const dayDiff = timeDiff / (1000 * 3600 * 24); // Convertir la différence en jours
-                this.project.estimatedWorkDays = dayDiff;
+                // const timeDiff = endDate.getTime() - startDate.getTime();
+                // const dayDiff = timeDiff / (1000 * 3600 * 24); // Convertir la différence en jours
+                // this.project.estimatedWorkDays = dayDiff;
+                if (endDate < startDate) {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Erreur de date',
+                        detail: 'End date must not be less than start date.',
+                        life: 3000
+                    });
+                    return; // annule l'enregistrement
+                }
+                this.project.duration = this.countWorkingDays(startDate, endDate);
+            }
+        }
+
+        if (this.project.deliveryDate) {
+            const delivery = new Date(this.project.deliveryDate);
+            const start = this.project.startDate ? new Date(this.project.startDate) : null;
+            const end = this.project.endDate ? new Date(this.project.endDate) : null;
+
+            if ((start && delivery < start) || (end && delivery < end)) {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Erreur de date',
+                    detail: 'Delivery date must not be less than end date & start date.',
+                    life: 3000
+                });
+                return; // annule l'enregistrement
             }
         }
 
         let progress = 0;
-        // if (this.project.startDate && this.project.estimatedWorkDays) {
-        //     const start = new Date(this.project.startDate).getTime();
-        //     const now = new Date().getTime();
-        //     const daysPassed = Math.floor((now - start) / (1000 * 3600 * 24)); // jours écoulés
-        //     if (this.project.estimatedWorkDays > 0) {
-        //         progress = Math.round((daysPassed / this.project.estimatedWorkDays) * 100);
-        //     }
-        // }
 
         if (this.project.actualWorkDays != null && this.project.estimatedWorkDays && this.project.estimatedWorkDays > 0) {
             progress = Math.round((this.project.actualWorkDays / this.project.estimatedWorkDays) * 100);
@@ -258,6 +281,7 @@ export class ProjectListComponent implements OnInit {
             deliveryDate: this.formatDateToMMDDYYYY(this.project.deliveryDate),
             actualWorkDays: this.project.actualWorkDays,
             estimatedWorkDays: this.project.estimatedWorkDays,
+            duration: this.project.duration,
             progress: progress,
             clientId: this.project.clientId,
             projectManagerId: this.authService.getCurrentUserId(), // à adapter selon ta logique
@@ -375,5 +399,35 @@ export class ProjectListComponent implements OnInit {
             }
         };
         this.submitted = false;
+    }
+
+    countWorkingDays(startDate: Date, endDate: Date): number {
+        let count = 0;
+        const current = new Date(startDate);
+
+        while (current <= endDate) {
+            const day = current.getDay();
+            if (day !== 0 && day !== 6) { // pas dimanche (0) ni samedi (6)
+                count++;
+            }
+            current.setDate(current.getDate() + 1);
+        }
+
+        return count;
+    }
+
+    addWorkingDays(startDate: Date, workingDays: number): Date {
+        const result = new Date(startDate);
+        let addedDays = 0;
+
+        while (addedDays < workingDays-1) {
+            result.setDate(result.getDate() + 1);
+            const day = result.getDay();
+            if (day !== 0 && day !== 6) { // si ce n’est pas dimanche (0) ni samedi (6)
+                addedDays++;
+            }
+        }
+
+        return result;
     }
 }

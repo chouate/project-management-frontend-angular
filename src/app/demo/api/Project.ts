@@ -1,3 +1,4 @@
+import {Technology} from "./technology";
 
 export interface Project{
     id?: number;
@@ -9,6 +10,7 @@ export interface Project{
     endDate?: Date ;
     deliveryDate?: Date;
     estimatedWorkDays?: number;
+    duration?: number;
     actualWorkDays?: number;
 
     clientId?: number;
@@ -63,6 +65,8 @@ interface PhaseStatus{
     startDate?: Date;
     endDate?: Date;
     estimatedWorkDays?: number;
+    duration?: number;
+    technology?: Technology;
 
 }
 

@@ -11,6 +11,7 @@ import {filter, switchMap} from "rxjs";
 import {AuthService} from "../../../../service/auth.service";
 import {UserService} from "../../../../service/user.service";
 import {TaskService} from "../../../../service/task.service";
+import {Technology} from "../../../../api/technology";
 
 @Component({
   selector: 'app-project-detail',
@@ -38,6 +39,7 @@ export class ProjectDetailComponent implements OnInit{
 
     useDuration: boolean = false;
 
+    technologies: { label: string, value: number }[] = [];
 
     constructor(
         private route: ActivatedRoute,
@@ -50,72 +52,79 @@ export class ProjectDetailComponent implements OnInit{
         private router: Router
     ) {}
 
-    ngOnInit() {
-        // Récupérer l'ID du projet depuis l'URL
-        const projectId:number = Number(this.route.snapshot.params['id']);
+        ngOnInit() {
+            // Récupérer l'ID du projet depuis l'URL
+            const projectId:number = Number(this.route.snapshot.params['id']);
 
-        // // Charger les détails du projet
-        // this.projectService.getProjectByIdStatic(projectId).then(project => {
-        //     this.project = project;
-        //     console.log(projectId);
-        //     console.log("project detail");
-        //     console.log(this.project);
-        // });
+            // // Charger les détails du projet
+            // this.projectService.getProjectByIdStatic(projectId).then(project => {
+            //     this.project = project;
+            //     console.log(projectId);
+            //     console.log("project detail");
+            //     console.log(this.project);
+            // });
 
-        this.projectService.getProjectById(projectId).subscribe({
-            next: (project: Project) => {
-                this.project = project;
-                // Vérifier s'il y a des tâches et formater les dates
-                if (this.project.tasks && this.project.tasks.length > 0) {
-                    this.project.tasks.forEach(task => {
-                        if (task.startDate) {
-                            task.startDate = new Date(task.startDate);
-                        }
-                        if (task.endDate) {
-                            task.endDate =  new Date(task.endDate);
-                        }
-                    });
+            this.userService.getTechnologies().subscribe(techs => {
+                this.technologies = techs.map(t => ({
+                    label: t.name,
+                    value: t.id
+                }));
+            });
+
+            this.projectService.getProjectById(projectId).subscribe({
+                next: (project: Project) => {
+                    this.project = project;
+                    // Vérifier s'il y a des tâches et formater les dates
+                    if (this.project.tasks && this.project.tasks.length > 0) {
+                        this.project.tasks.forEach(task => {
+                            if (task.startDate) {
+                                task.startDate = new Date(task.startDate);
+                            }
+                            if (task.endDate) {
+                                task.endDate =  new Date(task.endDate);
+                            }
+                        });
+                    }
+                    console.log("Project ID:", projectId);
+                    console.log("Project detail:", this.project);
+                },
+                error: (error) => {
+                    console.error("Error in loading the project :", error);
                 }
-                console.log("Project ID:", projectId);
-                console.log("Project detail:", this.project);
-            },
-            error: (error) => {
-                console.error("Error in loading the project :", error);
-            }
-        });
+            });
 
 
-        // Configuration du TabMenu
-        this.items = [
-            { label: 'Dashboard', icon: 'pi pi-chart-bar' },
-            { label: 'Tasks', icon: 'pi pi-list' },
-            { label: 'Documents', icon: 'pi pi-file' }
-        ];
+            // Configuration du TabMenu
+            this.items = [
+                { label: 'Dashboard', icon: 'pi pi-chart-bar' },
+                { label: 'Tasks', icon: 'pi pi-list' },
+                { label: 'Documents', icon: 'pi pi-file' }
+            ];
 
-        this.activeItem = this.items[1];
+            this.activeItem = this.items[1];
 
 
-        this.taskStatuses = [ //utiliser toLowerCase pour les valeurs
-            { label: 'To come', value: 'to_come' },
-            { label: 'In progress', value: 'in_progress' },
-            { label: 'Closed', value: 'completed' },
-        ];
+            this.taskStatuses = [ //utiliser toLowerCase pour les valeurs
+                { label: 'To come', value: 'to_come' },
+                { label: 'In progress', value: 'in_progress' },
+                { label: 'Closed', value: 'completed' },
+            ];
 
-        this.authService.currentUser$.pipe(
-            filter(u => !!u),
-            switchMap(user  =>
-                this.userService.getCollabrators()
+            this.authService.currentUser$.pipe(
+                filter(u => !!u),
+                switchMap(user  =>
+                    this.userService.getCollabrators()
 
-            )
-        ).subscribe(pms => {
-            this.owners = pms.map(pm => ({
-                label: `${pm.firstName} ${pm.lastName}`,
-                value: pm.id
-            }));
-            console.log("owners: ")
-            console.log(this.owners);
-        });
-    }
+                )
+            ).subscribe(pms => {
+                this.owners = pms.map(pm => ({
+                    label: `${pm.firstName} ${pm.lastName}`,
+                    value: pm.id
+                }));
+                console.log("owners: ")
+                console.log(this.owners);
+            });
+        }
 
     onTabChange(item: MenuItem) {
         this.activeItem = item;
@@ -156,9 +165,46 @@ export class ProjectDetailComponent implements OnInit{
         return task.actualWorkDays;
     }
 
+    /*
+    start logic and style days remaining
+     */
     getDaysRemaining(task: any): number {
         return task.estimatedWorkDays - task.actualWorkDays;
     }
+
+    getDaysRemainingStyle(task: any): string {
+        const diff = this.getDaysRemaining(task);
+
+        if (diff < 0) {
+            return 'text-red-600 font-semibold';
+        } else if (diff === 0 || diff === 1) {
+            return 'text-orange-300 font-semibold';
+        } else {
+            return 'text-blue-600 font-semibold';
+        }
+    }
+
+    getDaysRemainingDisplay(task: any): number {
+        const diff = this.getDaysRemaining(task);
+        return Math.abs(diff);
+    }
+
+    getDaysRemainingTooltip(task: any): string {
+        const diff = this.getDaysRemaining(task);
+
+        if (diff < 0) {
+            return 'Delayed days';
+        } else if (diff === 0) {
+            return 'Last scheduled day';
+        } else if (diff === 1) {
+            return '1 day remaining';
+        } else {
+            return `${diff} days remaining`;
+        }
+    }
+    /*
+    end logic and style days remaining
+     */
 
     onImageError(event: any) {
         event.target.src = 'assets/demo/images/user/userDefault.png';
@@ -200,21 +246,46 @@ export class ProjectDetailComponent implements OnInit{
             return;
         }
 
+        if(this.task.estimatedWorkDays == null || this.task.estimatedWorkDays <= 0){
+            return;
+        }
+        // if (this.task.estimatedWorkDays == null || this.task.estimatedWorkDays <= 0) {
+        //     this.messageService.add({
+        //         severity: 'error',
+        //         summary: 'Validation Error',
+        //         detail: 'Estimated work days is required.',
+        //         life: 3000
+        //     });
+        //     return;
+        // }
+
         // -- GESTION DATES & DURÉE --
         if (this.useDuration) {
             // Mode durée => on calcule endDate
-            if (this.task.estimatedWorkDays && this.task.startDate) {
+            if (this.task.duration && this.task.startDate) {
                 const startDate = new Date(this.task.startDate);
-                startDate.setDate(startDate.getDate() + this.task.estimatedWorkDays);
-                this.task.endDate = startDate;
+                // startDate.setDate(startDate.getDate() + this.task.estimatedWorkDays);
+                // this.task.endDate = startDate;
+                this.task.endDate = this.addWorkingDays(startDate, this.task.duration);
             }
         } else {
             // Mode date => on calcule estimatedWorkDays
             if (this.task.startDate && this.task.endDate) {
                 const start = new Date(this.task.startDate);
                 const end = new Date(this.task.endDate);
-                const diff = end.getTime() - start.getTime();
-                this.task.estimatedWorkDays = Math.round(diff / (1000 * 3600 * 24));
+                // const diff = end.getTime() - start.getTime();
+                // this.task.estimatedWorkDays = Math.round(diff / (1000 * 3600 * 24));
+                if (end < start) {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Erreur de date',
+                        detail: 'End date must not be less than start date.',
+                        life: 3000
+                    });
+                    return; // annule l'enregistrement
+                }
+                this.task.duration = this.countWorkingDays(start, end);
+
             }
         }
 
@@ -231,11 +302,13 @@ export class ProjectDetailComponent implements OnInit{
             startDate: this.formatDateToMMDDYYYY(this.task.startDate),
             endDate: this.formatDateToMMDDYYYY(this.task.endDate),
             estimatedWorkDays: this.task.estimatedWorkDays,
+            duration: this.task.duration,
             actualWorkDays: this.task.actualWorkDays,
             completionPercentage: this.task.completionPercentage,
             progress: progress,
             projectId: this.project.id,
             ownerId: this.task.ownerId,
+            technologyId: this.task.technologyId,
             status: {
                 id: this.getStatusIdByName(this.task.status.name)
             }
@@ -331,6 +404,22 @@ export class ProjectDetailComponent implements OnInit{
 
         return count;
     }
+
+    addWorkingDays(startDate: Date, workingDays: number): Date {
+        const result = new Date(startDate);
+        let addedDays = 0;
+
+        while (addedDays < workingDays-1) {
+            result.setDate(result.getDate() + 1);
+            const day = result.getDay();
+            if (day !== 0 && day !== 6) { // si ce n’est pas dimanche (0) ni samedi (6)
+                addedDays++;
+            }
+        }
+
+        return result;
+    }
+
 
 
 }

@@ -11,7 +11,15 @@ export interface Task{
     startDate?: Date;
     endDate?: Date;
     estimatedWorkDays?: number;
+    duration?: number;
+    technologyId?: number;
+    technology?: Technology;
 
+}
+interface Technology{
+    id: number;
+    name: string;
+    descriotion: string;
 }
 
 interface Owner{
