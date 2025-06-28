@@ -1,0 +1,25 @@
+//********************************************
+.status-in_progress {
+    background-color: #d7f1e8;
+    color: rgba(44, 122, 177, 0.93);
+}
+
+.status-to_come {
+    background-color: #e5dbef;
+    color: rgba(66, 38, 103, 0.69);
+}
+
+.status-pending {
+    background-color: #f6e0be;
+    color: #b87457;
+}
+
+.status-completed {
+    background-color: #deefad;
+    color: rgba(30, 89, 2, 0.93);
+}
+.status-closed {
+    background-color: #e86a60;
+    color: white;
+}
+//*************************************************

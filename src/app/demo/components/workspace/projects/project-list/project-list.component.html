@@ -167,7 +167,6 @@
                                 <p-columnFilter type="numeric" field="estimatedWorkDays" display="menu" ></p-columnFilter>
                             </div>
                         </th>
-                        <th></th>
                     </tr>
                 </ng-template>
 
@@ -266,13 +265,6 @@
                         </td>
                         <td>
                             {{project.estimatedWorkDays }} man-days
-                        </td>
-                        <td>
-                            <div class="flex">
-                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
-                                        (click)="editProject(project)"></button>
-                                <!-- <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteProject(project)"></button> -->
-                            </div>
                         </td>
 
                     </tr>

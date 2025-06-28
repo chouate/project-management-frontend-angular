@@ -19,4 +19,11 @@ export class TaskService {
     updateTask(task: any): Observable<any> {
         return this.http.put(`${this.baseUrl}/${task.id}`, task);
     }
+    getTasksByOwnerId(ownerId: number): Observable<Task[]> {
+        return this.http.get<Task[]>(`${this.baseUrl}/by-owner/${ownerId}`);
+    }
+
+    updateCompletionPercentageTask(taskId: number, task: any): Observable<any> {
+        return this.http.put(`${this.baseUrl}/${taskId}/updatedCompletionPercentage`, task);
+    }
 }

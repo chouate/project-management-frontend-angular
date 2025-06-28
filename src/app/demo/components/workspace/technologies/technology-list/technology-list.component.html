@@ -1,0 +1,92 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <p-toast></p-toast>
+            <h5>Manage Technologies</h5>
+
+            <p-table
+                #dt
+                [value]="technologies"
+                [scrollable]="true"
+                scrollHeight="400px"
+                [paginator]="true"
+                [rows]="10"
+                [loading]="loading"
+                [rowHover]="true"
+                [globalFilterFields]="['name', 'description']"
+                dataKey="id"
+                responsiveLayout="scroll"
+                styleClass="p-datatable-gridlines"
+            >
+                <ng-template pTemplate="caption">
+                    <div class="flex justify-content-between">
+                        <div class="flex gap-2">
+                            <button pButton label="Clear" class="p-button-outlined" icon="pi pi-filter-slash" (click)="clear(dt)"></button>
+                            <button pButton label="New" class="p-button-outlined" icon="pi pi-plus" (click)="openNewTechnology()"></button>
+                        </div>
+                        <span class="p-input-icon-left">
+              <i class="pi pi-search"></i>
+              <input pInputText #filter type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search..." class="w-full" />
+            </span>
+                    </div>
+                </ng-template>
+
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th style="width: 8rem;">Actions</th>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="body" let-tech>
+                    <tr>
+                        <td>{{ tech.name }}</td>
+                        <td>{{ tech.description }}</td>
+                        <td>
+                            <div class="flex gap-2">
+                                <button pButton icon="pi pi-pencil" class="p-button-text p-button-sm p-button-warning" (click)="editTechnology(tech)"></button>
+                                <button pButton icon="pi pi-trash" class="p-button-text p-button-sm p-button-danger" (click)="confirmDeleteTechnology(tech)"></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="emptymessage">
+                    <tr><td colspan="3">No technologies found.</td></tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+
+<p-dialog [(visible)]="technologyDialog" [style]="{ width: '450px' }" header="Technology Details" [modal]="true" class="p-fluid">
+    <ng-template pTemplate="content">
+        <div class="field">
+            <label for="name">Name*</label>
+            <input id="name" type="text" pInputText [(ngModel)]="technology.name" [ngClass]="{'ng-invalid ng-dirty': submitted && !technology.name}" />
+            <small *ngIf="submitted && !technology.name" style="color: red;">Name is required.</small>
+        </div>
+        <div class="field">
+            <label for="description">Description</label>
+            <textarea id="description" rows="4" pInputTextarea [(ngModel)]="technology.description"></textarea>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton label="Save" icon="pi pi-check" class="p-button-text" (click)="saveTechnology()"></button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="deleteTechnologyDialog" header="Confirm" [modal]="true" [style]="{width:'450px'}">
+    <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        <span *ngIf="technology">Are you sure you want to delete <b>{{technology.name}}</b>?</span>
+    </div>
+    <ng-template pTemplate="footer">
+        <button pButton icon="pi pi-times" label="No" class="p-button-text" (click)="deleteTechnologyDialog = false"></button>
+        <button pButton icon="pi pi-check" label="Yes" class="p-button-text" (click)="confirmDelete()"></button>
+    </ng-template>
+</p-dialog>
+

@@ -7,6 +7,8 @@ export interface Task{
     progress?: number;
     owner?: Owner;
     ownerId?: number;
+    projectId?: number;
+    projectName?: string;
     completionPercentage?: number;
     startDate?: Date;
     endDate?: Date;

@@ -14,6 +14,7 @@ import { PhotoService } from './demo/service/photo.service';
 import {UserService} from "./demo/service/user.service";
 import {KeycloakAngularModule, KeycloakBearerInterceptor, KeycloakService} from "keycloak-angular";
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
+import { TechnologyListComponent } from './demo/components/workspace/technologies/technology-list/technology-list.component';
 
 function initializeKeycloak(keycloak: KeycloakService) {
     return () =>

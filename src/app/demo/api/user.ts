@@ -1,6 +1,7 @@
 interface Technologie{
+    id: number;
     name:string;
-    //description:string;
+    description:string;
 }
 export interface User {
     id?: number;

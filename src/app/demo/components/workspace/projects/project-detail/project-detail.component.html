@@ -165,7 +165,6 @@
                                         <p-columnFilter type="date" field="endDate" display="menu" placeholder="mm/dd/yyyy"></p-columnFilter>
                                     </div>
                                 </th>
-                                <th></th>
                             </tr>
                         </ng-template>
 
@@ -265,13 +264,6 @@
                                 </td>
                                 <td>
                                     {{task.endDate | date: 'MM/dd/yyyy'}}
-                                </td>
-                                <td>
-                                    <div class="flex">
-                                        <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
-                                                (click)="editTask(task)"></button>
-                                        <!-- <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteProject(project)"></button> -->
-                                    </div>
                                 </td>
                             </tr>
                         </ng-template>
@@ -378,7 +370,8 @@
             <div class="field col-12 md:col-6">
                 <label for="startDate">Start Date</label>
                 <p-calendar appendTo="body" id="startDate" dateFormat="mm/dd/yy" dataType="string" [showIcon]="true" inputId="icon" [(ngModel)]="task.startDate"
-                            [disabledDays]="[0,6]"></p-calendar>
+                            [disabledDays]="[0,6]" (onSelect)="onTaskFieldChange()"
+                ></p-calendar>
             </div>
             <div class="field col-12 md:col-6">
                 <!-- Mode Date -->
@@ -388,7 +381,8 @@
                         <a href="#" (click)="toggleDuration(true, $event)" style="font-size: 12px;">(Enter Duration)</a>
                     </div>
                     <p-calendar appendTo="body" id="endDate" dateFormat="mm/dd/yy" dataType="string" [showIcon]="true" [(ngModel)]="task.endDate"
-                                [disabledDays]="[0,6]"></p-calendar>
+                                [disabledDays]="[0,6]" (onSelect)="onTaskFieldChange()"
+                    ></p-calendar>
                 </ng-container>
 
                 <!-- Mode Duration -->
@@ -409,6 +403,7 @@
             <label for="technologyId">Technology</label>
             <p-dropdown
                 [(ngModel)]="task.technologyId"
+                (onChange)="onTaskFieldChange()"
                 id="technologyId"
                 [options]="technologies"
                 optionLabel="label"
@@ -418,6 +413,137 @@
                 styleClass="w-full">
             </p-dropdown>
         </div>
+        <div class="field">
+            <label for="ownerId">Owner</label>
+            <p-dropdown
+                [(ngModel)]="task.ownerId"
+                id="ownerId"
+                inputId="ownerId"
+                [options]="owners"
+                optionValue="value"
+                optionLabel="label"
+                [disabled]="!task.startDate || !task.endDate || !task.technologyId"
+                placeholder="Select the owner"
+                appendTo="body"
+                styleClass="w-full"
+            >
+                <!-- Template pour chaque élément -->
+                <ng-template let-owner pTemplate="item">
+                    <div class="flex flex-column gap-1">
+                        <div class="font-bold">{{ owner.label }}</div>
+
+                        <div *ngIf="owner.loadInfo">
+                            <ng-container [ngSwitch]="true">
+                                <div *ngSwitchCase="owner.loadInfo.chargeDays === 0" class="text-green-600 text-sm">
+                                    <i class="pi pi-check-circle mr-1"></i> Available
+                                </div>
+                                <div *ngSwitchCase="owner.loadInfo.chargeDays === owner.loadInfo.maxDays" class="text-red-600 text-sm">
+                                    <i class="pi pi-times-circle mr-1"></i> Overloaded
+                                </div>
+                                <div *ngSwitchDefault class="text-orange-500 text-sm">
+                                    <i class="pi pi-exclamation-triangle mr-1"></i>
+                                    Load : {{ owner.loadInfo.chargeDays }} days out of {{ owner.loadInfo.maxDays }}
+                                </div>
+                            </ng-container>
+                        </div>
+
+                        <!-- ✅ Bouton Détail intégré -->
+                        <div>
+                            <button pButton
+                                    type="button"
+                                    icon="pi pi-calendar"
+                                    class="p-button-text p-button-sm text-blue-500"
+                                    label="View details"
+                                    (click)="showOwnerChargeDetailsFromList(owner.value); $event.stopPropagation()">
+                            </button>
+                        </div>
+                    </div>
+                </ng-template>
+
+                <!-- Template pour l’élément sélectionné -->
+                <ng-template let-owner pTemplate="selectedItem">
+                    <div *ngIf="owner" class="flex align-items-center gap-2">
+                        <span class="font-semibold">{{ owner.label }}</span>
+                        <ng-container *ngIf="owner.loadInfo">
+                            <span *ngIf="owner.loadInfo.chargeDays === 0" class="text-green-600 text-xs">(✔️ Disponible)</span>
+                            <span *ngIf="owner.loadInfo.chargeDays === owner.loadInfo.maxDays" class="text-red-600 text-xs">(❌ Surchargé)</span>
+                            <span *ngIf="owner.loadInfo.chargeDays > 0 && owner.loadInfo.chargeDays < owner.loadInfo.maxDays"
+                                  class="text-orange-500 text-xs">({{ owner.loadInfo.chargeDays }} / {{ owner.loadInfo.maxDays }} jrs)</span>
+                        </ng-container>
+                    </div>
+                </ng-template>
+            </p-dropdown>
+        </div>
+
+      <!--  start version 2-->
+<!--        <div class="field">-->
+<!--            <label for="ownerId">Owner</label>-->
+
+<!--            <p-dropdown-->
+<!--                [(ngModel)]="task.ownerId"-->
+<!--                id="ownerId"-->
+<!--                inputId="ownerId"-->
+<!--                [options]="owners"-->
+<!--                optionValue="value"-->
+<!--                optionLabel="label"-->
+<!--                [disabled]="!task.startDate || !task.endDate || !task.technologyId"-->
+<!--                placeholder="Select the owner"-->
+<!--                appendTo="body"-->
+<!--                styleClass="w-full"-->
+<!--            >-->
+<!--                &lt;!&ndash; Template pour chaque option &ndash;&gt;-->
+<!--                <ng-template let-owner pTemplate="item">-->
+<!--                    <div class="flex flex-column gap-1">-->
+<!--                        <div class="font-bold">{{ owner.label }}</div>-->
+
+<!--                        &lt;!&ndash; Charge affichée avec icône et couleur &ndash;&gt;-->
+<!--                        <div *ngIf="owner.loadInfo">-->
+<!--                            <ng-container [ngSwitch]="true">-->
+<!--                                &lt;!&ndash; Disponible &ndash;&gt;-->
+<!--                                <div *ngSwitchCase="owner.loadInfo.chargeDays === 0" class="text-green-600 text-sm">-->
+<!--                                    <i class="pi pi-check-circle mr-1"></i> Disponible-->
+<!--                                </div>-->
+
+<!--                                &lt;!&ndash; Surchargé &ndash;&gt;-->
+<!--                                <div *ngSwitchCase="owner.loadInfo.chargeDays === owner.loadInfo.maxDays" class="text-red-600 text-sm">-->
+<!--                                    <i class="pi pi-times-circle mr-1"></i> Surchargé-->
+<!--                                </div>-->
+
+<!--                                &lt;!&ndash; Charge partielle &ndash;&gt;-->
+<!--                                <div *ngSwitchDefault class="text-orange-500 text-sm">-->
+<!--                                    <i class="pi pi-exclamation-triangle mr-1"></i>-->
+<!--                                    Charge : {{ owner.loadInfo.chargeDays }} jrs / {{ owner.loadInfo.maxDays }}-->
+<!--                                </div>-->
+<!--                            </ng-container>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </ng-template>-->
+
+<!--                &lt;!&ndash; Template pour l’élément sélectionné &ndash;&gt;-->
+<!--                <ng-template let-owner pTemplate="selectedItem">-->
+<!--                    <div *ngIf="owner" class="flex align-items-center gap-2">-->
+<!--                        <span class="font-semibold">{{ owner.label }}</span>-->
+<!--                        <ng-container *ngIf="owner.loadInfo">-->
+<!--                            <span *ngIf="owner.loadInfo.chargeDays === 0" class="text-green-600 text-xs">(✔️ Disponible)</span>-->
+<!--                            <span *ngIf="owner.loadInfo.chargeDays === owner.loadInfo.maxDays" class="text-red-600 text-xs">(❌ Surchargé)</span>-->
+<!--                            <span *ngIf="owner.loadInfo.chargeDays > 0 && owner.loadInfo.chargeDays < owner.loadInfo.maxDays"-->
+<!--                                  class="text-orange-500 text-xs">({{ owner.loadInfo.chargeDays }} / {{ owner.loadInfo.maxDays }} jrs)</span>-->
+<!--                        </ng-container>-->
+<!--                    </div>-->
+<!--                </ng-template>-->
+<!--            </p-dropdown>-->
+
+<!--            <button *ngIf="task.ownerId && task.startDate && task.endDate"-->
+<!--                    pButton-->
+<!--                    type="button"-->
+<!--                    icon="pi pi-calendar"-->
+<!--                    label="Voir détail de charge"-->
+<!--                    class="p-button-outlined p-button-sm mt-2"-->
+<!--                    (click)="showOwnerChargeDetails()">-->
+<!--            </button>-->
+<!--        </div>-->
+<!--        end Version 2-->
+
 <!--        <div class="field">-->
 <!--            <label for="ownerId">Owner</label>-->
 <!--            <p-dropdown [(ngModel)]="task.ownerId"-->
@@ -449,35 +575,56 @@
 <!--            </p-dropdown>-->
 <!--        </div>-->
 
-        <div class="field">
-            <label for="ownerId">Owner</label>
-            <p-dropdown
-                [(ngModel)]="task.ownerId"
-                id="ownerId"
-                inputId="ownerId"
-                [options]="owners"
-                optionValue="value"
-                optionLabel="label"
-                placeholder="Select the owner"
-                appendTo="body"
-                styleClass="w-full"
-            >
-                <!-- Template pour chaque élément de la liste déroulante -->
-                <ng-template let-owner pTemplate="item">
-                    <div class="flex flex-column">
-                        <div class="font-bold">{{ owner.label }}</div>
-                        <div class="text-sm">Charge: X jrs</div>
-                        <div class="text-sm text-green-600" *ngIf="true">Dispo</div>
-                        <div class="text-sm text-red-600" *ngIf="true">Surchargé</div>
-                    </div>
-                </ng-template>
+<!--        <div class="field">-->
+<!--            <label for="ownerId">Owner</label>-->
+<!--&lt;!&ndash;            <p-dropdown&ndash;&gt;-->
+<!--&lt;!&ndash;                [(ngModel)]="task.ownerId"&ndash;&gt;-->
+<!--&lt;!&ndash;                [options]="owners"&ndash;&gt;-->
+<!--&lt;!&ndash;                optionLabel="label"&ndash;&gt;-->
+<!--&lt;!&ndash;                optionValue="value"&ndash;&gt;-->
+<!--&lt;!&ndash;                [disabled]="!task.startDate || !task.endDate || !task.technologyId"&ndash;&gt;-->
+<!--&lt;!&ndash;                placeholder="Select the owner"&ndash;&gt;-->
+<!--&lt;!&ndash;                appendTo="body"&ndash;&gt;-->
+<!--&lt;!&ndash;                styleClass="w-full">&ndash;&gt;-->
+<!--&lt;!&ndash;            </p-dropdown>&ndash;&gt;-->
+<!--            <p-dropdown-->
+<!--                [(ngModel)]="task.ownerId"-->
+<!--                id="ownerId"-->
+<!--                inputId="ownerId"-->
+<!--                [options]="owners"-->
+<!--                optionValue="value"-->
+<!--                optionLabel="label"-->
+<!--                [disabled]="!task.startDate || !task.endDate || !task.technologyId"-->
+<!--                placeholder="Select the owner"-->
+<!--                appendTo="body"-->
+<!--                styleClass="w-full"-->
+<!--            >-->
+<!--                &lt;!&ndash; Template pour chaque élément de la liste déroulante &ndash;&gt;-->
+<!--                <ng-template let-owner pTemplate="item">-->
+<!--                    <div class="flex flex-column">-->
+<!--                        <div class="font-bold">{{ owner.label }}</div>-->
+<!--                        <div class="text-sm">Charge: X jrs</div>-->
+<!--                        <div class="text-sm text-green-600" *ngIf="owner.loadInfo?.available">Dispo</div>-->
+<!--                        <div class="text-sm text-red-600" *ngIf="!owner.loadInfo?.available">Surchargé</div>-->
+<!--                    </div>-->
+<!--                </ng-template>-->
 
-                <!-- Template pour l’élément sélectionné -->
-                <ng-template let-owner pTemplate="selectedItem">
-                    <span *ngIf="owner">{{ owner.label }}</span>
-                </ng-template>
-            </p-dropdown>
-        </div>
+<!--                &lt;!&ndash; Template pour l’élément sélectionné &ndash;&gt;-->
+<!--                <ng-template let-owner pTemplate="selectedItem">-->
+<!--                    <span *ngIf="owner">{{ owner.label }}</span>-->
+<!--                </ng-template>-->
+<!--            </p-dropdown>-->
+<!--            <button *ngIf="task.ownerId && task.startDate && task.endDate"-->
+<!--                    pButton-->
+<!--                    type="button"-->
+<!--                    icon="pi pi-calendar"-->
+<!--                    label="Voir détail de charge"-->
+<!--                    class="p-button-outlined p-button-sm mt-2"-->
+<!--                    (click)="showOwnerChargeDetails()">-->
+<!--            </button>-->
+
+<!--        </div>-->
+
 
     </ng-template>
 
@@ -485,4 +632,37 @@
         <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
         <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveTask()"></button>
     </ng-template>
+</p-dialog>
+
+
+<p-dialog header="Availability details" [(visible)]="ownerChargeDialogVisible"
+          [modal]="true" [style]="{width: '600px'}" [closable]="true">
+
+    <p-table [value]="ownerChargeDetails" responsiveLayout="scroll">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Date</th>
+                <th>Available</th>
+                <th>Task</th>
+                <th>Project</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-detail>
+            <tr>
+                <td>{{ detail.date }}</td>
+                <td>
+                  <span [ngClass]="{'text-green-600': detail.available, 'text-red-600': !detail.available}">
+                    <i class="pi" [ngClass]="detail.available ? 'pi-check-circle' : 'pi-times-circle'"></i>
+                      {{ detail.available ? 'Yes' : 'No' }}
+                  </span>
+                </td>
+                <td>{{ detail.taskName || '-' }}</td>
+                <td>{{ detail.projectName || '-' }}</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr><td colspan="4">No information available</td></tr>
+        </ng-template>
+    </p-table>
+
 </p-dialog>

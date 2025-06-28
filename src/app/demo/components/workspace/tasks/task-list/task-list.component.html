@@ -1,0 +1,192 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <p-toast></p-toast>
+            <h5>My Tasks</h5>
+            <p-table
+                #dt
+                [value]="tasks"
+                [scrollable]="true"
+                scrollHeight="500px"
+                dataKey="id"
+                [paginator]="true"
+                [rows]="10"
+                [loading]="loading"
+                [rowHover]="true"
+                styleClass="p-datatable-gridlines"
+                responsiveLayout="scroll"
+                [globalFilterFields]="['name', 'projectName', 'description', 'status.name']"
+            >
+                <ng-template pTemplate="caption">
+                    <div class="flex justify-content-between flex-column sm:flex-row">
+                        <!-- Group for Clear and Global filter side by side with space in between -->
+                        <div class="flex gap-2">
+                            <button pButton label="Clear" class="p-button-outlined" icon="pi pi-filter-slash"
+                                    (click)="clear(dt)"></button>
+                        </div>
+                        <span class="p-input-icon-left mb-2">
+							<i class="pi pi-search"></i>
+							<input pInputText type="text" #filter (input)="onGlobalFilter(dt, $event)" placeholder="Search Keyword" class="w-full"/>
+						</span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>
+                            <div class="flex justify-content-between align-items-center">
+                                Name
+                                <p-columnFilter field="name" type="text" display="menu" placeholder="Filter by name"></p-columnFilter>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="flex justify-content-between align-items-center">
+                                Project
+                                <p-columnFilter field="projectName" type="text" display="menu" placeholder="Filter by project"></p-columnFilter>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="flex justify-content-between align-items-center">
+                                Description
+                                <p-columnFilter field="description" type="text" display="menu" placeholder="Filter by description"></p-columnFilter>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="flex justify-content-between align-items-center">
+                                Start Date
+                                <p-columnFilter field="startDate" type="date" display="menu" placeholder="mm/dd/yyyy"></p-columnFilter>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="flex justify-content-between align-items-center">
+                                End Date
+                                <p-columnFilter field="endDate" type="date" display="menu" placeholder="mm/dd/yyyy"></p-columnFilter>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="flex justify-content-between align-items-center">
+                                Duration
+                                <p-columnFilter field="estimatedWorkDays" type="numeric" display="menu"></p-columnFilter>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="flex justify-content-between align-items-center">
+                                Status
+                                <p-columnFilter field="status.name" matchMode="equals" display="menu">
+                                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                        <p-dropdown [ngModel]="value" [options]="taskStatuses" (onChange)="filter($event.value)" placeholder="Any" [style]="{'min-width': '12rem'}" >
+                                            <ng-template let-option pTemplate="item">
+                                                <span [class]="'customer-badge status-' + option.value">{{option.label}}</span>
+                                            </ng-template>
+                                        </p-dropdown>
+                                    </ng-template>
+                                </p-columnFilter>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="flex justify-content-between align-items-center">
+                                Completion %
+                                <p-columnFilter field="completionPercentage" type="numeric" display="menu"></p-columnFilter>
+                            </div>
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-task>
+                    <tr>
+                        <td>{{ task.name }}</td>
+                        <td>{{ task.projectName }}</td>
+                        <td>{{ task.description }}</td>
+                        <td>{{ task.startDate | date:'MM/dd/yyyy' }}</td>
+                        <td>{{ task.endDate | date:'MM/dd/yyyy' }}</td>
+                        <td>{{ task.estimatedWorkDays }} days</td>
+<!--                        <td [class]="' status-' + task?.status.name.toLowerCase()">-->
+<!--                            <span *ngIf="task.status.name">{{ task.status?.name }}</span>-->
+<!--                        </td>-->
+<!--                        <td [class]="' status-' + task?.status.name.toLowerCase()">-->
+<!--                            <p-dropdown-->
+<!--                                [options]="taskStatuses"-->
+<!--                                [(ngModel)]="task.status.name"-->
+<!--                                (onChange)="updateCompletion(task)"-->
+<!--                                placeholder="Select status"-->
+<!--                                optionLabel="label"-->
+<!--                                optionValue="value"-->
+<!--                                appendTo="body"-->
+<!--                            ></p-dropdown>-->
+<!--                        </td>-->
+                        <td [class]="'status-' + task?.status.name.toLowerCase()" (click)="editingStatusTaskId = task.id">
+                            <ng-container *ngIf="editingStatusTaskId === task.id; else staticStatus">
+<!--                                <p-dropdown-->
+<!--                                    [options]="taskStatuses"-->
+<!--                                    [(ngModel)]="task.status.name"-->
+<!--                                    (onChange)="onStatusChange(task)"-->
+<!--                                    [optionLabel]="'label'"-->
+<!--                                    [optionValue]="'value'"-->
+<!--                                    appendTo="body"-->
+<!--                                    [autoDisplayFirst]="false"-->
+<!--                                    [style]="{ width: '10rem' }"-->
+<!--                                ></p-dropdown>-->
+                                <p-dropdown
+                                    [options]="taskStatuses"
+                                    [(ngModel)]="task.status.name"
+                                    (onChange)="onStatusChange(task)"
+                                    optionLabel="label"
+                                    optionValue="value"
+                                    appendTo="body"
+                                    [autoDisplayFirst]="false"
+                                >
+                                    <!-- Template pour chaque option de la liste -->
+                                    <ng-template let-option pTemplate="item">
+                                        <span [class]="'customer-badge status-' + option.value.toLowerCase()">
+                                          {{ option.label }}
+                                        </span>
+                                    </ng-template>
+
+                                    <!-- Template pour l'élément sélectionné -->
+                                    <ng-template let-option pTemplate="selectedItem">
+                                        <span *ngIf="option" [class]="'customer-badge status-' + option.value.toLowerCase()">
+                                          {{ option.label }}
+                                        </span>
+                                    </ng-template>
+                                </p-dropdown>
+                            </ng-container>
+
+                            <ng-template #staticStatus>
+                                <span [class]="'status-' + task?.status.name.toLowerCase()">
+                                  {{ task.status?.name }}
+                                </span>
+                            </ng-template>
+                        </td>
+                        <td>
+                            <!-- Read-only progress bar -->
+                            <p-progressBar [value]="task.completionPercentage" [showValue]="true"></p-progressBar>
+
+                            <!-- Slider (editable) -->
+                            <p-slider
+                                [min]="0"
+                                [max]="100"
+                                [(ngModel)]="task.completionPercentage"
+                                (onSlideEnd)="updateCompletion(task)"
+
+                                [ngStyle]="{'margin-top': '0.5rem'}"
+                            ></p-slider>
+
+<!--                            &lt;!&ndash; Input number (editable) &ndash;&gt;-->
+<!--                            <p-inputNumber-->
+<!--                                [(ngModel)]="task.completionPercentage"-->
+<!--                                [min]="0"-->
+<!--                                [max]="100"-->
+<!--                                [showButtons]="true"-->
+<!--                                [inputStyle]="{ 'width': '4rem', 'margin-top': '0.5rem' }"-->
+<!--                                (onBlur)="updateCompletion(task)"-->
+<!--                            ></p-inputNumber>-->
+                        </td>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="emptymessage">
+                    <tr><td colspan="8">No tasks assigned.</td></tr>
+                </ng-template>
+
+            </p-table>
+        </div>
+    </div>
+</div>

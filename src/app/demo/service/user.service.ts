@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Product } from '../api/product';
 import {User} from "../api/user";
@@ -32,4 +32,16 @@ export class UserService {
         );
     }
 
+    getOwnerAvailability(ownerId: number, startDate: string, endDate: string): Observable<any> {
+        const params = new HttpParams()
+            .set('start', startDate)
+            .set('end', endDate);
+        return this.http.get(`http://localhost:8084/api/tasks/owner/${ownerId}/between`, { params });
+    }
+    getOwnerChargeDetails(ownerId: number, start: string, end: string): Observable<any[]> {
+        const params = new HttpParams()
+            .set('start', start)
+            .set('end', end);
+        return this.http.get<any[]>(`http://localhost:8084/api/tasks/owner/${ownerId}/details`, { params });
+    }
 }

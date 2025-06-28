@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import { Location } from '@angular/common';
 import {Project} from "../../../../api/Project";
 import {MenuItem, MessageService} from "primeng/api";
@@ -19,7 +19,7 @@ import {Technology} from "../../../../api/technology";
   styleUrls: ['./project-detail.component.scss'],
   providers: [MessageService]
 })
-export class ProjectDetailComponent implements OnInit{
+export class ProjectDetailComponent implements OnInit, AfterViewInit{
     project: Project={};
     items: MenuItem[];
     activeItem: MenuItem;
@@ -41,6 +41,10 @@ export class ProjectDetailComponent implements OnInit{
 
     technologies: { label: string, value: number }[] = [];
 
+    ownerChargeDialogVisible: boolean = false;
+    ownerChargeDetails: any[] = [];
+    selectedOwnerId: number | null = null;
+
     constructor(
         private route: ActivatedRoute,
         private projectService: ProjectService,
@@ -49,9 +53,13 @@ export class ProjectDetailComponent implements OnInit{
         private taskService: TaskService,
         private messageService: MessageService,
         private location: Location,
+        private cdRef: ChangeDetectorRef,
         private router: Router
     ) {}
 
+    ngAfterViewInit() {
+        this.cdRef.detectChanges();
+    }
         ngOnInit() {
             // Récupérer l'ID du projet depuis l'URL
             const projectId:number = Number(this.route.snapshot.params['id']);
@@ -107,23 +115,23 @@ export class ProjectDetailComponent implements OnInit{
             this.taskStatuses = [ //utiliser toLowerCase pour les valeurs
                 { label: 'To come', value: 'to_come' },
                 { label: 'In progress', value: 'in_progress' },
-                { label: 'Closed', value: 'completed' },
+                { label: 'Completed', value: 'completed' },
             ];
 
-            this.authService.currentUser$.pipe(
-                filter(u => !!u),
-                switchMap(user  =>
-                    this.userService.getCollabrators()
-
-                )
-            ).subscribe(pms => {
-                this.owners = pms.map(pm => ({
-                    label: `${pm.firstName} ${pm.lastName}`,
-                    value: pm.id
-                }));
-                console.log("owners: ")
-                console.log(this.owners);
-            });
+            // this.authService.currentUser$.pipe(
+            //     filter(u => !!u),
+            //     switchMap(user  =>
+            //         this.userService.getCollabrators()
+            //
+            //     )
+            // ).subscribe(pms => {
+            //     this.owners = pms.map(pm => ({
+            //         label: `${pm.firstName} ${pm.lastName}`,
+            //         value: pm.id
+            //     }));
+            //     console.log("owners: ")
+            //     console.log(this.owners);
+            // });
         }
 
     onTabChange(item: MenuItem) {
@@ -380,6 +388,10 @@ export class ProjectDetailComponent implements OnInit{
         this.useDuration = false; // facultatif : remettre le mode date
         this.taskDialog = true;
         this.submitted = false;
+        setTimeout(() => {
+            this.loadOwnersWithAvailability();
+        }, 0);
+
     }
     trashTask(task: Task){
 
@@ -421,5 +433,74 @@ export class ProjectDetailComponent implements OnInit{
     }
 
 
+
+    loadOwnersWithAvailability() {
+        if (!this.task.technologyId || !this.task.startDate || !this.task.endDate) {
+            this.owners = [];
+            return;
+        }
+
+        const start = this.formatDateToYYYYMMDD(this.task.startDate);
+        const end = this.formatDateToYYYYMMDD(this.task.endDate);
+
+        this.userService.getCollabrators().subscribe(collabs => {
+            const selectedTechId = this.task.technologyId;
+            const ownersWithLoad: any[] = [];
+
+            collabs
+                .filter(user=> user.technologies?.some(t => t.id === selectedTechId))
+                .forEach(user => {
+                this.userService.getOwnerAvailability(user.id, start, end).subscribe(load => {
+                    ownersWithLoad.push({
+                        label: `${user.firstName} ${user.lastName} — ${load.comment}`,
+                        value: user.id,
+                        loadInfo: load,
+                        technologies: user.technologies
+                    });
+
+                    // Trier par charge croissante (optionnel)
+                    this.owners = ownersWithLoad.sort((a, b) => a.loadInfo.chargeDays - b.loadInfo.chargeDays);
+                });
+            });
+        });
+    }
+    formatDateToYYYYMMDD(date: Date | string): string {
+        const d = new Date(date);
+        const month = ('0' + (d.getMonth() + 1)).slice(-2);
+        const day = ('0' + d.getDate()).slice(-2);
+        const year = d.getFullYear();
+        return `${year}-${month}-${day}`;
+    }
+
+
+    onTaskFieldChange() {
+        this.loadOwnersWithAvailability();
+    }
+
+    // showOwnerChargeDetails() {
+    //     if (!this.task.ownerId || !this.task.startDate || !this.task.endDate) return;
+    //
+    //     const start = this.formatDateToYYYYMMDD(this.task.startDate);
+    //     const end = this.formatDateToYYYYMMDD(this.task.endDate);
+    //     this.selectedOwnerId = this.task.ownerId;
+    //
+    //     this.userService.getOwnerChargeDetails(this.task.ownerId, start, end).subscribe(data => {
+    //         this.ownerChargeDetails = data;
+    //         this.ownerChargeDialogVisible = true;
+    //     });
+    // }
+
+    showOwnerChargeDetailsFromList(ownerId: number) {
+        if (!this.task.startDate || !this.task.endDate) return;
+
+        const start = this.formatDateToYYYYMMDD(this.task.startDate);
+        const end = this.formatDateToYYYYMMDD(this.task.endDate);
+
+        this.userService.getOwnerChargeDetails(ownerId, start, end).subscribe(data => {
+            this.ownerChargeDetails = data;
+            this.selectedOwnerId = ownerId;
+            this.ownerChargeDialogVisible = true;
+        });
+    }
 
 }

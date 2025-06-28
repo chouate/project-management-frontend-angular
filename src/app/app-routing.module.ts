@@ -19,6 +19,9 @@ import { AppLayoutComponent } from "./layout/app.layout.component";
                     { path: 'clients',   loadChildren: () => import('./demo/components/workspace/clients/clients.module').then(m => m.ClientsModule) },
                     { path: 'collaborators', loadChildren: () => import('./demo/components/workspace/collaborators/collaborators.module').then(m => m.CollaboratorsModule) },
                     { path: 'projects', loadChildren: () => import('./demo/components/workspace/projects/projects.module').then(m => m.ProjectsModule) },
+                    { path: 'technologies', loadChildren: () => import('./demo/components/workspace/technologies/technologies.module').then(m => m.TechnologiesModule) },
+                    { path: 'tasks', loadChildren: () => import('./demo/components/workspace/tasks/tasks.module').then(m => m.TasksModule) },
+
 
                 ]
             },

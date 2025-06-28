@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { ProjectsRoutingModule } from './projects-routing.module';
-import { ProjectListComponent } from './project-list/project-list.component';
+import { TasksRoutingModule } from './tasks-routing.module';
+import { TaskListComponent } from './task-list/task-list.component';
 import {ButtonModule} from "primeng/button";
 import {DropdownModule} from "primeng/dropdown";
 import {InputTextModule} from "primeng/inputtext";
@@ -16,24 +16,22 @@ import {TableModule} from "primeng/table";
 import {ToastModule} from "primeng/toast";
 import {ToggleButtonModule} from "primeng/togglebutton";
 import {FormsModule} from "@angular/forms";
-import { ProjectDetailComponent } from './project-detail/project-detail.component';
-import {ChartModule} from "primeng/chart";
-import {CardModule} from "primeng/card";
 import {TabMenuModule} from "primeng/tabmenu";
+import {CardModule} from "primeng/card";
+import {ChartModule} from "primeng/chart";
 import {CalendarModule} from "primeng/calendar";
 import {DialogModule} from "primeng/dialog";
 import {InputTextareaModule} from "primeng/inputtextarea";
+import {InputNumberModule} from "primeng/inputnumber";
 
 
 @NgModule({
   declarations: [
-    ProjectListComponent,
-    ProjectDetailComponent,
-
+    TaskListComponent
   ],
     imports: [
         CommonModule,
-        ProjectsRoutingModule,
+        TasksRoutingModule,
         ButtonModule,
         DropdownModule,
         InputTextModule,
@@ -54,8 +52,7 @@ import {InputTextareaModule} from "primeng/inputtextarea";
         CalendarModule,
         DialogModule,
         InputTextareaModule,
-
-
+        InputNumberModule,
     ]
 })
-export class ProjectsModule { }
+export class TasksModule { }

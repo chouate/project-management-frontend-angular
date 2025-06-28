@@ -6,7 +6,8 @@ import {ProjectDetailComponent} from "./project-detail/project-detail.component"
 
 const routes: Routes = [
     { path: '', component: ProjectListComponent, canActivate: [AuthGuard], data: {roles: ['PROJECT_MANAGER', 'DIRECTOR']} },
-    { path: ':id', component: ProjectDetailComponent }
+    { path: ':id', component: ProjectDetailComponent },
+
 ];
 
 @NgModule({

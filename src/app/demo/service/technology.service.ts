@@ -9,12 +9,32 @@ import {Technology} from "../api/technology";
 })
 export class TechnologyService {
 
-    private readonly apiUrl = 'http://localhost:8081';
+    private readonly apiUrl = 'http://localhost:8081/technologies';
     constructor(
         private http: HttpClient,
     ) { }
 
     getTechnologies(): Observable<Technology[]> {
         return this.http.get<Technology[]>('http://localhost:8081/technologies');
+    }
+
+    // Récupérer une technologie par ID
+    getTechnologyById(id: number): Observable<Technology> {
+        return this.http.get<Technology>(`${this.apiUrl}/${id}`);
+    }
+
+    // Créer une nouvelle technologie
+    createTechnology(technology: Technology): Observable<Technology> {
+        return this.http.post<Technology>(this.apiUrl, technology);
+    }
+
+    // Mettre à jour une technologie
+    updateTechnology(technology: Technology): Observable<Technology> {
+        return this.http.put<Technology>(`${this.apiUrl}/${technology.id}`, technology);
+    }
+
+    // Supprimer une technologie
+    deleteTechnology(id: number): Observable<void> {
+        return this.http.delete<void>(`${this.apiUrl}/${id}`);
     }
 }

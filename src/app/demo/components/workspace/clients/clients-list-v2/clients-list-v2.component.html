@@ -11,7 +11,7 @@
                 </ng-template>
 
                 <ng-template pTemplate="right">
-                    <p-fileUpload mode="basic" accept="image/*" [maxFileSize]="1000000" label="Import" chooseLabel="Import" class="mr-2 inline-block"></p-fileUpload>
+<!--                    <p-fileUpload mode="basic" accept="image/*" [maxFileSize]="1000000" label="Import" chooseLabel="Import" class="mr-2 inline-block"></p-fileUpload>-->
                     <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help" (click)="dt.exportCSV()"></button>
                 </ng-template>
             </p-toolbar>
@@ -39,7 +39,7 @@
                         <th pSortableColumn="contact email">Contact Phone Number <p-sortIcon field="rating"></p-sortIcon></th>
                         <th pSortableColumn="start date">Start Date <p-sortIcon field="rating"></p-sortIcon></th>
                         <th pSortableColumn="end date">End Date Estimate<p-sortIcon field="rating"></p-sortIcon></th>
-                        <th pSortableColumn="project manager id">Project Manager ID <p-sortIcon field="rating"></p-sortIcon></th>
+<!--                        <th pSortableColumn="project manager id">Project Manager ID <p-sortIcon field="rating"></p-sortIcon></th>-->
                         <th pSortableColumn="project manager ">Project Manager <p-sortIcon field="rating"></p-sortIcon></th>
                         <th></th>
                     </tr>
@@ -81,10 +81,10 @@
                             <span class="p-column-title">End Date Estimate</span>
                             {{client.endDateEstimate }}
                         </td>
-                        <td style="width:14%; min-width:10rem;">
-                            <span class="p-column-title">Project Manager Id</span>
-                            {{client.projectManagerId}}
-                        </td>
+<!--                        <td style="width:14%; min-width:10rem;">-->
+<!--                            <span class="p-column-title">Project Manager Id</span>-->
+<!--                            {{client.projectManagerId}}-->
+<!--                        </td>-->
 <!--                        <td style="width:16%; min-width:20rem;">-->
 <!--                            <span class="p-column-title">Project Manager</span>-->
 <!--                            {{client.projectManager?.firstName + ' ' + client.projectManager?.lastName}}-->
@@ -117,17 +117,17 @@
             </p-table>
         </div>
 
-        <p-dialog [(visible)]="clientDialog" [style]="{width: '600px'}" header="Client Details" [modal]="true" class="p-fluid">
+        <p-dialog [(visible)]="clientDialog" [style]="{width: '700px'}" header="Client Details" [modal]="true" class="p-fluid">
             <ng-template pTemplate="content">
 <!--                <img [src]="'assets/demo/images/product/' + client?.image" [alt]="client.image" width="150" class="mt-0 mx-auto mb-5 block shadow-2" *ngIf="client.image">-->
                 <div class="field">
-                    <label for="code">Code</label>
+                    <label for="code">Code*</label>
                     <input type="text" pInputText id="code" [(ngModel)]="client.code" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !client.code || codeError}"/>
                     <small style="color: red" class="ng-dirty ng-invalid" *ngIf="submitted && !client.code">Code is required.</small>
                     <small style="color: red" class="ng-dirty ng-invalid" *ngIf="codeError">{{codeError}}</small>
                 </div>
                 <div class="field">
-                    <label for="name">Name</label>
+                    <label for="name">Name*</label>
                     <input type="text" pInputText id="name" [(ngModel)]="client.name" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !client.name}"/>
                     <small style="color: red" class="ng-dirty ng-invalid" *ngIf="submitted && !client.name">Name is required.</small>
                     <!--        server error for require name           -->
