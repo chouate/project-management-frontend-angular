@@ -45,6 +45,8 @@ export class ProjectDetailComponent implements OnInit, AfterViewInit{
     ownerChargeDetails: any[] = [];
     selectedOwnerId: number | null = null;
 
+    documents: any[] = [];
+
     constructor(
         private route: ActivatedRoute,
         private projectService: ProjectService,
@@ -254,9 +256,10 @@ export class ProjectDetailComponent implements OnInit, AfterViewInit{
             return;
         }
 
-        if(this.task.estimatedWorkDays == null || this.task.estimatedWorkDays <= 0){
-            return;
-        }
+        // if(this.task.estimatedWorkDays == null || this.task.estimatedWorkDays <= 0){
+        //     return;
+        // }
+
         // if (this.task.estimatedWorkDays == null || this.task.estimatedWorkDays <= 0) {
         //     this.messageService.add({
         //         severity: 'error',
@@ -474,6 +477,18 @@ export class ProjectDetailComponent implements OnInit, AfterViewInit{
 
 
     onTaskFieldChange() {
+        if (this.task.startDate && this.task.endDate) {
+            const start = new Date(this.task.startDate);
+            const end = new Date(this.task.endDate);
+
+            if (end >= start) {
+                this.task.estimatedWorkDays = this.countWorkingDays(start, end);
+            } else {
+                this.task.estimatedWorkDays = null; // ou 0
+            }
+        } else {
+            this.task.estimatedWorkDays = null;
+        }
         this.loadOwnersWithAvailability();
     }
 
@@ -500,6 +515,59 @@ export class ProjectDetailComponent implements OnInit, AfterViewInit{
             this.ownerChargeDetails = data;
             this.selectedOwnerId = ownerId;
             this.ownerChargeDialogVisible = true;
+        });
+    }
+
+    //µµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµ
+    loadDocuments() {
+        if (this.project?.id) {
+            this.projectService.getDocuments(this.project.id).subscribe({
+                next: (docs) => (this.documents = docs),
+                error: () => this.messageService.add({ severity: 'error', summary: 'Erreur', detail: 'Échec chargement documents' })
+            });
+        }
+    }
+
+    onDocumentSelected(event: Event) {
+        const input = event.target as HTMLInputElement;
+        const file = input?.files?.[0];
+        if (file && this.project?.id) {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            this.projectService.uploadDocument(this.project.id, formData).subscribe({
+                next: (doc) => {
+                    //this.documents.push(doc);
+                    this.project.documents = [...(this.project.documents || []), doc]; // push sans muter
+                    this.messageService.add({ severity: 'success', summary: 'Succès', detail: 'Document téléversé' });
+                },
+                error: () => this.messageService.add({ severity: 'error', summary: 'Erreur', detail: 'Échec upload' })
+            });
+        }
+    }
+
+    downloadDocument(docId: number) {
+        // this.projectService.downloadDocument(docId).subscribe(blob => {
+        //     const url = window.URL.createObjectURL(blob);
+        //     const a = document.createElement('a');
+        //     a.href = url;
+        //     a.download = 'document_' + docId;
+        //     a.click();
+        //     window.URL.revokeObjectURL(url);
+        // });
+        this.projectService.downloadDocument(docId).subscribe(blob => {
+            //const url = window.URL.createObjectURL(blob);
+            //const url = `D:\\sujet de stage PFE\\project-management\\project-management-backend\\uploads\\documents/${doc.name}`;
+            //window.open(url); // ← ouvre dans un nouvel onglet
+        });
+
+    }
+
+    deleteDocument(docId: number) {
+        this.projectService.deleteDocument(docId).subscribe(() => {
+            //this.documents = this.documents.filter(d => d.id !== docId);
+            this.project.documents = this.project.documents.filter(d => d.id !== docId);this.project.documents = this.project.documents.filter(d => d.id !== docId);
+            this.messageService.add({ severity: 'success', summary: 'Supprimé', detail: 'Document supprimé' });
         });
     }
 

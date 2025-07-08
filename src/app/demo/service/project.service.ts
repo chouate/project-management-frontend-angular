@@ -48,5 +48,23 @@ export class   ProjectService {
             });
     }
 
+    uploadDocument(projectId: number, formData: FormData) {
+        return this.http.post<any>(`${this.apiUrl}/projects/${projectId}/documents`, formData);
+    }
+
+    getDocuments(projectId: number) {
+        return this.http.get<any[]>(`${this.apiUrl}/projects/${projectId}/documents`);
+    }
+
+    downloadDocument(documentId: number) {
+        return this.http.get(`${this.apiUrl}/projects/documents/${documentId}/download`, {
+            responseType: 'blob'
+        });
+    }
+
+    deleteDocument(documentId: number) {
+        return this.http.delete(`${this.apiUrl}/projects/documents/${documentId}`);
+    }
+
 
 }

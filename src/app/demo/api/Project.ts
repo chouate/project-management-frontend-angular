@@ -24,6 +24,8 @@ export interface Project{
     tasks?: Task[];
     projectManager?: ProjectManager;
 
+    documents?: Document[];
+
 }
 
 interface Client{
@@ -82,4 +84,12 @@ interface TaskStatus{
     id?: number;
     name?: string;
     description?: string;
+}
+
+interface Document{
+    id?: number;
+    name?: string;
+    type?: string;
+    path?: string;
+    dateAdded?: Date;
 }
