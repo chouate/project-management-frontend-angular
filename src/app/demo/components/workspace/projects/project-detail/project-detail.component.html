@@ -147,6 +147,9 @@
                                         <!--                                </p-columnFilter>-->
                                     </div>
                                 </th>
+                                <th>
+                                    Time Indicator
+                                </th>
                                 <th style="min-width: 10rem">
                                     <div class="flex justify-content-between align-items-center">
                                         Duration
@@ -240,21 +243,32 @@
                                 </td>
                                 <td style="overflow: hidden;">
                                     <div class="flex align-items-center justify-content-between" style="min-width: 0rem;">
-                                        <span pTooltip="Actual Work Days" style="cursor: pointer;" class="text-green-600 font-semibold">{{ getActualWorkDaysCount(task) }}</span>
+<!--                                        <span pTooltip="Actual Work Days" style="cursor: pointer;" class="text-green-600 font-semibold">{{ getActualWorkDaysCount(task) }}</span>-->
                                         <div style="position: relative; padding: 2px;  flex: 1; z-index: 0;" class="progress-container">
                                             <p-progressBar [value]="task.completionPercentage" [showValue]="true" [style]="{'height': '0.8rem', 'font-size': '0.7rem', 'font-weight': 'bold'}"></p-progressBar>
                                         </div>
 <!--                                        <span pTooltip="Days Remaining" style="cursor: pointer;" class="text-red-600 font-semibold">{{ getDaysRemaining(task) }}</span>-->
-                                        <span
-                                            pTooltip="{{ getDaysRemainingTooltip(task) }}"
-                                            style="cursor: pointer;"
-                                            [ngClass]="getDaysRemainingStyle(task)">
-                                            <!-- Icône de retard si nécessaire -->
-                                            <i *ngIf="getDaysRemaining(task) < 0" class="pi pi-exclamation-triangle mr-1 text-red-600"></i>
-                                            {{ getDaysRemainingDisplay(task) }}
+<!--                                        <span-->
+<!--                                            pTooltip="{{ getDaysRemainingTooltip(task) }}"-->
+<!--                                            style="cursor: pointer;"-->
+<!--                                            [ngClass]="getDaysRemainingStyle(task)">-->
+<!--                                            &lt;!&ndash; Icône de retard si nécessaire &ndash;&gt;-->
+<!--                                            <i *ngIf="getDaysRemaining(task) < 0" class="pi pi-exclamation-triangle mr-1 text-red-600"></i>-->
+<!--                                            {{ getDaysRemainingDisplay(task) }}-->
 
-                                        </span>
+<!--                                        </span>-->
                                     </div>
+                                </td>
+<!--                                <td>-->
+<!--                                  <span [ngClass]="getTimeIndicatorClass(task)">-->
+<!--                                    {{ getTimeIndicatorLabel(task) }}-->
+<!--                                  </span>-->
+<!--                                </td>-->
+                                <td style="width:16%; min-width:13rem;">
+                                    <ng-container *ngIf="getTimeIndicator(task) as indicator">
+                                        <i [class]="indicator.icon" [ngClass]="indicator.class" style="margin-right: 0.5rem"></i>
+                                        <span [ngClass]="indicator.class">{{ indicator.label }}</span>
+                                    </ng-container>
                                 </td>
                                 <td>
                                     {{task.duration }} days
@@ -353,7 +367,7 @@
         </div>
         <div class="formgrid grid">
             <div class="field col-12 md:col-6">
-                <label for="startDate">Start Date</label>
+                <label for="startDate">Start Date*</label>
                 <p-calendar appendTo="body" id="startDate" dateFormat="mm/dd/yy" dataType="string" [showIcon]="true" inputId="icon" [(ngModel)]="task.startDate"
                             [disabledDays]="[0,6]" (onSelect)="onTaskFieldChange()"
                 ></p-calendar>
@@ -363,7 +377,7 @@
                 <!-- Mode Date -->
                 <ng-container *ngIf="!useDuration">
                     <div class="flex justify-content-between align-items-center mb-2">
-                        <label for="endDate" >End Date</label>
+                        <label for="endDate" >End Date*</label>
 <!--                        <a href="#" (click)="toggleDuration(true, $event)" style="font-size: 12px;">(Enter Duration)</a>-->
                     </div>
                     <p-calendar appendTo="body" id="endDate" dateFormat="mm/dd/yy" dataType="string" [showIcon]="true" [(ngModel)]="task.endDate"
@@ -386,7 +400,7 @@
             </div>
         </div>
         <div class="field ">
-            <label for="estimatedWorkDays">Estimated Work Days</label>
+            <label for="estimatedWorkDays">Estimated Work Days (readonly)</label>
             <div class="p-inputgroup">
                 <input type="number"
                        readonly
@@ -395,7 +409,7 @@
                        [(ngModel)]="task.estimatedWorkDays"
                        [min]="0"
                        step="1"
-                       placeholder="Enter estimated work days"
+                       placeholder="Enter start & end date to calcuate estimated work days"
                        [ngClass]="{ 'ng-invalid ng-dirty': submitted && task.estimatedWorkDays < 0 }"
                 />
                 <span class="p-inputgroup-addon">man-days</span>
@@ -470,7 +484,8 @@
                             <span *ngIf="owner.loadInfo.chargeDays === 0" class="text-green-600 text-xs">(✔️ Available)</span>
                             <span *ngIf="owner.loadInfo.chargeDays === owner.loadInfo.maxDays" class="text-red-600 text-xs">(❌ Overloaded)</span>
                             <span *ngIf="owner.loadInfo.chargeDays > 0 && owner.loadInfo.chargeDays < owner.loadInfo.maxDays"
-                                  class="text-orange-500 text-xs">({{ owner.loadInfo.chargeDays }} / {{ owner.loadInfo.maxDays }} jrs)</span>
+                                  class="text-orange-500 text-xs">({{ owner.loadInfo.chargeDays }} / {{ owner.loadInfo.maxDays }} jrs)
+                            </span>
                         </ng-container>
                     </div>
                 </ng-template>

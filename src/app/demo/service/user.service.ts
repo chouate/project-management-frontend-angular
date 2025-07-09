@@ -32,16 +32,24 @@ export class UserService {
         );
     }
 
-    getOwnerAvailability(ownerId: number, startDate: string, endDate: string): Observable<any> {
-        const params = new HttpParams()
+    getOwnerAvailability(ownerId: number, startDate: string, endDate: string, excludeTaskId?: number): Observable<any> {
+        let params = new HttpParams()
             .set('start', startDate)
             .set('end', endDate);
+
+        if(excludeTaskId != null){
+            params = params.set('excludeTaskId', excludeTaskId);
+        }
+
         return this.http.get(`http://localhost:8084/api/tasks/owner/${ownerId}/between`, { params });
     }
-    getOwnerChargeDetails(ownerId: number, start: string, end: string): Observable<any[]> {
-        const params = new HttpParams()
+    getOwnerChargeDetails(ownerId: number, start: string, end: string, excludeTaskId?: number): Observable<any[]> {
+        let params = new HttpParams()
             .set('start', start)
-            .set('end', end);
+            .set('end', end)
+        if (excludeTaskId != null) {
+            params = params.set('excludeTaskId', excludeTaskId);
+        }
         return this.http.get<any[]>(`http://localhost:8084/api/tasks/owner/${ownerId}/details`, { params });
     }
 }

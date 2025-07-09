@@ -23,6 +23,7 @@ import {TabMenuModule} from "primeng/tabmenu";
 import {CalendarModule} from "primeng/calendar";
 import {DialogModule} from "primeng/dialog";
 import {InputTextareaModule} from "primeng/inputtextarea";
+import {BadgeModule} from "primeng/badge";
 
 
 @NgModule({
@@ -54,6 +55,7 @@ import {InputTextareaModule} from "primeng/inputtextarea";
         CalendarModule,
         DialogModule,
         InputTextareaModule,
+        BadgeModule,
 
 
     ]

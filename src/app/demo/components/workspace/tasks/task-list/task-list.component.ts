@@ -132,5 +132,89 @@ export class TaskListComponent implements OnInit{
         this.filter.nativeElement.value = '';
     }
 
+    /*
+    start time indicator
+     */
+    private countBusinessDays(from: Date, to: Date): number {
+        let count = 0;
+        const current = new Date(from);
+
+        // avancer d'un jour à chaque boucle
+        while (current <= to) {
+            const day = current.getDay();
+            if (day !== 0 && day !== 6) { // exclure dimanche (0) et samedi (6)
+                count++;
+            }
+            current.setDate(current.getDate() + 1);
+        }
+        return count;
+    }
+
+    getTimeIndicator(task: Task): {
+        label: string;
+        icon: string;
+        class: string;
+    } {
+        if (!task.startDate || !task.endDate) {
+            return {
+                label: 'N/A',
+                icon: 'pi pi-question-circle',
+                class: 'text-gray-400'
+            };
+        }
+
+        const today = new Date();
+        const start = new Date(task.startDate);
+        const end = new Date(task.endDate);
+
+        start.setHours(0, 0, 0, 0);
+        end.setHours(0, 0, 0, 0);
+        today.setHours(0, 0, 0, 0);
+
+        if (today < start) {
+            const daysToStart = this.countBusinessDays(today, start) - 1;
+            return {
+                label: `${daysToStart} day${daysToStart > 1 ? 's' : ''} to start`,
+                icon: 'pi pi-clock',
+                class: 'text-cyan-700'
+            };
+        }
+
+        if (today.getTime() === end.getTime()) {
+            return {
+                label: 'Last scheduled day',
+                icon: 'pi pi-calendar-times',
+                class: 'text-orange-600 font-medium'
+            };
+        }
+
+        if (today > end) {
+            if (task.status?.name?.toLowerCase() === 'completed') {
+                return {
+                    label: 'Completed',
+                    icon: 'pi pi-check-circle',
+                    class: 'text-gray-500'
+                };
+            }
+            const delayedDays = this.countBusinessDays(end, today) - 1;
+            return {
+                label: `${delayedDays} delayed day${delayedDays > 1 ? 's' : ''}`,
+                icon: 'pi pi-exclamation-triangle',
+                class: 'text-red-500 font-bold'
+            };
+        }
+
+        const remainingDays = this.countBusinessDays(today, end) - 1;
+        return {
+            label: `${remainingDays} day${remainingDays > 1 ? 's' : ''} remaining`,
+            icon: 'pi pi-hourglass',
+            class: 'text-green-500'
+        };
+    }
+    /*
+    end time indicator
+     */
+
+
 
 }

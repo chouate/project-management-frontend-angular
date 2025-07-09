@@ -88,6 +88,11 @@
                                 <p-columnFilter field="completionPercentage" type="numeric" display="menu"></p-columnFilter>
                             </div>
                         </th>
+                        <th>
+                            <div class="flex justify-content-between align-items-center">
+                                Time Indicator
+                            </div>
+                        </th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-task>
@@ -179,6 +184,13 @@
 <!--                                (onBlur)="updateCompletion(task)"-->
 <!--                            ></p-inputNumber>-->
                         </td>
+                        <td style="width:16%; min-width:13rem;">
+                            <ng-container *ngIf="getTimeIndicator(task) as indicator">
+                                <i [class]="indicator.icon" [ngClass]="indicator.class" style="margin-right: 0.5rem"></i>
+                                <span [ngClass]="indicator.class">{{ indicator.label }}</span>
+                            </ng-container>
+                        </td>
+
                     </tr>
                 </ng-template>
 
